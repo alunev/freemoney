@@ -13,7 +13,7 @@ public class UserController extends Controller
 {
     static EntityManagerFactory emf;
 
-    public static Result persist()
+    public Result persist()
     {
         EntityManager em = getEmf().createEntityManager();
 
@@ -25,7 +25,7 @@ public class UserController extends Controller
         return ok("User 0001 record persisted for persistence unit cassandra_pu");
     }
 
-    public static Result find()
+    public Result find()
     {
         EntityManager em = getEmf().createEntityManager();
         User user = em.find(User.class, "0001");
@@ -33,7 +33,7 @@ public class UserController extends Controller
         return ok("Found User in database with the following details:" + printUser(user));
     }
 
-    public static Result update()
+    public Result update()
     {
         EntityManager em = getEmf().createEntityManager();
         User user = em.find(User.class, "0001");
@@ -47,7 +47,7 @@ public class UserController extends Controller
         return ok("Record updated:" + printUser(user));
     }
 
-    public static Result delete()
+    public Result delete()
     {
         EntityManager em = getEmf().createEntityManager();
         User user = em.find(User.class, "0001");
