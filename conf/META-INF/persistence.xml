@@ -6,7 +6,6 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
 
     <persistence-unit name="redis_pu">
         <provider>com.impetus.kundera.KunderaPersistence</provider>
-        <jar-file>lib/model.jar</jar-file>
         <properties>
             <property name="kundera.nodes" value="localhost" />
             <property name="kundera.port" value="6379" />
@@ -17,7 +16,6 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
             <property name="kundera.cache.provider.class"
                       value="com.impetus.kundera.cache.ehcache.EhCacheProvider" />
             <property name="kundera.cache.config.resource" value="/ehcache-test.xml" />
-            <property name="" value="libs/model.jar"/>
         </properties>
     </persistence-unit>
 
