@@ -11,9 +11,10 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "users", schema = "KunderaExamples@cassandra_pu")
+@Table(name = "users", schema = "RedisK@redis_pu")
 public class User {
     @Id
+    @Column(name = "user_id")
     private String userId;
 
     @Column(name = "first_name")
@@ -25,27 +26,50 @@ public class User {
     @Column(name = "city")
     private String city;
 
-    public User(String userId, String firstName, String lastName, String city) {
-        this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.city = city;
+    public static User copyOf(User user) {
+        User user1 = new User();
+
+        user1.setUserId(user.getUserId());
+        user1.setFirstName(user.getFirstName());
+        user1.setLastName(user.getLastName());
+        user1.setCity(user.getCity());
+
+        return user1;
     }
 
-    public static User copyOf(User user) {
-        return new User(user.getUserId(), user.getFirstName(), user.getLastName(), user.getCity());
+    public static User createUser(String userId, String firstName, String lastName, String city) {
+        User user = new User();
+
+        user.userId = userId;
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.city = city;
+
+        return user;
     }
 
     public String getUserId() {
         return userId;
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getCity() {

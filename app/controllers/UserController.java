@@ -17,10 +17,10 @@ public class UserController extends Controller
     {
         EntityManager em = getEmf().createEntityManager();
 
-        User user = new User("0001", "John", "Smith", "London");
+        User user = User.createUser("0001", "John", "Smith", "London");
+        em.persist(user); // persist object.
 
-        em.persist(user);
-        em.close();
+        User result = (User) em.find(User.class, "0001");
 
         return ok("User 0001 record persisted for persistence unit cassandra_pu");
     }
@@ -61,7 +61,7 @@ public class UserController extends Controller
     {
         if (emf == null)
         {
-            emf = Persistence.createEntityManagerFactory("cassandra_pu");
+            emf = Persistence.createEntityManagerFactory("redis_pu");
         }
         return emf;
     }

@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
-libraryDependencies += "com.impetus.kundera.client" % "kundera-cassandra" % "3.5"
+libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.6"
+libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.6"
 
 resolvers += "Kundera" at "https://oss.sonatype.org/content/repositories/releases"
 resolvers += "Riptano" at "http://mvn.riptano.com/content/repositories/public"

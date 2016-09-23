@@ -1,18 +1,24 @@
-<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="cassandra_pu">
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src/test/resources/META-INF/persistence_2_0.xsd"
+             version="2.0">
+
+    <persistence-unit name="redis_pu">
         <provider>com.impetus.kundera.KunderaPersistence</provider>
-        <class>model.User</class>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <jar-file>lib/model.jar</jar-file>
         <properties>
-            <property name="kundera.nodes" value="localhost"/>
-            <property name="kundera.port" value="9160"/>
-            <property name="kundera.keyspace" value="KunderaExamples"/>
-            <property name="kundera.dialect" value="cassandra"/>
-            <property name="kundera.client.lookup.class" value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
-            <property name="kundera.cache.provider.class" value="com.impetus.kundera.cache.ehcache.EhCacheProvider"/>
-            <property name="kundera.cache.config.resource" value="/ehcache-test.xml"/>
+            <property name="kundera.nodes" value="localhost" />
+            <property name="kundera.port" value="6379" />
+            <property name="kundera.keyspace" value="RedisK" />
+            <property name="kundera.dialect" value="redis" />
+            <property name="kundera.client" value="redis" />
+            <property name="kundera.client.lookup.class" value="com.impetus.client.redis.RedisClientFactory" />
+            <property name="kundera.cache.provider.class"
+                      value="com.impetus.kundera.cache.ehcache.EhCacheProvider" />
+            <property name="kundera.cache.config.resource" value="/ehcache-test.xml" />
+            <property name="" value="libs/model.jar"/>
         </properties>
     </persistence-unit>
+
 </persistence>
