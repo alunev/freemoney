@@ -8,6 +8,7 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
         <provider>com.impetus.kundera.KunderaPersistence</provider>
         <jar-file>lib/model.jar</jar-file>
         <properties>
+            <!--<property name="kundera.nodes" value="192.168.99.100" />-->
             <property name="kundera.nodes" value="localhost" />
             <property name="kundera.port" value="6379" />
             <property name="kundera.keyspace" value="RedisK" />

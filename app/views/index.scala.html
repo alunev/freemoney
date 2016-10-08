@@ -2,15 +2,22 @@
 * This template takes a single argument, a String containing a
 * message to display.
 *@
+@import com.feth.play.module.pa.views.html._
 
-@(message: String)
-    @*
-    * Call the `main` template with two arguments. The first
-    * argument is a `String` with the title of the page, the second
-    * argument is an `Html` object containing the body of the page.
-    *@
-    @main("Welcome to Freemoney") {
+@(message: String, playAuth: com.feth.play.module.pa.PlayAuthenticate)
+@*
+* Call the `main` template with two arguments. The first
+* argument is a `String` with the title of the page, the second
+* argument is an `Html` object containing the body of the page.
+*@
+@main("Welcome to Freemoney") {
 
+    <h2>Message:</h2>
+    <h3>@message</h3>
 
+    @forProviders(playAuth) { p =>
+        <a href="@p.getUrl()">@p.getKey()</a>
     }
+
+}
 

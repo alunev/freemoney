@@ -1,4 +1,9 @@
+import auth.MyResolver;
+import auth.MyUserService;
+import com.feth.play.module.pa.Resolver;
+import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
+
 import java.time.Clock;
 
 import services.ApplicationTimer;
@@ -9,7 +14,7 @@ import services.Counter;
  * This class is a Guice module that tells Guice how to bind several
  * different types. This Guice module is created when the Play
  * application starts.
- *
+ * <p>
  * Play will automatically use any class called `Module` that is in
  * the root package. You can create modules in other locations by
  * adding `play.modules.enabled` settings to the `application.conf`
@@ -26,6 +31,10 @@ public class Module extends AbstractModule {
         bind(ApplicationTimer.class).asEagerSingleton();
         // Set AtomicCounter as the implementation for Counter.
         bind(Counter.class).to(AtomicCounter.class);
-    }
 
+
+        bind(Resolver.class).to(MyResolver.class);
+        bind(MyUserService.class).asEagerSingleton();
+        bind(GoogleAuthProvider.class).asEagerSingleton();
+    }
 }

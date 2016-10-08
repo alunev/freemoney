@@ -9,10 +9,15 @@ GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-################# User Controller###############
+################# Authentication ###############
+GET     /authenticate/:provider             com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
+GET     /authenticate/:provider/denied      controllers.HomeController.oAuthDenied(provider: String)
+
+GET     /logout                             com.feth.play.module.pa.controllers.Authenticate.logout
+
+
+################# User Controller ###############
 
 # Persist Operation
 GET     /persist                    controllers.UserController.persist
@@ -25,3 +30,8 @@ GET /update controllers.UserController.update
 
 # Delete Operation
 GET /delete controllers.UserController.delete
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+

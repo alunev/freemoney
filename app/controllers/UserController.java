@@ -1,13 +1,12 @@
 package controllers;
 
+import model.User;
+import play.mvc.Controller;
+import play.mvc.Result;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import model.User;
-import play.Play;
-import play.mvc.Controller;
-import play.mvc.Result;
 
 public class UserController extends Controller
 {
@@ -17,7 +16,7 @@ public class UserController extends Controller
     {
         EntityManager em = getEmf().createEntityManager();
 
-        User user = User.createUser("0001", "John", "Smith", "London");
+        User user = User.createUser("0001", "tes@gmail.com");
         em.persist(user); // persist object.
 
         User result = (User) em.find(User.class, "0001");
@@ -39,7 +38,6 @@ public class UserController extends Controller
         User user = em.find(User.class, "0001");
 
         User updatedUser = User.copyOf(user);
-        updatedUser.setCity("New York");
 
         em.merge(user);
         user = em.find(User.class, "0001");
@@ -71,7 +69,6 @@ public class UserController extends Controller
         if (user == null)
             return "Record not found";
 
-        return "\n--------------------------------------------------" + "\nuserId:" + user.getUserId() + "\nfirstName:"
-                + user.getFirstName() + "\nlastName:" + user.getLastName() + "\ncity:" + user.getCity();
+        return user.toString();
     }
 }
