@@ -33,6 +33,8 @@
   <logger name="com.avaje.ebeaninternal.server.lib.BackgroundThread" level="OFF" />
   <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
 
+  <logger name="org.asynchttpclient.netty.channel.DefaultChannelPool" level="INFO" />
+
   <root level="debug">
     <appender-ref ref="ASYNCFILE" />
     <appender-ref ref="ASYNCSTDOUT" />

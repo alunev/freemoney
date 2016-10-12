@@ -4,7 +4,9 @@
 * two arguments, a `String` for the title of the page and an `Html`
 * object to insert into the body of the page.
 *@
-@(title: String)(content: Html)
+@(title: String, playAuth: com.feth.play.module.pa.PlayAuthenticate)(content: Html)
+
+@import com.feth.play.module.pa.views.html._
 
 <!DOCTYPE html>
 
@@ -68,6 +70,19 @@
                         <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        @currentAuth(playAuth) { auth =>
+                            @if(auth != null) {
+                                <li><a href=""> Hello, @playAuth.getUser(session()).getId !!! </a></li>
+                                <li><a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout">Log out</a></li>
+                            } else {
+                                @forProviders(playAuth) { p =>
+                                    <li> <a href="@p.getUrl()">Login with @p.getKey()</a> </li>
+                                }
+                            }
+                        }
+                    </ul>
+
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
