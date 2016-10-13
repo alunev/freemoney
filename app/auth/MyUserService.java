@@ -19,7 +19,7 @@ public class MyUserService extends AbstractUserService {
 
 	@Override
 	public Object save(final AuthUser authUser) {
-//		final boolean isLinked = User.existsByAuthUserIdentity(authUser);
+		final boolean isLinked = User.existsByAuthUserIdentity(authUser);
 //		if (!isLinked) {
 //			return User.create(authUser).id;
 //		} else {

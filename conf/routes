@@ -12,7 +12,7 @@ GET     /message                    controllers.AsyncController.message
 
 ################# Authentication ###############
 GET     /authenticate/:provider             com.feth.play.module.pa.controllers.Authenticate.authenticate(provider: String)
-GET     /authenticate/:provider/denied      controllers.HomeController.oAuthDenied(provider: String)
+GET     /authenticate/:provider/denied      controllers.HomeController.oAuthDenied(provider: String, exception: String)
 
 GET     /logout                             com.feth.play.module.pa.controllers.Authenticate.logout
 

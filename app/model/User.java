@@ -1,6 +1,8 @@
 package model;
 
 
+import com.feth.play.module.pa.user.AuthUser;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -57,5 +59,9 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public static boolean existsByAuthUserIdentity(AuthUser authUser) {
+        return false;
     }
 }

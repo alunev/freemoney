@@ -12,7 +12,7 @@ import javax.inject.Singleton;
  * Concrete Resolver implementation.
  */
 @Singleton
-public class MyResolver extends Resolver {
+public class FmPlayAuthResolver extends Resolver {
     @Override
     public Call login() {
         // Your login page
@@ -41,7 +41,11 @@ public class MyResolver extends Resolver {
     @Override
     public Call onException(final AuthException e) {
         if (e instanceof AccessDeniedException) {
-            return controllers.routes.HomeController.oAuthDenied(((AccessDeniedException) e).getProviderKey());
+            AccessDeniedException accessDeniedException = (AccessDeniedException) e;
+            return controllers.routes.HomeController.oAuthDenied(
+                    accessDeniedException.getProviderKey(),
+                    accessDeniedException.toString()
+            );
         }
 
         // more custom problem handling here...

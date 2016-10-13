@@ -9,7 +9,8 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
-  javaWs
+  javaWs,
+  javaJpa
 )
 
 libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.6"

@@ -1,6 +1,7 @@
 package controllers;
 
 import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.google.inject.Inject;
 import play.mvc.*;
 
@@ -19,8 +20,8 @@ public class HomeController extends Controller {
         this.auth = auth;
     }
 
-    public Result oAuthDenied(String provider) {
-        return ok(index.render(auth));
+    public Result oAuthDenied(String provider, String errorMessage) {
+        return ok(logon_failed.render(auth, errorMessage));
     }
 
     /**

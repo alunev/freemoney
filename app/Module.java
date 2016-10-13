@@ -1,4 +1,4 @@
-import auth.MyResolver;
+import auth.FmPlayAuthResolver;
 import auth.MyUserService;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
@@ -33,7 +33,7 @@ public class Module extends AbstractModule {
         bind(Counter.class).to(AtomicCounter.class);
 
 
-        bind(Resolver.class).to(MyResolver.class);
+        bind(Resolver.class).to(FmPlayAuthResolver.class);
         bind(MyUserService.class).asEagerSingleton();
         bind(GoogleAuthProvider.class).asEagerSingleton();
     }
