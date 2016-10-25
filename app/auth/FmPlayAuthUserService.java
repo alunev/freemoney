@@ -1,47 +1,57 @@
 package auth;
 
 import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthUser;
 import com.feth.play.module.pa.service.AbstractUserService;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 import model.User;
+import model.UserHelper;
+import play.db.jpa.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class MyUserService extends AbstractUserService {
+public class FmPlayAuthUserService extends AbstractUserService {
+	private final UserHelper userHelper;
 
 	@Inject
-	public MyUserService(final PlayAuthenticate auth) {
+	public FmPlayAuthUserService(final PlayAuthenticate auth, UserHelper userHelper) {
 		super(auth);
+
+		this.userHelper = userHelper;
 	}
 
 	@Override
 	public Object save(final AuthUser authUser) {
-		final boolean isLinked = User.existsByAuthUserIdentity(authUser);
-//		if (!isLinked) {
-//			return User.create(authUser).id;
-//		} else {
-//			// we have this user already, so return null
-//			return null;
-//		}
+        GoogleAuthUser googleAuthUser = AuthUserConverter.toGoogleAuthUser(authUser);
+        if (googleAuthUser == null) {
+            return null;
+        }
 
-		return new User();
+        User user = User.createUser(googleAuthUser.getId(), googleAuthUser.getEmail());
+
+		if (!user.existsInDb()) {
+			user.save();
+			return user.getUserId();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
+    @Transactional
 	public Object getLocalIdentity(final AuthUserIdentity identity) {
 		// For production: Caching might be a good idea here...
 		// ...and dont forget to sync the cache when users get deactivated/deleted
-//		final User u = User.findByAuthUserIdentity(identity);
-//		if(u != null) {
-//			return u.id;
-//		} else {
-//			return null;
-//		}
 
-		return "new_id_" + Math.random();
+        final User user = userHelper.findById(identity.getId());
+        if(user != null) {
+			return user.getUserId();
+		} else {
+			return null;
+		}
 	}
 
 	@Override

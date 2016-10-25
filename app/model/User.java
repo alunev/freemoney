@@ -1,16 +1,19 @@
 package model;
 
 
-import com.feth.play.module.pa.user.AuthUser;
+import com.google.inject.Inject;
+import play.api.Play;
+import play.db.jpa.JPAApi;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users", schema = "RedisK@redis_pu")
 public class User {
+    private final JPAApi jpaApi;
+
+    private final UserHelper userHelper;
+
     @Id
     @Column(name = "user_id")
     private String userId;
@@ -18,8 +21,14 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Inject
+    public User(JPAApi api, UserHelper userHelper) {
+        this.jpaApi = api;
+        this.userHelper = userHelper;
+    }
+
     public static User copyOf(User user) {
-        User user1 = new User();
+        User user1 = new User(user.jpaApi, user.userHelper);
 
         user1.setUserId(user.getUserId());
         user1.setEmail(user.getEmail());
@@ -27,19 +36,14 @@ public class User {
         return user1;
     }
 
-    public static User createUser(String userId, String email) {
-        User user = new User();
-
-        user.userId = userId;
-        user.email = email;
-
-        return user;
+    public static User createUser(String userId) {
+        return createUser(userId, "");
     }
 
-    public static User createUserWithGeneratedId(String email) {
-        User user = new User();
+    public static User createUser(String userId, String email) {
+        User user = Play.current().injector().instanceOf(User.class);
 
-        user.userId = "";
+        user.userId = userId;
         user.email = email;
 
         return user;
@@ -61,7 +65,14 @@ public class User {
         this.email = email;
     }
 
-    public static boolean existsByAuthUserIdentity(AuthUser authUser) {
-        return false;
+    public void save() {
+        EntityManager em = jpaApi.em();
+
+        em.persist(this);
     }
+
+    public boolean existsInDb() {
+        return userHelper.findById(userId) != null;
+    }
+
 }

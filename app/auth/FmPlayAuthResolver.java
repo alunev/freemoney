@@ -1,18 +1,30 @@
 package auth;
 
+import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
+import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthUser;
+import com.feth.play.module.pa.user.AuthUser;
 import controllers.routes;
+import model.User;
 import play.mvc.Call;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import static play.mvc.Http.Context.Implicit.session;
 
 /**
  * Concrete Resolver implementation.
  */
 @Singleton
 public class FmPlayAuthResolver extends Resolver {
+
+    public FmPlayAuthResolver() {
+
+    }
+
     @Override
     public Call login() {
         // Your login page
@@ -21,9 +33,10 @@ public class FmPlayAuthResolver extends Resolver {
 
     @Override
     public Call afterAuth() {
-        // The user will be redirected to this page after authentication
-        // if no original URL was saved
-        return controllers.routes.HomeController.index();
+        play.api.mvc.Call index = controllers.routes.HomeController.index();
+
+
+        return index;
     }
 
     @Override
