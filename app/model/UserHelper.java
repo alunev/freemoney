@@ -3,8 +3,6 @@ package model;
 import com.google.inject.Inject;
 import play.db.jpa.JPAApi;
 
-import javax.persistence.EntityManager;
-
 
 public class UserHelper {
     private final JPAApi jpaApi;
@@ -15,9 +13,7 @@ public class UserHelper {
     }
 
     public User findById(String userId) {
-        EntityManager em = jpaApi.em();
-
-        return em.find(User.class, userId);
+        return jpaApi.withTransaction(em -> em.find(User.class, userId));
     }
 
 }
