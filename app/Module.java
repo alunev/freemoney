@@ -6,7 +6,7 @@ import com.google.inject.AbstractModule;
 
 import java.time.Clock;
 
-import model.UserHelper;
+import dao.UserDao;
 import services.ApplicationTimer;
 import services.AtomicCounter;
 import services.Counter;
@@ -34,7 +34,7 @@ public class Module extends AbstractModule {
         bind(Counter.class).to(AtomicCounter.class);
 
 
-        bind(UserHelper.class).asEagerSingleton();
+        bind(UserDao.class).asEagerSingleton();
 
         bind(Resolver.class).to(FmPlayAuthResolver.class);
         bind(FmPlayAuthUserService.class).asEagerSingleton();

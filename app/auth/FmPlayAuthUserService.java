@@ -5,26 +5,26 @@ import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthUser;
 import com.feth.play.module.pa.service.AbstractUserService;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
+import dao.UserDao;
 import model.User;
-import model.UserHelper;
-import play.db.jpa.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Optional;
 
 @Singleton
 public class FmPlayAuthUserService extends AbstractUserService {
-	private final UserHelper userHelper;
+	private final UserDao userDao;
 
 	@Inject
-	public FmPlayAuthUserService(final PlayAuthenticate auth, UserHelper userHelper) {
+	public FmPlayAuthUserService(final PlayAuthenticate auth, UserDao userDao) {
 		super(auth);
 
-		this.userHelper = userHelper;
+		this.userDao = userDao;
 	}
 
 	@Override
-	public Object save(final AuthUser authUser) {
+	public String save(final AuthUser authUser) {
         GoogleAuthUser googleAuthUser = AuthUserConverter.toGoogleAuthUser(authUser);
         if (googleAuthUser == null) {
             return null;
@@ -32,8 +32,8 @@ public class FmPlayAuthUserService extends AbstractUserService {
 
         User user = User.createUser(googleAuthUser.getId(), googleAuthUser.getEmail());
 
-		if (!user.existsInDb()) {
-			user.save();
+		if (!userDao.idExistsInDb(user.getUserId())) {
+			userDao.save(user);
 			return user.getUserId();
 		} else {
 			return null;
@@ -41,17 +41,13 @@ public class FmPlayAuthUserService extends AbstractUserService {
 	}
 
 	@Override
-    @Transactional
-	public Object getLocalIdentity(final AuthUserIdentity identity) {
+    public String getLocalIdentity(final AuthUserIdentity identity) {
 		// For production: Caching might be a good idea here...
 		// ...and dont forget to sync the cache when users get deactivated/deleted
 
-        final User user = userHelper.findById(identity.getId());
-        if(user != null) {
-			return user.getUserId();
-		} else {
-			return null;
-		}
+        final User user = userDao.findById(identity.getId());
+
+		return user != null ? user.getUserId() : null;
 	}
 
 	@Override

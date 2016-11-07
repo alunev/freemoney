@@ -1,18 +1,16 @@
 package model;
 
 
-import com.google.inject.Inject;
 import play.api.Play;
-import play.db.jpa.JPAApi;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "users", schema = "RedisK@redis_pu")
 public class User {
-    private final JPAApi jpaApi;
-
-    private final UserHelper userHelper;
 
     @Id
     @Column(name = "user_id")
@@ -21,14 +19,12 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Inject
-    public User(JPAApi api, UserHelper userHelper) {
-        this.jpaApi = api;
-        this.userHelper = userHelper;
+    public User() {
+        // required by jpa
     }
 
     public static User copyOf(User user) {
-        User user1 = new User(user.jpaApi, user.userHelper);
+        User user1 = new User();
 
         user1.setUserId(user.getUserId());
         user1.setEmail(user.getEmail());
@@ -63,16 +59,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void save() {
-        EntityManager em = jpaApi.em();
-
-        em.persist(this);
-    }
-
-    public boolean existsInDb() {
-        return userHelper.findById(userId) != null;
     }
 
 }

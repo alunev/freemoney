@@ -6,8 +6,11 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
 
     <persistence-unit name="redis_pu">
         <provider>com.impetus.kundera.KunderaPersistence</provider>
-        <jar-file>lib/model.jar</jar-file>
+        <jar-file>lib/model.jar</jar-file> <!-- this is to work in play dev mode- it screws classloader -->
+        <class>model.User</class>
         <properties>
+            <property name="kundera.annotations.scan.package" value="model"/>
+
             <!--<property name="kundera.nodes" value="192.168.99.100" />-->
             <property name="kundera.nodes" value="localhost" />
             <property name="kundera.port" value="6379" />
