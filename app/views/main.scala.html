@@ -4,7 +4,10 @@
 * two arguments, a `String` for the title of the page and an `Html`
 * object to insert into the body of the page.
 *@
-@(title: String, playAuth: com.feth.play.module.pa.PlayAuthenticate)(content: Html)
+@import com.feth.play.module.pa.PlayAuthenticate
+@import model.User
+
+@(title: String, playAuth: PlayAuthenticate, user: User)(content: Html)
 
 @import com.feth.play.module.pa.views.html._
 
@@ -73,7 +76,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         @currentAuth(playAuth) { auth =>
                             @if(auth != null) {
-                                <li><a href=""> Hello, @playAuth.getUser(session()).getId !!! </a></li>
+                                <li><a href=""> Hello, @user.getEmail !!! </a></li>
                                 <li><a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout">Log out</a></li>
                             } else {
                                 @forProviders(playAuth) { p =>

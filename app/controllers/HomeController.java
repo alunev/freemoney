@@ -1,10 +1,11 @@
 package controllers;
 
 import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.google.inject.Inject;
+import model.User;
 import play.mvc.*;
 
+import services.UserProvider;
 import views.html.*;
 
 /**
@@ -15,13 +16,16 @@ public class HomeController extends Controller {
 
     private final PlayAuthenticate auth;
 
+    private final UserProvider userProvider;
+
     @Inject
-    public HomeController(PlayAuthenticate auth) {
+    public HomeController(PlayAuthenticate auth, UserProvider userProvider) {
         this.auth = auth;
+        this.userProvider = userProvider;
     }
 
     public Result oAuthDenied(String provider, String errorMessage) {
-        return ok(logon_failed.render(auth, errorMessage));
+        return ok(logon_failed.render(auth, User.GUEST, errorMessage));
     }
 
     /**
@@ -31,7 +35,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(index.render(auth));
+        return ok(index.render(auth, userProvider.getUser(session())));
     }
 
 }

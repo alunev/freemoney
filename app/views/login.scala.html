@@ -1,8 +1,8 @@
 @import com.feth.play.module.pa.views.html._
 
-@(playAuth: com.feth.play.module.pa.PlayAuthenticate, failedMessage: String)
+@(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: model.User, failedMessage: String)
 
-@main("Login to Freemoney", playAuth) {
+@main("Login to Freemoney", playAuth, user) {
 
     <h2>@failedMessage</h2>
 

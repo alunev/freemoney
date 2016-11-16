@@ -4,13 +4,13 @@
 *@
 @import com.feth.play.module.pa.views.html._
 
-@(playAuth: com.feth.play.module.pa.PlayAuthenticate)
+@(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: model.User)
 @*
 * Call the `main` template with two arguments. The first
 * argument is a `String` with the title of the page, the second
 * argument is an `Html` object containing the body of the page.
 *@
-@main("Welcome to Freemoney", playAuth) {
+@main("Welcome to Freemoney", playAuth, user) {
 
 }
 
