@@ -21,7 +21,7 @@ import services.Counter;
  * adding `play.modules.enabled` settings to the `application.conf`
  * configuration file.
  */
-public class Module extends AbstractModule {
+public class WebModule extends AbstractModule {
 
     @Override
     public void configure() {
