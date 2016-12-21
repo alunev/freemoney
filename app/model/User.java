@@ -40,7 +40,7 @@ public class User {
     }
 
     public static User createUser(String userId, String email) {
-        User user = Play.current().injector().instanceOf(User.class);
+        User user = new User();
 
         user.userId = userId;
         user.email = email;
