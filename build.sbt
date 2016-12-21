@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.6"
 libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.6"
-libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.1-SNAPSHOT"
+libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.1"
 
 libraryDependencies += "org.mockito" % "mockito-core" % "1.9.5"
 

@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 import static org.fluentlenium.core.filter.FilterConstructor.*;
 
-public class IntegrationTest {
+public class AuthenticationSmokeTest {
 
     /**
      * add your integration test here
@@ -27,19 +27,18 @@ public class IntegrationTest {
     }
 
     @Test
-    @Ignore
-    public void testLoginWithGoogle() {
-        Map<String, String> config = Maps.newHashMap(inMemoryDatabase());
-        config.put("APP_SECRET", "dummy_secret");
-
+    public void loginWithGoogleGivesSomeError() {
         System.setProperty("APP_SECRET", "dummy_secret");
+        System.setProperty("GOOGLE_OAUTH_CLIENT_ID", "dummy_id");
+        System.setProperty("GOOGLE_OAUTH_SECRET", "dummy_secret");
 
-        Application app = fakeApplication(config);
+        Application app = fakeApplication();
 
         running(testServer(3333, app), HTMLUNIT, browser -> {
             browser.goTo("http://localhost:3333/authenticate/google");
 
-            assertTrue(browser.pageSource().contains("Your new application is ready."));
+            System.out.println(browser.pageSource());
+            assertTrue(browser.pageSource().contains("That’s an error."));
         });
     }
 
