@@ -1,16 +1,16 @@
 package controllers;
 
+import com.typesafe.config.ConfigFactory;
+import common.TestOverridesWebModule;
 import org.junit.Ignore;
 import org.junit.Test;
 import play.Application;
+import play.Configuration;
 import play.db.jpa.JPAApi;
-import play.mvc.*;
-import play.test.*;
+import play.inject.guice.GuiceApplicationBuilder;
+import play.test.WithApplication;
 
 import static org.mockito.Mockito.mock;
-import static play.test.Helpers.*;
-import static org.junit.Assert.*;
-import static org.junit.Assert.*;
 
 /**
  * Created by red on 24.09.16.
@@ -18,15 +18,13 @@ import static org.junit.Assert.*;
 public class UserControllerTest extends WithApplication {
     @Override
     protected Application provideApplication() {
-        System.setProperty("APP_SECRET", "dummy_secret");
-        System.setProperty("GOOGLE_OAUTH_CLIENT_ID", "dummy_id");
-        System.setProperty("GOOGLE_OAUTH_SECRET", "dummy_secret");
-
-        return fakeApplication();
+        return new GuiceApplicationBuilder()
+                .overrides(new TestOverridesWebModule())
+                .loadConfig(new Configuration(ConfigFactory.load("application.test.conf")))
+                .build();
     }
 
     @Test
-    @Ignore
     public void canPersist() throws Exception {
         new UserController(mock(JPAApi.class)).persist();
     }
