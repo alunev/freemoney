@@ -21,7 +21,10 @@ public class UserDao {
 
     @Transactional
     public void save(User user) {
-        jpaApi.<Void>withTransaction(em -> { em.persist(user); return null; });
+        jpaApi.<Void>withTransaction(em -> {
+            em.persist(user);
+            return null;
+        });
     }
 
     @Transactional

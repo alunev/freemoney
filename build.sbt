@@ -18,6 +18,7 @@ libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.6"
 libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.1"
 
 libraryDependencies += "org.mockito" % "mockito-core" % "1.9.5"
+libraryDependencies += "com.github.kstyrc" % "embedded-redis" % "0.6"
 
 resolvers += "Kundera" at "https://oss.sonatype.org/content/repositories/releases"
 resolvers += "Riptano" at "http://mvn.riptano.com/content/repositories/public"
