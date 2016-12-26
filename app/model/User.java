@@ -1,8 +1,6 @@
 package model;
 
 
-import play.api.Play;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

@@ -16,7 +16,9 @@ public class UserDao {
 
     @Transactional
     public User findById(String userId) {
-        return jpaApi.withTransaction(em -> em.find(User.class, userId));
+        return jpaApi.withTransaction(
+                em -> em.find(User.class, userId)
+        );
     }
 
     @Transactional
