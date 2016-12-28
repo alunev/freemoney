@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import model.User;
 import play.mvc.*;
 
-import services.UserProvider;
+import services.UserService;
 import views.html.*;
 
 /**
@@ -16,12 +16,12 @@ public class HomeController extends Controller {
 
     private final PlayAuthenticate auth;
 
-    private final UserProvider userProvider;
+    private final UserService userService;
 
     @Inject
-    public HomeController(PlayAuthenticate auth, UserProvider userProvider) {
+    public HomeController(PlayAuthenticate auth, UserService userService) {
         this.auth = auth;
-        this.userProvider = userProvider;
+        this.userService = userService;
     }
 
     public Result oAuthDenied(String provider, String errorMessage) {
@@ -35,7 +35,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(index.render(auth, userProvider.getUser(session())));
+        return ok(index.render(auth, userService.getUser(session())));
     }
 
 }

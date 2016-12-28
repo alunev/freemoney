@@ -11,14 +11,14 @@ import javax.inject.Inject;
 /**
  * Service layer for User DB entity
  */
-public class UserProvider {
+public class UserService {
 
     private final PlayAuthenticate auth;
 
     private final UserDao userDao;
 
     @Inject
-    public UserProvider(final PlayAuthenticate auth, UserDao userDao) {
+    public UserService(final PlayAuthenticate auth, UserDao userDao) {
         this.auth = auth;
         this.userDao = userDao;
     }
