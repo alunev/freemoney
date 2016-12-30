@@ -1,10 +1,11 @@
 package model;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.google.common.collect.Lists;
+
+import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +20,10 @@ public class User {
 
     @Column(name = "email")
     private String email;
+
+    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private List<Account> accounts;
 
     public User() {
         // required by jpa
@@ -38,10 +43,15 @@ public class User {
     }
 
     public static User createUser(String userId, String email) {
+        return createUser(userId, email, Collections.emptyList());
+    }
+
+    public static User createUser(String userId, String email, List<Account> accounts) {
         User user = new User();
 
         user.userId = userId;
         user.email = email;
+        user.accounts = Lists.newArrayList(accounts);
 
         return user;
     }
@@ -60,6 +70,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     @Override
