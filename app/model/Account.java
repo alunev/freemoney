@@ -20,17 +20,17 @@ public class Account {
     @Column(name = "number")
     private String number;
 
-//    @Column(name = "title")
-//    private String title;
-//
-//    @Column(name = "currency")
-//    private Currency currency;
-//
-//    @Column(name = "balance")
-//    private BigDecimal balance;
-//
-//    @Column(name = "pattern")
-//    private String inPattern;
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "currency")
+    private Currency currency;
+
+    @Column(name = "balance")
+    private BigDecimal balance;
+
+    @Column(name = "pattern")
+    private String inPattern;
 
     public Account() {
         
@@ -41,12 +41,36 @@ public class Account {
         
         account.id = id;
         account.number = number;
-//        account.title = title;
-//        account.currency = currency;
-//        account.balance = balance;
-//        account.inPattern = inPattern;
+        account.title = title;
+        account.currency = currency;
+        account.balance = balance;
+        account.inPattern = inPattern;
 
         return account;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public String getInPattern() {
+        return inPattern;
     }
 
     @Override
@@ -60,5 +84,24 @@ public class Account {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public boolean isSame(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Account account = (Account) o;
+
+        return Objects.equal(id, account.id) &&
+                Objects.equal(number, account.number) &&
+                Objects.equal(title, account.title) &&
+                Objects.equal(currency, account.currency) &&
+                Objects.equal(balance, account.balance) &&
+                Objects.equal(inPattern, account.inPattern);
     }
 }

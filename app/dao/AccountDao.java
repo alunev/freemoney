@@ -32,4 +32,12 @@ public class AccountDao {
             return null;
         });
     }
+
+    @Transactional
+    public void delete(Account account) {
+        jpaApi.<Void>withTransaction(em -> {
+            em.remove(account);
+            return null;
+        });
+    }
 }

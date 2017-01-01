@@ -9,8 +9,8 @@ import java.util.Currency;
  * @author red
  * @since 0.0.1
  */
-class ObjectsFactory {
-    static Account createDummyAccountWithId(String id) {
+public class ObjectsFactory {
+    public static Account createDummyAccountWithId(String id) {
         return Account.createAccount(
                 id,
                 "1111",

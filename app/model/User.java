@@ -4,9 +4,8 @@ package model;
 import com.google.common.collect.Lists;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users", schema = "RedisK@redis_pu")
@@ -21,8 +20,13 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+//    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "accounts_user_id")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_account_jt", schema = "RedisK",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "account_id")}
+    )
     private List<Account> accounts;
 
     public User() {
@@ -30,12 +34,7 @@ public class User {
     }
 
     public static User copyOf(User user) {
-        User user1 = new User();
-
-        user1.setUserId(user.getUserId());
-        user1.setEmail(user.getEmail());
-
-        return user1;
+        return createUser(user.getUserId(), user.getEmail(), user.getAccounts());
     }
 
     public static User createUser(String userId) {
@@ -60,24 +59,31 @@ public class User {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public List<Account> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    public Optional<Account> getAccountById(String id) {
+        if (accounts == null) {
+            return Optional.empty();
+        }
+
+        return accounts.stream().filter(account -> account.getId().equals(id)).findFirst();
+    }
+
+    public void addAccount(Account account) {
+        ArrayList<Account> accounts = Lists.newArrayList(this.accounts);
+        accounts.add(account);
+
         this.accounts = accounts;
+    }
+
+    public void removeAccountById(String id) {
+        this.accounts = this.accounts.stream().filter(account -> !account.getId().equals(id)).collect(Collectors.toList());
     }
 
     @Override

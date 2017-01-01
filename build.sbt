@@ -13,11 +13,12 @@ libraryDependencies ++= Seq(
   javaJpa
 )
 
-libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.6"
-libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.6"
+libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.7"
+libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.7"
 libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.1"
 
 libraryDependencies += "org.mockito" % "mockito-core" % "1.9.5"
+libraryDependencies += "org.hamcrest" % "hamcrest-all" % "1.3"
 libraryDependencies += "com.github.kstyrc" % "embedded-redis" % "0.6"
 
 resolvers += "Kundera" at "https://oss.sonatype.org/content/repositories/releases"
