@@ -20,13 +20,13 @@ public class User {
     @Column(name = "email")
     private String email;
 
-//    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "accounts_user_id")
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_account_jt", schema = "RedisK",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "account_id")}
-    )
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "accounts_user_id")
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinTable(name = "user_account_jt", schema = "RedisK",
+//            joinColumns = {@JoinColumn(name = "user_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "account_id")}
+//    )
     private List<Account> accounts;
 
     public User() {
