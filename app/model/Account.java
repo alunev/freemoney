@@ -2,6 +2,8 @@ package model;
 
 
 import com.google.common.base.Objects;
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,10 +14,14 @@ import java.util.Currency;
 
 @Entity
 @Table(name = "accounts", schema = "RedisK@redis_pu")
+@IndexCollection(columns={@Index(name="ownerId"),@Index(name="currency")})
 public class Account {
     @Id
     @Column(name = "account_id")
     private String id;
+
+    @Column(name = "ownerId")
+    private String ownerId;
 
     @Column(name = "number")
     private String number;
@@ -36,10 +42,11 @@ public class Account {
         
     }
 
-    public static Account createAccount(String id, String number, String title, Currency currency, BigDecimal balance, String inPattern) {
+    public static Account createAccount(String id, String ownerId, String number, String title, Currency currency, BigDecimal balance, String inPattern) {
         Account account = new Account();
         
         account.id = id;
+        account.ownerId = ownerId;
         account.number = number;
         account.title = title;
         account.currency = currency;

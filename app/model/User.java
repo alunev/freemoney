@@ -20,14 +20,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "accounts_user_id")
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinTable(name = "user_account_jt", schema = "RedisK",
-//            joinColumns = {@JoinColumn(name = "user_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "account_id")}
-//    )
-    private List<Account> accounts;
+    // relations persistence is handled manually
+    @Transient
+    private List<Account> accounts = new ArrayList<>();
 
     public User() {
         // required by jpa
@@ -67,6 +62,10 @@ public class User {
         return accounts;
     }
 
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
+    }
+
     public Optional<Account> getAccountById(String id) {
         if (accounts == null) {
             return Optional.empty();
@@ -80,6 +79,10 @@ public class User {
         accounts.add(account);
 
         this.accounts = accounts;
+    }
+
+    public void removeAccount(Account account) {
+        this.accounts.remove(account);
     }
 
     public void removeAccountById(String id) {

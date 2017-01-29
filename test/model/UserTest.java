@@ -43,7 +43,7 @@ public class UserTest {
 
         assertThat("found account ?", user.getAccounts(), hasItem(acc2));
 
-        user.removeAccountById("acc2");
+        user.removeAccount(acc2);
 
         assertThat("found account ?", user.getAccounts(), not(hasItem(acc2)));
 

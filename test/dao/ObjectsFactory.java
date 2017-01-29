@@ -13,6 +13,19 @@ public class ObjectsFactory {
     public static Account createDummyAccountWithId(String id) {
         return Account.createAccount(
                 id,
+                null,
+                "1111",
+                "test RUB account",
+                Currency.getInstance("RUB"),
+                BigDecimal.valueOf(50.0),
+                "from XXXX"
+        );
+    }
+
+    public static Account createDummyAccountWithIdAndOwnerId(String id, String ownerId) {
+        return Account.createAccount(
+                id,
+                ownerId,
                 "1111",
                 "test RUB account",
                 Currency.getInstance("RUB"),

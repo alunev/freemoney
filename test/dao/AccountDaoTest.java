@@ -4,6 +4,8 @@ import model.Account;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -42,4 +44,17 @@ public class AccountDaoTest extends RedisDaoTest {
         assertThat("found account", accountDao.findById("3"), is(account3));
     }
 
+    @Test
+    public void canFindByOwnerId() throws Exception {
+        accountDao.save(ObjectsFactory.createDummyAccountWithIdAndOwnerId("1", "firstUserId"));
+        accountDao.save(ObjectsFactory.createDummyAccountWithIdAndOwnerId("2", "firstUserId"));
+        accountDao.save(ObjectsFactory.createDummyAccountWithIdAndOwnerId("3", "firstUserId"));
+
+        accountDao.save(ObjectsFactory.createDummyAccountWithId("4"));
+        accountDao.save(ObjectsFactory.createDummyAccountWithId("5"));
+
+        List<Account> accounts = accountDao.findByOwnerId("firstUserId");
+
+        assertThat("found account", accounts.size(), is(3));
+    }
 }
