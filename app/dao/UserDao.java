@@ -62,7 +62,6 @@ public class UserDao {
         });
     }
 
-    @Transactional
     public boolean idExistsInDb(String userId) {
         return jpaApi.withTransaction(em -> em.find(User.class, userId)) != null;
     }
