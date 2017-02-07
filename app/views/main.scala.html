@@ -7,6 +7,9 @@
 @import com.feth.play.module.pa.PlayAuthenticate
 @import model.User
 
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.java.utils.TemplateUtils._
+
 @(title: String, playAuth: PlayAuthenticate, user: User)(content: Html)
 
 @import com.feth.play.module.pa.views.html._
@@ -65,11 +68,17 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Project name</a>
+                    <a class="navbar-brand" href="#">Free money</a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">Home</a></li>
+
+                        @subjectPresent() {
+                            <li><a href="#about">Accounts</a></li>
+                            <li><a href="#contact">Transactions</a></li>
+                        }
+
                         <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>

@@ -1,5 +1,8 @@
 import auth.FmPlayAuthResolver;
 import auth.FmPlayAuthUserService;
+import auth.deadbolt.FmPlayAuthCustomDeadboltHook;
+import auth.deadbolt.FmPlayAuthDeadboltHandler;
+import auth.deadbolt.FmPlayAuthHandlerCache;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
@@ -39,5 +42,8 @@ public class WebModule extends AbstractModule {
         bind(Resolver.class).to(FmPlayAuthResolver.class);
         bind(FmPlayAuthUserService.class).asEagerSingleton();
         bind(GoogleAuthProvider.class).asEagerSingleton();
+
+        bind(FmPlayAuthHandlerCache.class).asEagerSingleton();
+        bind(FmPlayAuthCustomDeadboltHook.class).asEagerSingleton();
     }
 }

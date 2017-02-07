@@ -1,6 +1,9 @@
 package model;
 
 
+import be.objectify.deadbolt.java.models.Permission;
+import be.objectify.deadbolt.java.models.Role;
+import be.objectify.deadbolt.java.models.Subject;
 import com.google.common.collect.Lists;
 
 import javax.persistence.*;
@@ -9,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users", schema = "RedisK@redis_pu")
-public class User {
+public class User implements Subject {
 
     public static final User GUEST = User.createUser("", "guest@guest.com");
 
@@ -103,5 +106,20 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(userId);
+    }
+
+    @Override
+    public List<? extends Role> getRoles() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<? extends Permission> getPermissions() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return userId;
     }
 }

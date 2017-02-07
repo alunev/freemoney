@@ -1,19 +1,11 @@
 package auth;
 
-import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
-import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthUser;
-import com.feth.play.module.pa.user.AuthUser;
-import controllers.routes;
-import model.User;
 import play.mvc.Call;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import static play.mvc.Http.Context.Implicit.session;
 
 /**
  * Concrete Resolver implementation.
