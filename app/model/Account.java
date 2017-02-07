@@ -42,7 +42,8 @@ public class Account {
         
     }
 
-    public static Account createAccount(String id, String ownerId, String number, String title, Currency currency, BigDecimal balance, String inPattern) {
+    public static Account createAccount(String id, String ownerId, String number, String title, Currency currency,
+                                        BigDecimal balance, String inPattern) {
         Account account = new Account();
         
         account.id = id;

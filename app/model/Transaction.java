@@ -4,6 +4,9 @@ package model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Entity
 @Table(name = "transactions", schema = "RedisK@redis_pu")
@@ -47,22 +50,26 @@ public class Transaction {
         // required by jpa
     }
 
-    private Transaction(String transactionId, String sourceId, String destId, Currency sourceCurrency, Currency destCurrency, BigDecimal sourceAmount, BigDecimal destAmount, String categoryId, Account sourceAccount, Account destAccount, TransactionCategory category) {
+    private Transaction(String transactionId, Currency sourceCurrency, Currency destCurrency, BigDecimal sourceAmount, BigDecimal destAmount, Account sourceAccount, Account destAccount, TransactionCategory category) {
+        checkNotNull(sourceAccount);
+        checkNotNull(destAccount);
+        checkNotNull(category);
+
         this.transactionId = transactionId;
-        this.sourceId = sourceId;
-        this.destId = destId;
+        this.sourceId = sourceAccount.getId();
+        this.destId = destAccount.getId();
         this.sourceCurrency = sourceCurrency;
         this.destCurrency = destCurrency;
         this.sourceAmount = sourceAmount;
         this.destAmount = destAmount;
-        this.categoryId = categoryId;
+        this.categoryId = category.getCategoryId();
         this.sourceAccount = sourceAccount;
         this.destAccount = destAccount;
         this.category = category;
     }
 
     public static Transaction createTransaction(String transactionId, String sourceId, String destId, Currency sourceCurrency, Currency destCurrency, BigDecimal sourceAmount, BigDecimal destAmount, String categoryId, Account sourceAccount, Account destAccount, TransactionCategory category) {
-        return new Transaction(transactionId, sourceId, destId, sourceCurrency, destCurrency, sourceAmount, destAmount, categoryId, sourceAccount, destAccount, category);
+        return new Transaction(transactionId, sourceCurrency, destCurrency, sourceAmount, destAmount, sourceAccount, destAccount, category);
     }
 
     public String getTransactionId() {
@@ -77,16 +84,8 @@ public class Transaction {
         return sourceId;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
-    }
-
     public String getDestId() {
         return destId;
-    }
-
-    public void setDestId(String destId) {
-        this.destId = destId;
     }
 
     public Currency getSourceCurrency() {
@@ -125,15 +124,12 @@ public class Transaction {
         return categoryId;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
-    }
-
     public Account getSourceAccount() {
         return sourceAccount;
     }
 
     public void setSourceAccount(Account sourceAccount) {
+        this.sourceId = sourceAccount.getId();
         this.sourceAccount = sourceAccount;
     }
 
@@ -142,6 +138,7 @@ public class Transaction {
     }
 
     public void setDestAccount(Account destAccount) {
+        this.destId = destAccount.getId();
         this.destAccount = destAccount;
     }
 
@@ -150,6 +147,20 @@ public class Transaction {
     }
 
     public void setCategory(TransactionCategory category) {
+        this.categoryId = category.getCategoryId();
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return Objects.equals(transactionId, that.transactionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(transactionId);
     }
 }
