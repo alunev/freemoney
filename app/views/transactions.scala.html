@@ -1,0 +1,78 @@
+@*
+* This template takes a single argument, a String containing a
+* message to display.
+*@
+@import com.feth.play.module.pa.views.html._
+
+@(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: model.User)
+@*
+* Call the `main` template with two arguments. The first
+* argument is a `String` with the title of the page, the second
+* argument is an `Html` object containing the body of the page.
+*@
+@main("Transactions", playAuth, user) {
+    <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Account 1<span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Account 2</a></li>
+            <li><a href="#">Account 3</a></li>
+            <li><a href="#">Account 4</a></li>
+        </ul>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Transactions</h1>
+
+        <h2 class="sub-header">All</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Time</th>
+                        <th>Direction</th>
+                        <th>Currency</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>SMS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>03-04-2016 17:04</td>
+                        <td>Acc1 -> Acc2</td>
+                        <td>RUB -> USD</td>
+                        <td>61.00 -> 1.01</td>
+                        <td>TCS transfer...</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>03-04-2016 17:04</td>
+                        <td>Acc1 -> Acc2</td>
+                        <td>RUB -> USD</td>
+                        <td>61.00 -> 1.01</td>
+                        <td>TCS transfer...</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>03-04-2016 17:04</td>
+                        <td>Acc1 -> Acc2</td>
+                        <td>RUB -> USD</td>
+                        <td>61.00 -> 1.01</td>
+                        <td>TCS transfer...</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>03-04-2016 17:04</td>
+                        <td>Acc1 -> Acc2</td>
+                        <td>RUB -> USD</td>
+                        <td>61.00 -> 1.01</td>
+                        <td>TCS transfer...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,16 @@
+@*
+* This template takes a single argument, a String containing a
+* message to display.
+*@
+@import com.feth.play.module.pa.views.html._
+
+@(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: model.User)
+@*
+* Call the `main` template with two arguments. The first
+* argument is a `String` with the title of the page, the second
+* argument is an `Html` object containing the body of the page.
+*@
+@main("Accounts", playAuth, user) {
+
+}
+
