@@ -3,6 +3,7 @@ import auth.FmPlayAuthUserService;
 import auth.deadbolt.FmPlayAuthCustomDeadboltHook;
 import auth.deadbolt.FmPlayAuthDeadboltHandler;
 import auth.deadbolt.FmPlayAuthHandlerCache;
+import be.objectify.deadbolt.java.DeadboltHandler;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
@@ -43,6 +44,7 @@ public class WebModule extends AbstractModule {
         bind(FmPlayAuthUserService.class).asEagerSingleton();
         bind(GoogleAuthProvider.class).asEagerSingleton();
 
+        bind(DeadboltHandler.class).to(FmPlayAuthDeadboltHandler.class);
         bind(FmPlayAuthHandlerCache.class).asEagerSingleton();
         bind(FmPlayAuthCustomDeadboltHook.class).asEagerSingleton();
     }

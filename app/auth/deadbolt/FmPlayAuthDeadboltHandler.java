@@ -6,6 +6,8 @@ import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.user.AuthUserIdentity;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import dao.UserDao;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -14,12 +16,16 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+@Singleton
 public class FmPlayAuthDeadboltHandler extends AbstractDeadboltHandler {
 
 	private final PlayAuthenticate auth;
 	private final UserDao userDao;
 
-	public FmPlayAuthDeadboltHandler(final PlayAuthenticate auth, final ExecutionContextProvider exContextProvider, UserDao userDao) {
+	@Inject
+	public FmPlayAuthDeadboltHandler(final PlayAuthenticate auth,
+									 final ExecutionContextProvider exContextProvider,
+									 final UserDao userDao) {
 		super(exContextProvider);
 		this.auth = auth;
 		this.userDao = userDao;

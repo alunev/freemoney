@@ -12,17 +12,11 @@ import javax.inject.Singleton;
 @Singleton
 public class FmPlayAuthHandlerCache implements HandlerCache {
 
-	private final DeadboltHandler defaultHandler;
-
-	private final PlayAuthenticate auth;
-
-	private final UserDao userDao;
+    private final DeadboltHandler defaultHandler;
 
 	@Inject
-	public FmPlayAuthHandlerCache(final PlayAuthenticate auth, final ExecutionContextProvider execContextProvider, UserDao userDao) {
-		this.auth = auth;
-		this.userDao = userDao;
-		this.defaultHandler = new FmPlayAuthDeadboltHandler(auth, execContextProvider, userDao);
+	public FmPlayAuthHandlerCache(final DeadboltHandler defaultHandler) {
+        this.defaultHandler = defaultHandler;
 	}
 
 	@Override
