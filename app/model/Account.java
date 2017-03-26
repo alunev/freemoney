@@ -1,6 +1,7 @@
 package model;
 
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
@@ -111,5 +112,18 @@ public class Account {
                 Objects.equal(currency, account.currency) &&
                 Objects.equal(balance, account.balance) &&
                 Objects.equal(inPattern, account.inPattern);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("ownerId", ownerId)
+                .add("number", number)
+                .add("title", title)
+                .add("currency", currency)
+                .add("balance", balance)
+                .add("inPattern", inPattern)
+                .toString();
     }
 }

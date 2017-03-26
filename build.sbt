@@ -13,8 +13,12 @@ libraryDependencies ++= Seq(
   javaJpa
 )
 
-libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.7"
-libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.7"
+dependencyOverrides += "org.javassist" % "javassist" % "3.20.0-GA"
+
+//libraryDependencies += "org.javassist" % "javassist" % "3.20.0-GA" force()
+libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.8"
+libraryDependencies += "com.impetus.kundera.core" % "kundera-core" % "3.8"
+libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.8"
 libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.1"
 libraryDependencies += "be.objectify" %% "deadbolt-java" % "2.5.0"
 
