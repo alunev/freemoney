@@ -14,7 +14,7 @@ import redis.embedded.RedisServer;
  * @since  0.0.1
  */
 public abstract class RedisDaoTest extends WithApplication {
-    private RedisServer redisServer;
+    private volatile RedisServer redisServer;
 
     @Override
     protected Application provideApplication() {
@@ -31,6 +31,8 @@ public abstract class RedisDaoTest extends WithApplication {
 
     @After
     public void tearDown() throws Exception {
-        redisServer.stop();
+        if (redisServer != null) {
+            redisServer.stop();
+        }
     }
 }

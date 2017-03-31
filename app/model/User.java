@@ -27,6 +27,9 @@ public class User implements Subject {
     @Transient
     private List<Account> accounts = new ArrayList<>();
 
+    @Transient
+    private List<Transaction> transactions = new ArrayList<>();
+
     public User() {
         // required by jpa
     }
@@ -78,10 +81,8 @@ public class User implements Subject {
     }
 
     public void addAccount(Account account) {
-        ArrayList<Account> accounts = Lists.newArrayList(this.accounts);
-        accounts.add(account);
-
-        this.accounts = accounts;
+        this.accounts = Lists.newArrayList(this.accounts);
+        this.accounts.add(account);
     }
 
     public void removeAccount(Account account) {
@@ -89,7 +90,20 @@ public class User implements Subject {
     }
 
     public void removeAccountById(String id) {
-        this.accounts = this.accounts.stream().filter(account -> !account.getId().equals(id)).collect(Collectors.toList());
+        this.accounts = this.accounts.stream().filter(
+                account -> !account.getId().equals(id)
+        ).collect(Collectors.toList());
+    }
+
+    public void addTransaction(Transaction transaction) {
+        this.transactions = Lists.newArrayList(this.transactions);
+        this.transactions.add(transaction);
+    }
+
+    public void removeTransaction(Transaction transaction) {
+        this.transactions = this.transactions.stream().filter(
+                tx -> !tx.getTransactionId().equals(transaction.getTransactionId())
+        ).collect(Collectors.toList());
     }
 
     @Override
