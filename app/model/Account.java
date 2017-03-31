@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
+import dao.RedisNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,27 @@ import java.util.Currency;
 @Table(name = "accounts", schema = "RedisK@redis_pu")
 @IndexCollection(columns={@Index(name="ownerId"),@Index(name="currency")})
 public class Account {
+
+    public static final Account INCOME_ACCOUNT = createAccount(
+            "e64fd32d-b979-44e6-951a-7eb596df229c",
+            RedisNull.NULL,
+            RedisNull.NULL,
+            RedisNull.NULL,
+            Currency.getInstance("USD"),
+            BigDecimal.ZERO,
+            RedisNull.NULL
+    );
+
+    public static final Account EXPENSE_ACCOUNT = createAccount(
+            "644214a5-43da-4470-8cf6-3f303687e45c",
+            RedisNull.NULL,
+            RedisNull.NULL,
+            RedisNull.NULL,
+            Currency.getInstance("USD"),
+            BigDecimal.ZERO,
+            RedisNull.NULL
+    );
+
     @Id
     @Column(name = "account_id")
     private String id;

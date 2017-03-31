@@ -3,6 +3,7 @@ package dao;
 import model.Account;
 import model.Transaction;
 import model.TransactionCategory;
+import model.TransactionType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,15 +42,10 @@ public class TransactionDaoTest extends RedisDaoTest {
 
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
 
-        transactionDao.save(Transaction.createTransaction(
+        transactionDao.save(Transaction.createTransfer(
                 "1",
-                "acc1",
-                "acc2",
-                Currency.getInstance("RUB"),
-                Currency.getInstance("USD"),
                 BigDecimal.ONE,
                 BigDecimal.valueOf(60.0),
-                "cat1",
                 srcAcc,
                 destAcc,
                 category
@@ -58,9 +54,10 @@ public class TransactionDaoTest extends RedisDaoTest {
         Transaction tx = transactionDao.findById("1");
 
         assertThat("found tx", tx, is(not(nullValue())));
+        assertThat("tx type", tx.getTransactionType(), is(TransactionType.TRANSFER));
         assertThat("tx src", tx.getSourceAccount(), is(srcAcc));
-        assertThat("tx src", tx.getDestAccount(), is(destAcc));
-        assertThat("tx src", tx.getCategory(), is(category));
+        assertThat("tx dest", tx.getDestAccount(), is(destAcc));
+        assertThat("tx category", tx.getCategory(), is(category));
     }
 
     @Test
@@ -72,26 +69,33 @@ public class TransactionDaoTest extends RedisDaoTest {
 
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
 
-        transactionDao.save(Transaction.createTransaction(
+        transactionDao.save(Transaction.createTransfer(
                 "1",
-                "acc1",
-                "acc2",
-                Currency.getInstance("RUB"),
-                Currency.getInstance("USD"),
                 BigDecimal.ONE,
                 BigDecimal.valueOf(60.0),
-                "cat1",
                 srcAcc,
                 destAcc,
                 category
         ));
 
-        Transaction tx = transactionDao.findById("1");
-        assertThat("found tx", tx, is(not(nullValue())));
+        transactionDao.save(Transaction.createExpense(
+                "2",
+                BigDecimal.ONE,
+                srcAcc,
+                category
+        ));
 
-        transactionDao.delete(tx);
+        Transaction tx1 = transactionDao.findById("1");
+        assertThat("found tx1", tx1, is(not(nullValue())));
+        assertThat("tx1 type", tx1.getTransactionType(), is(TransactionType.TRANSFER));
 
-        assertThat("found tx", transactionDao.findById("1"), is(nullValue()));
+        Transaction tx2 = transactionDao.findById("2");
+        assertThat("found tx2", tx2, is(not(nullValue())));
+        assertThat("tx2 type", tx2.getTransactionType(), is(TransactionType.EXPENSE));
+
+        transactionDao.delete(tx1);
+
+        assertThat("found tx1", transactionDao.findById("1"), is(nullValue()));
         assertThat("found src account", accountDao.findById("rub001"), is(nullValue()));
         assertThat("found dest account", accountDao.findById("usd002"), is(nullValue()));
     }

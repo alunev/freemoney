@@ -1,9 +1,12 @@
 package model;
 
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -16,17 +19,14 @@ public class Transaction {
     @Column(name = "transaction_id")
     private String transactionId;
 
+    @Column(name = "type")
+    private TransactionType transactionType;
+
     @Column(name = "source_id")
     private String sourceId;
 
     @Column(name = "dest_id")
     private String destId;
-
-    @Column(name = "source_currency")
-    private Currency sourceCurrency;
-
-    @Column(name = "dest_currency")
-    private Currency destCurrency;
 
     @Column(name = "sourceAmount")
     private BigDecimal sourceAmount;
@@ -50,16 +50,23 @@ public class Transaction {
         // required by jpa
     }
 
-    private Transaction(String transactionId, Currency sourceCurrency, Currency destCurrency, BigDecimal sourceAmount, BigDecimal destAmount, Account sourceAccount, Account destAccount, TransactionCategory category) {
+    private Transaction(String transactionId,
+                        TransactionType transactionType,
+                        BigDecimal sourceAmount,
+                        BigDecimal destAmount,
+                        Account sourceAccount,
+                        Account destAccount,
+                        TransactionCategory category) {
+        checkNotNull(transactionId);
+        checkNotNull(transactionType);
         checkNotNull(sourceAccount);
         checkNotNull(destAccount);
         checkNotNull(category);
 
         this.transactionId = transactionId;
+        this.transactionType = transactionType;
         this.sourceId = sourceAccount.getId();
         this.destId = destAccount.getId();
-        this.sourceCurrency = sourceCurrency;
-        this.destCurrency = destCurrency;
         this.sourceAmount = sourceAmount;
         this.destAmount = destAmount;
         this.categoryId = category.getCategoryId();
@@ -68,9 +75,29 @@ public class Transaction {
         this.category = category;
     }
 
-    public static Transaction createTransaction(String transactionId, String sourceId, String destId, Currency sourceCurrency, Currency destCurrency, BigDecimal sourceAmount, BigDecimal destAmount, String categoryId, Account sourceAccount, Account destAccount, TransactionCategory category) {
-        return new Transaction(transactionId, sourceCurrency, destCurrency, sourceAmount, destAmount, sourceAccount, destAccount, category);
+    public static Transaction createTransfer(String transactionId,
+                                             BigDecimal sourceAmount,
+                                             BigDecimal destAmount,
+                                             Account sourceAccount,
+                                             Account destAccount,
+                                             TransactionCategory category) {
+        return new Transaction(transactionId, TransactionType.TRANSFER, sourceAmount, destAmount, sourceAccount, destAccount, category);
     }
+
+    public static Transaction createExpense(String transactionId,
+                                            BigDecimal amount,
+                                            Account account,
+                                            TransactionCategory category) {
+        return new Transaction(transactionId, TransactionType.EXPENSE, amount, BigDecimal.ZERO, account, Account.EXPENSE_ACCOUNT, category);
+    }
+
+    public static Transaction createIncome(String transactionId,
+                                           BigDecimal amount,
+                                           Account account,
+                                           TransactionCategory category) {
+        return new Transaction(transactionId, TransactionType.INCOME, amount, BigDecimal.ZERO, account, Account.INCOME_ACCOUNT, category);
+    }
+
 
     public String getTransactionId() {
         return transactionId;
@@ -80,28 +107,20 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
+
     public String getSourceId() {
         return sourceId;
     }
 
     public String getDestId() {
         return destId;
-    }
-
-    public Currency getSourceCurrency() {
-        return sourceCurrency;
-    }
-
-    public void setSourceCurrency(Currency sourceCurrency) {
-        this.sourceCurrency = sourceCurrency;
-    }
-
-    public Currency getDestCurrency() {
-        return destCurrency;
-    }
-
-    public void setDestCurrency(Currency destCurrency) {
-        this.destCurrency = destCurrency;
     }
 
     public BigDecimal getSourceAmount() {
