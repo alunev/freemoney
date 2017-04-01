@@ -35,7 +35,13 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(index.render(auth, userService.getUser(session())));
+        User user = userService.getUser(session());
+
+        if (user != null) {
+            return ok(index.render(auth, user));
+        } else {
+            return redirect(com.feth.play.module.pa.controllers.routes.Authenticate.logout());
+        }
     }
 
 }
