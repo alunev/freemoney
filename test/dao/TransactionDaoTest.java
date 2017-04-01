@@ -4,6 +4,8 @@ import model.Account;
 import model.Transaction;
 import model.TransactionCategory;
 import model.TransactionType;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +50,8 @@ public class TransactionDaoTest extends RedisDaoTest {
                 BigDecimal.valueOf(60.0),
                 srcAcc,
                 destAcc,
-                category
+                category,
+                DateTime.now(DateTimeZone.UTC)
         ));
 
         Transaction tx = transactionDao.findById("1");
@@ -75,14 +78,16 @@ public class TransactionDaoTest extends RedisDaoTest {
                 BigDecimal.valueOf(60.0),
                 srcAcc,
                 destAcc,
-                category
+                category,
+                DateTime.now(DateTimeZone.UTC)
         ));
 
         transactionDao.save(Transaction.createExpense(
                 "2",
                 BigDecimal.ONE,
                 srcAcc,
-                category
+                category,
+                DateTime.now(DateTimeZone.UTC)
         ));
 
         Transaction tx1 = transactionDao.findById("1");

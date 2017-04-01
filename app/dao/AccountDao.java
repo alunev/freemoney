@@ -34,7 +34,7 @@ public class AccountDao {
         return jpaApi.withTransaction(
                 em -> {
                     Query query = em.createQuery(String.format(
-                            "Select a from Account a where a.ownerId = %s", userId
+                            "Select a from Account a where a.ownerId = '%s'", userId
                     ));
 
                     return query.getResultList();

@@ -1,6 +1,8 @@
 package model;
 
 
+import org.joda.time.DateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -37,6 +39,9 @@ public class Transaction {
     @Column(name = "categoryId")
     private String categoryId;
 
+    @Column(name = "added_date")
+    private DateTime addedTime;
+
     @Transient
     private Account sourceAccount;
 
@@ -56,7 +61,8 @@ public class Transaction {
                         BigDecimal destAmount,
                         Account sourceAccount,
                         Account destAccount,
-                        TransactionCategory category) {
+                        TransactionCategory category,
+                        DateTime addedTime) {
         checkNotNull(transactionId);
         checkNotNull(transactionType);
         checkNotNull(sourceAccount);
@@ -73,6 +79,7 @@ public class Transaction {
         this.sourceAccount = sourceAccount;
         this.destAccount = destAccount;
         this.category = category;
+        this.addedTime = addedTime;
     }
 
     public static Transaction createTransfer(String transactionId,
@@ -80,22 +87,25 @@ public class Transaction {
                                              BigDecimal destAmount,
                                              Account sourceAccount,
                                              Account destAccount,
-                                             TransactionCategory category) {
-        return new Transaction(transactionId, TransactionType.TRANSFER, sourceAmount, destAmount, sourceAccount, destAccount, category);
+                                             TransactionCategory category,
+                                             DateTime addedTime) {
+        return new Transaction(transactionId, TransactionType.TRANSFER, sourceAmount, destAmount, sourceAccount, destAccount, category, addedTime);
     }
 
     public static Transaction createExpense(String transactionId,
                                             BigDecimal amount,
                                             Account account,
-                                            TransactionCategory category) {
-        return new Transaction(transactionId, TransactionType.EXPENSE, amount, BigDecimal.ZERO, account, Account.EXPENSE_ACCOUNT, category);
+                                            TransactionCategory category,
+                                            DateTime addedTime) {
+        return new Transaction(transactionId, TransactionType.EXPENSE, amount, BigDecimal.ZERO, account, Account.EXPENSE_ACCOUNT, category, addedTime);
     }
 
     public static Transaction createIncome(String transactionId,
                                            BigDecimal amount,
                                            Account account,
-                                           TransactionCategory category) {
-        return new Transaction(transactionId, TransactionType.INCOME, amount, BigDecimal.ZERO, account, Account.INCOME_ACCOUNT, category);
+                                           TransactionCategory category,
+                                           DateTime addedTime) {
+        return new Transaction(transactionId, TransactionType.INCOME, amount, BigDecimal.ZERO, account, Account.INCOME_ACCOUNT, category, addedTime);
     }
 
 
@@ -141,6 +151,10 @@ public class Transaction {
 
     public String getCategoryId() {
         return categoryId;
+    }
+
+    public DateTime getAddedTime() {
+        return addedTime;
     }
 
     public Account getSourceAccount() {
