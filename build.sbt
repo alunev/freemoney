@@ -13,9 +13,9 @@ libraryDependencies ++= Seq(
   javaJpa
 )
 
-dependencyOverrides += "org.javassist" % "javassist" % "3.20.0-GA"
+dependencyOverrides += "org.javassist" % "javassist" % "3.20.0-GA" force()
 
-//libraryDependencies += "org.javassist" % "javassist" % "3.20.0-GA" force()
+libraryDependencies += "org.javassist" % "javassist" % "3.20.0-GA" force()
 libraryDependencies += "com.impetus.kundera.client" % "kundera-redis" % "3.8"
 libraryDependencies += "com.impetus.kundera.core" % "kundera-core" % "3.8"
 libraryDependencies += "com.impetus.kundera.core" % "fallback-impl" % "3.8"

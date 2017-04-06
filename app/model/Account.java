@@ -62,13 +62,13 @@ public class Account {
     private String inPattern;
 
     public Account() {
-        
+
     }
 
     public static Account createAccount(String id, String ownerId, String number, String title, Currency currency,
                                         BigDecimal balance, String inPattern) {
         Account account = new Account();
-        
+
         account.id = id;
         account.ownerId = ownerId;
         account.number = number;
@@ -128,12 +128,7 @@ public class Account {
 
         Account account = (Account) o;
 
-        return Objects.equal(id, account.id) &&
-                Objects.equal(number, account.number) &&
-                Objects.equal(title, account.title) &&
-                Objects.equal(currency, account.currency) &&
-                Objects.equal(balance, account.balance) &&
-                Objects.equal(inPattern, account.inPattern);
+        return Objects.equal(id, account.id);
     }
 
     @Override
