@@ -42,6 +42,9 @@ public class Transaction {
     @Column(name = "added_date")
     private DateTime addedTime;
 
+    @Column(name = "ownerId")
+    private String ownerId;
+
     @Transient
     private Account sourceAccount;
 
@@ -182,6 +185,18 @@ public class Transaction {
     public void setCategory(TransactionCategory category) {
         this.categoryId = category.getCategoryId();
         this.category = category;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public boolean isTransfer() {
+        return transactionType == TransactionType.TRANSFER;
     }
 
     @Override

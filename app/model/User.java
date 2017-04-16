@@ -106,6 +106,14 @@ public class User implements Subject {
         ).collect(Collectors.toList());
     }
 
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

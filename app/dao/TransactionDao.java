@@ -1,8 +1,13 @@
 package dao;
 
 import com.google.inject.Inject;
+import model.Account;
 import model.Transaction;
 import play.db.jpa.JPAApi;
+import play.db.jpa.Transactional;
+
+import javax.persistence.Query;
+import java.util.List;
 
 
 public class TransactionDao {
@@ -30,6 +35,19 @@ public class TransactionDao {
                     }
 
                     return transaction;
+                }
+        );
+    }
+
+    @Transactional
+    public List<Transaction> findByOwnerId(String userId) {
+        return jpaApi.withTransaction(
+                em -> {
+                    Query query = em.createQuery(String.format(
+                            "Select t from Transaction t where t.ownerId = '%s'", userId
+                    ));
+
+                    return query.getResultList();
                 }
         );
     }

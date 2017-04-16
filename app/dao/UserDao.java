@@ -4,9 +4,7 @@ import com.google.inject.Inject;
 import model.Account;
 import model.User;
 import play.db.jpa.JPAApi;
-import play.db.jpa.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 
@@ -15,10 +13,13 @@ public class UserDao {
 
     private final AccountDao accountDao;
 
+    private final TransactionDao transactionDao;
+
     @Inject
-    public UserDao(JPAApi jpaApi, AccountDao accountDao) {
+    public UserDao(JPAApi jpaApi, AccountDao accountDao, TransactionDao transactionDao) {
         this.jpaApi = jpaApi;
         this.accountDao = accountDao;
+        this.transactionDao = transactionDao;
     }
 
     public User findById(String userId) {
@@ -28,6 +29,7 @@ public class UserDao {
 
                     if (user != null) {
                         user.setAccounts(accountDao.findByOwnerId(userId));
+                        user.setTransactions(transactionDao.findByOwnerId(userId));
                     }
 
                     return user;

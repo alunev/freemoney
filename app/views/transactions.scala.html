@@ -3,6 +3,8 @@
 * message to display.
 *@
 @import com.feth.play.module.pa.views.html._
+@import model.Transaction
+@import model.TransactionType
 
 @(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: model.User)
 @*
@@ -37,38 +39,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>03-04-2016 17:04</td>
-                        <td>Acc1 -> Acc2</td>
-                        <td>RUB -> USD</td>
-                        <td>61.00 -> 1.01</td>
-                        <td>TCS transfer...</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>03-04-2016 17:04</td>
-                        <td>Acc1 -> Acc2</td>
-                        <td>RUB -> USD</td>
-                        <td>61.00 -> 1.01</td>
-                        <td>TCS transfer...</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>03-04-2016 17:04</td>
-                        <td>Acc1 -> Acc2</td>
-                        <td>RUB -> USD</td>
-                        <td>61.00 -> 1.01</td>
-                        <td>TCS transfer...</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>03-04-2016 17:04</td>
-                        <td>Acc1 -> Acc2</td>
-                        <td>RUB -> USD</td>
-                        <td>61.00 -> 1.01</td>
-                        <td>TCS transfer...</td>
-                    </tr>
+                    @for(tx <- user.getTransactions) {
+                        <tr>
+                            <td>@tx.getTransactionId</td>
+                            <td>@tx.getAddedTime</td>
+                            <td>@tx.getTransactionType</td>
+                            <td>@tx.getCategory</td>
+                            @if(tx.getTransactionType == TransactionType.TRANSFER) {
+                            <td>@tx.getSourceAccount - @tx.getDestAccount</td>
+                            <td>@tx.getSourceAccount.getCurrency -> @tx.getDestAccount.getCurrency</td>
+                            <td>@tx.getSourceAmount -> @tx.getDestAmount</td>
+                            } else {
+                            <td>@tx.getSourceAccount</td>
+                            <td>@tx.getSourceAmount</td>
+                            <td>@tx.getSourceAccount.getCurrency</td>
+                            }
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
