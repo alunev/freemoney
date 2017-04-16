@@ -1,6 +1,8 @@
 package model;
 
 
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
 import org.joda.time.DateTime;
 
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @Entity
 @Table(name = "transactions", schema = "RedisK@redis_pu")
+@IndexCollection(columns={@Index(name="ownerId")})
 public class Transaction {
 
     @Id
@@ -58,7 +61,8 @@ public class Transaction {
         // required by jpa
     }
 
-    private Transaction(String transactionId,
+    private Transaction(String ownerId,
+                        String transactionId,
                         TransactionType transactionType,
                         BigDecimal sourceAmount,
                         BigDecimal destAmount,
@@ -66,12 +70,14 @@ public class Transaction {
                         Account destAccount,
                         TransactionCategory category,
                         DateTime addedTime) {
+        checkNotNull(ownerId);
         checkNotNull(transactionId);
         checkNotNull(transactionType);
         checkNotNull(sourceAccount);
         checkNotNull(destAccount);
         checkNotNull(category);
 
+        this.ownerId = ownerId;
         this.transactionId = transactionId;
         this.transactionType = transactionType;
         this.sourceId = sourceAccount.getId();
@@ -85,30 +91,33 @@ public class Transaction {
         this.addedTime = addedTime;
     }
 
-    public static Transaction createTransfer(String transactionId,
+    public static Transaction createTransfer(String ownerId,
+                                             String transactionId,
                                              BigDecimal sourceAmount,
                                              BigDecimal destAmount,
                                              Account sourceAccount,
                                              Account destAccount,
                                              TransactionCategory category,
                                              DateTime addedTime) {
-        return new Transaction(transactionId, TransactionType.TRANSFER, sourceAmount, destAmount, sourceAccount, destAccount, category, addedTime);
+        return new Transaction(ownerId, transactionId, TransactionType.TRANSFER, sourceAmount, destAmount, sourceAccount, destAccount, category, addedTime);
     }
 
-    public static Transaction createExpense(String transactionId,
+    public static Transaction createExpense(String ownerId,
+                                            String transactionId,
                                             BigDecimal amount,
                                             Account account,
                                             TransactionCategory category,
                                             DateTime addedTime) {
-        return new Transaction(transactionId, TransactionType.EXPENSE, amount, BigDecimal.ZERO, account, Account.EXPENSE_ACCOUNT, category, addedTime);
+        return new Transaction(ownerId, transactionId, TransactionType.EXPENSE, amount, BigDecimal.ZERO, account, Account.EXPENSE_ACCOUNT, category, addedTime);
     }
 
-    public static Transaction createIncome(String transactionId,
+    public static Transaction createIncome(String ownerId,
+                                           String transactionId,
                                            BigDecimal amount,
                                            Account account,
                                            TransactionCategory category,
                                            DateTime addedTime) {
-        return new Transaction(transactionId, TransactionType.INCOME, amount, BigDecimal.ZERO, account, Account.INCOME_ACCOUNT, category, addedTime);
+        return new Transaction(ownerId, transactionId, TransactionType.INCOME, amount, BigDecimal.ZERO, account, Account.INCOME_ACCOUNT, category, addedTime);
     }
 
 

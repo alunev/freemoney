@@ -2,6 +2,7 @@ package dao;
 
 import com.google.inject.Inject;
 import model.Account;
+import model.Transaction;
 import model.User;
 import play.db.jpa.JPAApi;
 
@@ -40,18 +41,36 @@ public class UserDao {
     public void save(User user) {
         jpaApi.<Void>withTransaction(em -> {
             em.persist(user);
-            List<Account> newAccounts = user.getAccounts();
-            List<Account> oldAccounts = accountDao.findByOwnerId(user.getUserId());
 
-            // save existing accounts
-            accountDao.saveAll(newAccounts);
-
-            // delete old but deleted accounts
-            oldAccounts.removeAll(newAccounts);
-            accountDao.deleteAll(oldAccounts);
+            updateAccounts(user);
+            updateTransactions(user);
 
             return null;
         });
+    }
+
+    private void updateAccounts(User user) {
+        List<Account> newAccounts = user.getAccounts();
+        List<Account> oldAccounts = accountDao.findByOwnerId(user.getUserId());
+
+        // save existing accounts
+        accountDao.saveAll(newAccounts);
+
+        // delete old but deleted accounts
+        oldAccounts.removeAll(newAccounts);
+        accountDao.deleteAll(oldAccounts);
+    }
+
+    private void updateTransactions(User user) {
+        List<Transaction> newTransactions = user.getTransactions();
+        List<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getUserId());
+
+        // save existing accounts
+        transactionDao.saveAll(newTransactions);
+
+        // delete old but deleted accounts
+        oldTransactions.removeAll(newTransactions);
+        transactionDao.deleteAll(oldTransactions);
     }
 
     public void delete(User user) {

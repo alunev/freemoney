@@ -25,14 +25,14 @@ public abstract class RedisDaoTest extends WithApplication {
 
     @Before
     public void setUp() throws Exception {
-        redisServer = new RedisServer(6379);
-        redisServer.start();
+//        redisServer = new RedisServer(6379);
+//        redisServer.start();
     }
 
     @After
     public void tearDown() throws Exception {
-        if (redisServer != null) {
-            redisServer.stop();
-        }
+//        if (redisServer != null) {
+//            redisServer.stop();
+//        }
     }
 }

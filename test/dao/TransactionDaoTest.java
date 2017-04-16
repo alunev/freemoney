@@ -45,6 +45,7 @@ public class TransactionDaoTest extends RedisDaoTest {
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
 
         transactionDao.save(Transaction.createTransfer(
+                "test_owner",
                 "1",
                 BigDecimal.ONE,
                 BigDecimal.valueOf(60.0),
@@ -73,6 +74,7 @@ public class TransactionDaoTest extends RedisDaoTest {
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
 
         transactionDao.save(Transaction.createTransfer(
+                "test_owner",
                 "1",
                 BigDecimal.ONE,
                 BigDecimal.valueOf(60.0),
@@ -83,6 +85,7 @@ public class TransactionDaoTest extends RedisDaoTest {
         ));
 
         transactionDao.save(Transaction.createExpense(
+                "test_owner",
                 "2",
                 BigDecimal.ONE,
                 srcAcc,

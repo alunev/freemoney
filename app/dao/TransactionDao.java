@@ -1,7 +1,6 @@
 package dao;
 
 import com.google.inject.Inject;
-import model.Account;
 import model.Transaction;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
@@ -43,6 +42,7 @@ public class TransactionDao {
     public List<Transaction> findByOwnerId(String userId) {
         return jpaApi.withTransaction(
                 em -> {
+//                    TODO: update account fields after reading
                     Query query = em.createQuery(String.format(
                             "Select t from Transaction t where t.ownerId = '%s'", userId
                     ));
@@ -71,6 +71,30 @@ public class TransactionDao {
             accountDao.delete(transaction.getSourceAccount());
             accountDao.delete(transaction.getDestAccount());
             categoryDao.delete(transaction.getCategory());
+
+            return null;
+        });
+    }
+
+    public void saveAll(List<Transaction> transactions) {
+        jpaApi.<Void>withTransaction(em -> {
+            for (Transaction tx : transactions) {
+                em.persist(tx);
+            }
+
+            return null;
+        });
+    }
+
+    public void deleteAll(List<Transaction> transactions) {
+        if (transactions.isEmpty()) {
+            return;
+        }
+
+        jpaApi.<Void>withTransaction(em -> {
+            for (Transaction tx : transactions) {
+                em.remove(tx);
+            }
 
             return null;
         });
