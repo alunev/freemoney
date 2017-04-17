@@ -1,6 +1,8 @@
 package model;
 
 
+import com.google.common.base.MoreObjects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -58,5 +60,14 @@ public class TransactionCategory {
     @Override
     public int hashCode() {
         return Objects.hash(categoryId);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("categoryId", categoryId)
+                .add("name", name)
+                .add("description", description)
+                .toString();
     }
 }

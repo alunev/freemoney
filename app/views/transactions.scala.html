@@ -31,10 +31,11 @@
                     <tr>
                         <th>ID</th>
                         <th>Time</th>
+                        <th>Type</th>
+                        <th>Category</th>
                         <th>Direction</th>
                         <th>Currency</th>
                         <th>Amount</th>
-                        <th>Category</th>
                         <th>SMS</th>
                     </tr>
                 </thead>
@@ -44,16 +45,18 @@
                             <td>@tx.getTransactionId</td>
                             <td>@tx.getAddedTime</td>
                             <td>@tx.getTransactionType</td>
-                            <td>@tx.getCategory</td>
+                            <td>@tx.getCategory.getName</td>
                             @if(tx.getTransactionType == TransactionType.TRANSFER) {
-                            <td>@tx.getSourceAccount - @tx.getDestAccount</td>
+                            <td>@tx.getSourceAccount.getTitle - @tx.getDestAccount.getTitle</td>
                             <td>@tx.getSourceAccount.getCurrency -> @tx.getDestAccount.getCurrency</td>
                             <td>@tx.getSourceAmount -> @tx.getDestAmount</td>
                             } else {
-                            <td>@tx.getSourceAccount</td>
+                            <td>@tx.getSourceAccount.getTitle</td>
                             <td>@tx.getSourceAmount</td>
                             <td>@tx.getSourceAccount.getCurrency</td>
                             }
+                            <td></td>
+
                         </tr>
                     }
                 </tbody>

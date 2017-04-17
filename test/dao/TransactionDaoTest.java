@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -62,6 +63,49 @@ public class TransactionDaoTest extends RedisDaoTest {
         assertThat("tx src", tx.getSourceAccount(), is(srcAcc));
         assertThat("tx dest", tx.getDestAccount(), is(destAcc));
         assertThat("tx category", tx.getCategory(), is(category));
+    }
+
+    @Test
+    public void canSaveAndFindByOwnerId() throws Exception {
+        Account srcAcc = Account.createAccount("rub001", "user001", "XXX001", "run acc", Currency.getInstance("RUB"),
+                BigDecimal.valueOf(12.0), "*XXX001*");
+        Account destAcc = Account.createAccount("usd002", "user001", "XXX001", "run acc", Currency.getInstance("USD"),
+                BigDecimal.valueOf(12.0), "*XXX002*");
+
+        TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
+
+        transactionDao.save(Transaction.createTransfer(
+                "test_owner",
+                "1",
+                BigDecimal.ONE,
+                BigDecimal.valueOf(60.0),
+                srcAcc,
+                destAcc,
+                category,
+                DateTime.now(DateTimeZone.UTC)
+        ));
+
+        transactionDao.save(Transaction.createTransfer(
+                "test_owner",
+                "2",
+                BigDecimal.ONE,
+                BigDecimal.valueOf(60.0),
+                srcAcc,
+                destAcc,
+                category,
+                DateTime.now(DateTimeZone.UTC)
+        ));
+
+        List<Transaction> txList = transactionDao.findByOwnerId("test_owner");
+
+        txList.forEach(tx -> {
+            assertThat("found tx", tx, is(not(nullValue())));
+            assertThat("tx type", tx.getTransactionType(), is(TransactionType.TRANSFER));
+            assertThat("tx src", tx.getSourceAccount(), is(srcAcc));
+            assertThat("tx dest", tx.getDestAccount(), is(destAcc));
+            assertThat("tx category", tx.getCategory(), is(category));
+        });
+
     }
 
     @Test

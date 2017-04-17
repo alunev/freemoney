@@ -7,6 +7,7 @@ import play.db.jpa.Transactional;
 
 import javax.persistence.Query;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class TransactionDao {
@@ -28,9 +29,7 @@ public class TransactionDao {
                     Transaction transaction = em.find(Transaction.class, transactionId);
 
                     if (transaction != null) {
-                        transaction.setSourceAccount(accountDao.findById(transaction.getSourceId()));
-                        transaction.setDestAccount(accountDao.findById(transaction.getDestId()));
-                        transaction.setCategory(categoryDao.findById(transaction.getCategoryId()));
+                        updateTransientFields(transaction);
                     }
 
                     return transaction;
@@ -42,12 +41,15 @@ public class TransactionDao {
     public List<Transaction> findByOwnerId(String userId) {
         return jpaApi.withTransaction(
                 em -> {
-//                    TODO: update account fields after reading
                     Query query = em.createQuery(String.format(
                             "Select t from Transaction t where t.ownerId = '%s'", userId
                     ));
 
-                    return query.getResultList();
+                    return ((List<Transaction>) query.getResultList()).stream().map(t -> {
+                        updateTransientFields(t);
+
+                        return t;
+                    }).collect(Collectors.toList());
                 }
         );
     }
@@ -56,9 +58,7 @@ public class TransactionDao {
         jpaApi.<Void>withTransaction(em -> {
             em.persist(transaction);
 
-            accountDao.save(transaction.getSourceAccount());
-            accountDao.save(transaction.getDestAccount());
-            categoryDao.save(transaction.getCategory());
+            saveTransientFields(transaction);
 
             return null;
         });
@@ -68,9 +68,7 @@ public class TransactionDao {
         jpaApi.<Void>withTransaction(em -> {
             em.remove(transaction);
 
-            accountDao.delete(transaction.getSourceAccount());
-            accountDao.delete(transaction.getDestAccount());
-            categoryDao.delete(transaction.getCategory());
+            deleteTransientFields(transaction);
 
             return null;
         });
@@ -80,6 +78,8 @@ public class TransactionDao {
         jpaApi.<Void>withTransaction(em -> {
             for (Transaction tx : transactions) {
                 em.persist(tx);
+
+                saveTransientFields(tx);
             }
 
             return null;
@@ -98,5 +98,23 @@ public class TransactionDao {
 
             return null;
         });
+    }
+
+    private void saveTransientFields(Transaction transaction) {
+        categoryDao.save(transaction.getCategory());
+        accountDao.save(transaction.getSourceAccount());
+        accountDao.save(transaction.getDestAccount());
+    }
+
+    private void deleteTransientFields(Transaction transaction) {
+        categoryDao.delete(transaction.getCategory());
+        accountDao.delete(transaction.getSourceAccount());
+        accountDao.delete(transaction.getDestAccount());
+    }
+
+    private void updateTransientFields(Transaction transaction) {
+        transaction.setCategory(categoryDao.findById(transaction.getCategoryId()));
+        transaction.setSourceAccount(accountDao.findById(transaction.getSourceId()));
+        transaction.setDestAccount(accountDao.findById(transaction.getDestId()));
     }
 }
