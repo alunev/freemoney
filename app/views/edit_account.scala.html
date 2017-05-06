@@ -7,7 +7,9 @@
 
 @(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: User, form: Form[Account])
 
-@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
+@implicitFieldConstructor = @{
+    b3.horizontal.fieldConstructor("col-md-2", "col-md-10")
+}
 
 @main("Accounts", playAuth, user) {
 
@@ -21,14 +23,13 @@
     }
 
     @b3.form(action = routes.AccountsController.saveAccountForm()) {
-
-        @b3.text(form("id"), '_label -> "id")
         @b3.text(form("number"), '_label -> "Number")
         @b3.text(form("title"), '_label -> "Title")
+        @b3.select(form("currency"), options = Seq("RUB" -> "RUB", "USD" -> "USD", "EUR" -> "EUR"), '_label -> "Currency")
         @b3.text(form("balance"), '_label -> "Ballance")
         @b3.text(form("smsPattern"), '_label -> "SMS pattern")
 
-        @b3.submit('class -> "btn btn-default"){ Save }
+        @b3.submit('class -> "btn btn-default") { Save }
     }
 }
 

@@ -7,10 +7,7 @@ import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 import dao.RedisNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Currency;
 
@@ -41,6 +38,8 @@ public class Account {
 
     @Id
     @Column(name = "account_id")
+    @SequenceGenerator(name = "seq_gen", allocationSize = 20, initialValue = 80)
+    @GeneratedValue(generator = "seq_gen", strategy = GenerationType.SEQUENCE)
     private String id;
 
     @Column(name = "ownerId")

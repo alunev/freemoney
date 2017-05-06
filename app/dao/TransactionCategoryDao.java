@@ -1,6 +1,7 @@
 package dao;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import model.TransactionCategory;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
@@ -8,6 +9,8 @@ import play.db.jpa.Transactional;
 /**
  * Created by red on 30.12.16.
  */
+
+@Singleton
 public class TransactionCategoryDao {
 
     private final JPAApi jpaApi;

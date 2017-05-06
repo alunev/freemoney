@@ -1,6 +1,7 @@
 package dao;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import model.Transaction;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
@@ -9,7 +10,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Singleton
 public class TransactionDao {
     private final JPAApi jpaApi;
 

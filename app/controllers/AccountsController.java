@@ -1,6 +1,7 @@
 package controllers;
 
 import com.feth.play.module.pa.PlayAuthenticate;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import dao.AccountDao;
 import model.Account;
@@ -11,6 +12,8 @@ import play.mvc.Result;
 import services.UserService;
 import views.html.accounts;
 import views.html.edit_account;
+
+import java.util.UUID;
 
 public class AccountsController extends Controller {
 
@@ -34,8 +37,17 @@ public class AccountsController extends Controller {
         return ok(accounts.render(auth, userService.getUser(session())));
     }
 
-    public Result showAccountForm(String accountId) {
-        Form<Account> form = formFactory.form(Account.class).fill(accountDao.findById(accountId));
+    public Result showAddForm() {
+        return showEditForm("");
+    }
+
+    public Result showEditForm(String accountId) {
+        Account account = accountDao.findById(accountId);
+
+        Form<Account> form = formFactory.form(Account.class);
+        if (account != null) {
+            form = form.fill(account);
+        }
 
         return ok(edit_account.render(auth, userService.getUser(session()), form));
     }
@@ -43,10 +55,15 @@ public class AccountsController extends Controller {
     public Result saveAccountForm() {
         Account account = formFactory.form(Account.class).bindFromRequest().get();
 
+        if (Strings.isNullOrEmpty(account.getId())) {
+            account.setId(UUID.nameUUIDFromBytes(account.getNumber().getBytes()).toString());
+            account.setOwnerId(userService.getUser(session()).getUserId());
+        }
+
         accountDao.save(account);
 
         flash("success", "Saved successfully");
 
-        return redirect(controllers.routes.AccountsController.showAccountForm(account.getId()));
+        return redirect(controllers.routes.AccountsController.showEditForm(account.getId()));
     }
 }

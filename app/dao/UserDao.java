@@ -1,6 +1,7 @@
 package dao;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import model.Account;
 import model.Transaction;
 import model.User;
@@ -9,6 +10,7 @@ import play.db.jpa.JPAApi;
 import java.util.List;
 
 
+@Singleton
 public class UserDao {
     private final JPAApi jpaApi;
 

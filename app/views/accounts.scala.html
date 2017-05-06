@@ -11,9 +11,13 @@
 * argument is an `Html` object containing the body of the page.
 *@
 @main("Accounts", playAuth, user) {
-    <h1 class="page-header">Accounts</h1>
+    <h1 class="page-header">
+        Accounts
+        <small>
+            <a href="@routes.AccountsController.showAddForm()" class="btn btn-info" role="button">Add</a>
+        </small>
+    </h1>
 
-    <h2 class="sub-header">All</h2>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -36,7 +40,7 @@
                     <td>@account.getCurrency</td>
                     <td>@account.getBalance</td>
                     <td>@account.getSmsPattern</td>
-                    <td><a href="@routes.AccountsController.showAccountForm(account.getId)">Edit</a></td>
+                    <td><a href="@routes.AccountsController.showEditForm(account.getId)">Edit</a></td>
                 </tr>
             }
             </tbody>
