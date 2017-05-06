@@ -55,6 +55,8 @@ public class UserDao {
         List<Account> newAccounts = user.getAccounts();
         List<Account> oldAccounts = accountDao.findByOwnerId(user.getUserId());
 
+        newAccounts.forEach(a -> a.setOwnerId(user.getUserId()));
+
         // save existing accounts
         accountDao.saveAll(newAccounts);
 
@@ -66,6 +68,8 @@ public class UserDao {
     private void updateTransactions(User user) {
         List<Transaction> newTransactions = user.getTransactions();
         List<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getUserId());
+
+        newTransactions.forEach(t -> t.setOwnerId(user.getUserId()));
 
         // save existing accounts
         transactionDao.saveAll(newTransactions);

@@ -4,7 +4,9 @@ import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import dao.AccountDao;
+import dao.UserDao;
 import model.Account;
+import model.User;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -24,13 +26,16 @@ public class AccountsController extends Controller {
     private final FormFactory formFactory;
 
     private final AccountDao accountDao;
+    private final UserDao userDao;
 
     @Inject
-    public AccountsController(PlayAuthenticate auth, UserService userService, FormFactory formFactory, AccountDao accountDao) {
+    public AccountsController(PlayAuthenticate auth, UserService userService, FormFactory formFactory,
+                              AccountDao accountDao, UserDao userDao) {
         this.auth = auth;
         this.userService = userService;
         this.formFactory = formFactory;
         this.accountDao = accountDao;
+        this.userDao = userDao;
     }
 
     public Result accounts() {
@@ -57,7 +62,11 @@ public class AccountsController extends Controller {
 
         if (Strings.isNullOrEmpty(account.getId())) {
             account.setId(UUID.nameUUIDFromBytes(account.getNumber().getBytes()).toString());
-            account.setOwnerId(userService.getUser(session()).getUserId());
+
+            User user = userService.getUser(session());
+            user.addAccount(account);
+
+            userDao.save(user);
         }
 
         accountDao.save(account);
@@ -65,5 +74,13 @@ public class AccountsController extends Controller {
         flash("success", "Saved successfully");
 
         return redirect(controllers.routes.AccountsController.showEditForm(account.getId()));
+    }
+
+    public Result deleteAccount(String accountId) {
+        Account account = accountDao.findById(accountId);
+
+        accountDao.delete(account);
+
+        return redirect(controllers.routes.AccountsController.accounts());
     }
 }

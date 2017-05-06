@@ -41,6 +41,7 @@
                     <td>@account.getBalance</td>
                     <td>@account.getSmsPattern</td>
                     <td><a href="@routes.AccountsController.showEditForm(account.getId)">Edit</a></td>
+                    <td><a href="@routes.AccountsController.deleteAccount(account.getId)">Delete</a></td>
                 </tr>
             }
             </tbody>
