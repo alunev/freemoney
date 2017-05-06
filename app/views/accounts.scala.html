@@ -11,6 +11,36 @@
 * argument is an `Html` object containing the body of the page.
 *@
 @main("Accounts", playAuth, user) {
+    <h1 class="page-header">Accounts</h1>
 
+    <h2 class="sub-header">All</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Number</th>
+                    <th>Title</th>
+                    <th>Currency</th>
+                    <th>Balance</th>
+                    <th>Pattern</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(account <- user.getAccounts) {
+                <tr>
+                    <td>@account.getId</td>
+                    <td>@account.getNumber</td>
+                    <td>@account.getTitle</td>
+                    <td>@account.getCurrency</td>
+                    <td>@account.getBalance</td>
+                    <td>@account.getSmsPattern</td>
+                    <td><a href="@routes.AccountsController.showAccountForm(account.getId)">Edit</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 }
 

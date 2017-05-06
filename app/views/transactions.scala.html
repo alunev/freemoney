@@ -16,7 +16,7 @@
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
         @for(account <- user.getAccounts) {
-            <li><a href="#">@account.getTitle</a></li>
+            <li><a href="#">@account.getTitle</a> <a href="@routes.HomeController.index()">view / edit</a></li>
         }
         </ul>
     </div>

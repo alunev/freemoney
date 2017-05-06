@@ -5,6 +5,8 @@
 GET     /                           controllers.HomeController.index
 GET     /transactions               controllers.TransactionsController.transactions
 GET     /accounts                   controllers.AccountsController.accounts
+GET     /accounts/edit:accountId    controllers.AccountsController.showAccountForm(accountId : String)
+POST    /accounts/save              controllers.AccountsController.saveAccountForm
 
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count

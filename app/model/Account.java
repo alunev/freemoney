@@ -59,14 +59,14 @@ public class Account {
     private BigDecimal balance;
 
     @Column(name = "pattern")
-    private String inPattern;
+    private String smsPattern;
 
     public Account() {
 
     }
 
     public static Account createAccount(String id, String ownerId, String number, String title, Currency currency,
-                                        BigDecimal balance, String inPattern) {
+                                        BigDecimal balance, String smsPattern) {
         Account account = new Account();
 
         account.id = id;
@@ -75,7 +75,7 @@ public class Account {
         account.title = title;
         account.currency = currency;
         account.balance = balance;
-        account.inPattern = inPattern;
+        account.smsPattern = smsPattern;
 
         return account;
     }
@@ -84,24 +84,56 @@ public class Account {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public String getNumber() {
         return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public Currency getCurrency() {
         return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public BigDecimal getBalance() {
         return balance;
     }
 
-    public String getInPattern() {
-        return inPattern;
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public String getSmsPattern() {
+        return smsPattern;
+    }
+
+    public void setSmsPattern(String smsPattern) {
+        this.smsPattern = smsPattern;
     }
 
     @Override
@@ -140,7 +172,7 @@ public class Account {
                 .add("title", title)
                 .add("currency", currency)
                 .add("balance", balance)
-                .add("inPattern", inPattern)
+                .add("smsPattern", smsPattern)
                 .toString();
     }
 }
