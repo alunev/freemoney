@@ -16,13 +16,18 @@
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
         @for(account <- user.getAccounts) {
-            <li><a href="#">@account.getTitle</a> <a href="@routes.HomeController.index()">view / edit</a></li>
+            <li><a href="#">@account.getTitle</a></li>
         }
         </ul>
     </div>
 
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h1 class="page-header">Transactions</h1>
+        <h1 class="page-header">
+            Transactions
+            <small>
+                <a href="@routes.TransactionsController.showAddForm()" class="btn btn-info" role="button">Add</a>
+            </small>
+        </h1>
 
         <h2 class="sub-header">All</h2>
         <div class="table-responsive">
@@ -55,8 +60,8 @@
                             <td>@tx.getSourceAmount</td>
                             <td>@tx.getSourceAccount.getCurrency</td>
                             }
-                            <td></td>
-
+                            <td><a href="@routes.TransactionsController.showEditForm(tx.getTransactionId)">Edit</a></td>
+                            <td><a href="@routes.TransactionsController.deleteTransaction(tx.getTransactionId)">Delete</a></td>
                         </tr>
                     }
                 </tbody>

@@ -27,6 +27,9 @@ public class Transaction {
     @Column(name = "type")
     private TransactionType transactionType;
 
+    @Column(name = "categoryId")
+    private String categoryId;
+
     @Column(name = "source_id")
     private String sourceId;
 
@@ -38,9 +41,6 @@ public class Transaction {
 
     @Column(name = "destAmount")
     private BigDecimal destAmount;
-
-    @Column(name = "categoryId")
-    private String categoryId;
 
     @Column(name = "added_date")
     private DateTime addedTime;
@@ -137,12 +137,28 @@ public class Transaction {
         this.transactionType = transactionType;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public String getSourceId() {
         return sourceId;
     }
 
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
     public String getDestId() {
         return destId;
+    }
+
+    public void setDestId(String destId) {
+        this.destId = destId;
     }
 
     public BigDecimal getSourceAmount() {
@@ -161,12 +177,12 @@ public class Transaction {
         this.destAmount = destAmount;
     }
 
-    public String getCategoryId() {
-        return categoryId;
-    }
-
     public DateTime getAddedTime() {
         return addedTime;
+    }
+
+    public void setAddedTime(DateTime addedTime) {
+        this.addedTime = addedTime;
     }
 
     public Account getSourceAccount() {

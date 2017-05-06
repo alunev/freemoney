@@ -1,0 +1,40 @@
+@import model.User
+@import model.Transaction
+
+@import play.data.Form
+
+@import views.html.b3
+
+@import model.TransactionCategory
+@(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: User, form: Form[Transaction], catMap: Map[String, String], accountsMap: Map[String, String])
+
+@implicitFieldConstructor = @{
+    b3.horizontal.fieldConstructor("col-md-2", "col-md-10")
+}
+
+@main("Transactions", playAuth, user) {
+
+    @if(flash.containsKey("success")) {
+        <div class="well">
+            <div id="success-message" class="text-success">
+            @flash.get("success")
+            </div>
+        </div>
+    }
+
+    @b3.form(action = routes.TransactionsController.saveTransactionForm()) {
+        @b3.select(form("transactionType"), options = Seq("EXPENSE" -> "EXPENSE", "INCOME" -> "INCOME", "TRANSFER" -> "TRANSFER"), '_label -> "Currency")
+        @b3.select(form("categoryId"), options = catMap.asScala.toList, '_label -> "Category")
+
+        @b3.select(form("sourceId"), options = accountsMap.asScala.toList, '_label -> "Account")
+        @b3.text(form("sourceAmount"), '_label -> "Amount")
+@*//*@
+@*//        @b3.select(form("destId"), options = , '_label -> "Destination Account")*@
+@*//        @b3.text(form("destAmount"), '_label -> "Destination Amount")*@
+
+        @b3.text(form("sms"), '_label -> "SMS content")
+
+        @b3.submit('class -> "btn btn-default") { Save }
+    }
+}
+

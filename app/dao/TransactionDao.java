@@ -113,7 +113,7 @@ public class TransactionDao {
         accountDao.delete(transaction.getDestAccount());
     }
 
-    private void updateTransientFields(Transaction transaction) {
+    public void updateTransientFields(Transaction transaction) {
         transaction.setCategory(categoryDao.findById(transaction.getCategoryId()));
         transaction.setSourceAccount(accountDao.findById(transaction.getSourceId()));
         transaction.setDestAccount(accountDao.findById(transaction.getDestId()));

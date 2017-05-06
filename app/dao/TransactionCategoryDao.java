@@ -2,9 +2,14 @@ package dao;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import model.Transaction;
 import model.TransactionCategory;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
+
+import javax.persistence.Query;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by red on 30.12.16.
@@ -25,6 +30,17 @@ public class TransactionCategoryDao {
     public TransactionCategory findById(String categoryId) {
         return jpaApi.withTransaction(
                 em -> em.find(TransactionCategory.class, categoryId)
+        );
+    }
+
+    @Transactional
+    public List<TransactionCategory> findAll() {
+        return jpaApi.withTransaction(
+                em -> {
+                    Query query = em.createQuery("Select c from TransactionCategory c");
+
+                    return ((List<TransactionCategory>) query.getResultList());
+                }
         );
     }
 
