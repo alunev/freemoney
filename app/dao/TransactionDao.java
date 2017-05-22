@@ -8,6 +8,7 @@ import play.db.jpa.Transactional;
 
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -39,7 +40,7 @@ public class TransactionDao {
     }
 
     @Transactional
-    public List<Transaction> findByOwnerId(String userId) {
+    public Set<Transaction> findByOwnerId(String userId) {
         return jpaApi.withTransaction(
                 em -> {
                     Query query = em.createQuery(String.format(
@@ -50,7 +51,7 @@ public class TransactionDao {
                         updateTransientFields(t);
 
                         return t;
-                    }).collect(Collectors.toList());
+                    }).collect(Collectors.toSet());
                 }
         );
     }
@@ -75,7 +76,7 @@ public class TransactionDao {
         });
     }
 
-    public void saveAll(List<Transaction> transactions) {
+    public void saveAll(Set<Transaction> transactions) {
         jpaApi.<Void>withTransaction(em -> {
             for (Transaction tx : transactions) {
                 em.persist(tx);
@@ -87,7 +88,7 @@ public class TransactionDao {
         });
     }
 
-    public void deleteAll(List<Transaction> transactions) {
+    public void deleteAll(Set<Transaction> transactions) {
         if (transactions.isEmpty()) {
             return;
         }

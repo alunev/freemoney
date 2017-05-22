@@ -6,8 +6,9 @@ import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 
 import javax.persistence.Query;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by red on 30.12.16.
@@ -30,14 +31,14 @@ public class AccountDao {
     }
 
     @Transactional
-    public List<Account> findByOwnerId(String userId) {
+    public Set<Account> findByOwnerId(String userId) {
         return jpaApi.withTransaction(
                 em -> {
                     Query query = em.createQuery(String.format(
                             "Select a from Account a where a.ownerId = '%s'", userId
                     ));
 
-                    return query.getResultList();
+                    return new HashSet<>(query.getResultList());
                 }
         );
     }
@@ -51,7 +52,7 @@ public class AccountDao {
     }
 
     @Transactional
-    public void saveAll(List<Account> accounts) {
+    public void saveAll(Set<Account> accounts) {
         jpaApi.<Void>withTransaction(em -> {
             for (Account account : accounts) {
                 em.persist(account);
@@ -69,7 +70,7 @@ public class AccountDao {
         });
     }
 
-    public void deleteAll(List<Account> accounts) {
+    public void deleteAll(Set<Account> accounts) {
         if (accounts.isEmpty()) {
             return;
         }

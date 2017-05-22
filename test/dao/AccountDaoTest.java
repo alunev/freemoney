@@ -4,7 +4,7 @@ import model.Account;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,7 +53,7 @@ public class AccountDaoTest extends RedisDaoTest {
         accountDao.save(ObjectsFactory.createDummyAccountWithId("4"));
         accountDao.save(ObjectsFactory.createDummyAccountWithId("5"));
 
-        List<Account> accounts = accountDao.findByOwnerId("firstUserId");
+        Set<Account> accounts = accountDao.findByOwnerId("firstUserId");
 
         assertThat("found account", accounts.size(), is(3));
     }

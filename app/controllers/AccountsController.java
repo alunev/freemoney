@@ -59,17 +59,14 @@ public class AccountsController extends Controller {
 
     public Result saveAccountForm() {
         Account account = formFactory.form(Account.class).bindFromRequest().get();
+        User user = userService.getUser(session());
 
         if (Strings.isNullOrEmpty(account.getId())) {
             account.setId(UUID.nameUUIDFromBytes(account.getNumber().getBytes()).toString());
-
-            User user = userService.getUser(session());
-            user.addAccount(account);
-
-            userDao.save(user);
         }
 
-        accountDao.save(account);
+        user.addAccount(account);
+        userDao.save(user);
 
         flash("success", "Saved successfully");
 

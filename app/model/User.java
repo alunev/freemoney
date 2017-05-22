@@ -4,10 +4,21 @@ package model;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Entity
@@ -25,10 +36,10 @@ public class User implements Subject {
 
     // relations persistence is handled manually
     @Transient
-    private List<Account> accounts = new ArrayList<>();
+    private Map<String, Account> accounts = new HashMap<>();
 
     @Transient
-    private List<Transaction> transactions = new ArrayList<>();
+    private Map<String, Transaction> transactions = new HashMap<>();
 
     public User() {
         // required by jpa
@@ -43,17 +54,25 @@ public class User implements Subject {
     }
 
     public static User createUser(String userId, String email) {
-        return createUser(userId, email, Collections.emptyList());
+        return createUser(userId, email, Collections.emptySet());
     }
 
-    public static User createUser(String userId, String email, List<Account> accounts) {
+    public static User createUser(String userId, String email, Set<Account> accounts) {
         User user = new User();
 
         user.userId = userId;
         user.email = email;
-        user.accounts = Lists.newArrayList(accounts);
+        user.accounts = accSetToMap(accounts);
 
         return user;
+    }
+
+    private static Map<String, Account> accSetToMap(Set<Account> accounts) {
+        return accounts.stream().collect(Collectors.toMap(Account::getId, Function.identity()));
+    }
+
+    private static Map<String, Transaction> txSetToMap(Set<Transaction> accounts) {
+        return accounts.stream().collect(Collectors.toMap(Transaction::getTransactionId, Function.identity()));
     }
 
     public String getUserId() {
@@ -64,12 +83,12 @@ public class User implements Subject {
         return email;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public Set<Account> getAccounts() {
+        return Sets.newHashSet(accounts.values());
     }
 
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
+    public void setAccounts(Set<Account> accounts) {
+        accounts.forEach(a -> this.accounts.put(a.getId(), a));
     }
 
     public Optional<Account> getAccountById(String id) {
@@ -77,41 +96,35 @@ public class User implements Subject {
             return Optional.empty();
         }
 
-        return accounts.stream().filter(account -> account.getId().equals(id)).findFirst();
+        return Optional.ofNullable(accounts.get(id));
     }
 
     public void addAccount(Account account) {
-        this.accounts = Lists.newArrayList(this.accounts);
-        this.accounts.add(account);
+        this.accounts.put(account.getId(), account);
     }
 
     public void removeAccount(Account account) {
-        this.accounts.remove(account);
+        this.accounts.remove(account.getId());
     }
 
     public void removeAccountById(String id) {
-        this.accounts = this.accounts.stream().filter(
-                account -> !account.getId().equals(id)
-        ).collect(Collectors.toList());
+        this.accounts.remove(id);
     }
 
     public void addTransaction(Transaction transaction) {
-        this.transactions = Lists.newArrayList(this.transactions);
-        this.transactions.add(transaction);
+        this.transactions.put(transaction.getTransactionId(), transaction);
     }
 
     public void removeTransaction(Transaction transaction) {
-        this.transactions = this.transactions.stream().filter(
-                tx -> !tx.getTransactionId().equals(transaction.getTransactionId())
-        ).collect(Collectors.toList());
+        transactions.remove(transaction.getTransactionId());
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    public Set<Transaction> getTransactions() {
+        return Sets.newHashSet(transactions.values());
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = txSetToMap(transactions);
     }
 
     @Override

@@ -8,6 +8,7 @@ import model.User;
 import play.db.jpa.JPAApi;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Singleton
@@ -52,8 +53,8 @@ public class UserDao {
     }
 
     private void updateAccounts(User user) {
-        List<Account> newAccounts = user.getAccounts();
-        List<Account> oldAccounts = accountDao.findByOwnerId(user.getUserId());
+        Set<Account> newAccounts = user.getAccounts();
+        Set<Account> oldAccounts = accountDao.findByOwnerId(user.getUserId());
 
         newAccounts.forEach(a -> a.setOwnerId(user.getUserId()));
 
@@ -66,8 +67,8 @@ public class UserDao {
     }
 
     private void updateTransactions(User user) {
-        List<Transaction> newTransactions = user.getTransactions();
-        List<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getUserId());
+        Set<Transaction> newTransactions = user.getTransactions();
+        Set<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getUserId());
 
         newTransactions.forEach(t -> t.setOwnerId(user.getUserId()));
 

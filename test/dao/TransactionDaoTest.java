@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -96,7 +97,7 @@ public class TransactionDaoTest extends RedisDaoTest {
                 DateTime.now(DateTimeZone.UTC)
         ));
 
-        List<Transaction> txList = transactionDao.findByOwnerId("test_owner");
+        Set<Transaction> txList = transactionDao.findByOwnerId("test_owner");
 
         txList.forEach(tx -> {
             assertThat("found tx", tx, is(not(nullValue())));

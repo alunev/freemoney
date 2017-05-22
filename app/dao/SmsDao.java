@@ -28,10 +28,6 @@ public class SmsDao {
         return jpaApi.withTransaction(
                 em -> {
                     Query q = em.createNativeQuery("INCR " + ID_SEQ_NAME, Sms.class);
-//                    q.executeUpdate();
-//
-//                    q = em.createNativeQuery("GET " + ID_SEQ_NAME);
-
                     return ((BigInteger) q.getSingleResult()).longValue();
                 }
         );
