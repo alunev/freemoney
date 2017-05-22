@@ -7,13 +7,10 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
-
-import java.time.Clock;
-
 import dao.UserDao;
 import services.ApplicationTimer;
-import services.AtomicCounter;
-import services.Counter;
+
+import java.time.Clock;
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -34,8 +31,6 @@ public class WebModule extends AbstractModule {
         // Ask Guice to create an instance of ApplicationTimer when the
         // application starts.
         bind(ApplicationTimer.class).asEagerSingleton();
-        // Set AtomicCounter as the implementation for Counter.
-        bind(Counter.class).to(AtomicCounter.class);
 
 
         bind(UserDao.class).asEagerSingleton();

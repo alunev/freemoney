@@ -125,6 +125,17 @@ public class User implements Subject {
         return Objects.equals(userId, user.userId);
     }
 
+
+    public boolean sameAs(User user) {
+        if (this == user) return true;
+        if (user == null) return false;
+
+        return Objects.equals(userId, user.userId) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(accounts, user.accounts) &&
+                Objects.equals(transactions, user.transactions);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(userId);
