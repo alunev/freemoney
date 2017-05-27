@@ -5,7 +5,8 @@ import com.google.inject.Singleton;
 import model.Account;
 import model.Transaction;
 import model.User;
-import org.jongo.Jongo;
+import org.bson.types.ObjectId;
+import uk.co.panaxiom.playjongo.PlayJongo;
 
 import java.util.Set;
 
@@ -15,11 +16,11 @@ public class UserDao {
     private final AccountDao accountDao;
 
     private final TransactionDao transactionDao;
-    private Jongo jongo;
+    private PlayJongo playJongo;
 
     @Inject
-    public UserDao(Jongo jongo, AccountDao accountDao, TransactionDao transactionDao) {
-        this.jongo = jongo;
+    public UserDao(PlayJongo playJongo, AccountDao accountDao, TransactionDao transactionDao) {
+        this.playJongo = playJongo;
         this.accountDao = accountDao;
         this.transactionDao = transactionDao;
     }
@@ -33,7 +34,7 @@ public class UserDao {
     }
 
     private void updateAccounts(User user) {
-        new User(user.getId(), user.getEmail(), user.getAccounts(), user.getTransactions());
+        new User(user.getEmail(), user.getAccounts(), user.getTransactions());
 
 
         Set<Account> newAccounts = user.getAccounts();
@@ -64,20 +65,14 @@ public class UserDao {
     }
 
     public void delete(User user) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.remove(user);
-
-            accountDao.deleteAll(user.getAccounts());
-
-            return null;
-        });
+        users().remove(new ObjectId(user.getId()));
     }
 
     public boolean idExistsInDb(String userId) {
-        return jpaApi.withTransaction(em -> em.find(User.class, userId)) != null;
+        return users().findOne(userId).as(User.class) != null;
     }
 
     private org.jongo.MongoCollection users() {
-        return jongo.getCollection("users");
+        return playJongo.getCollection("users");
     }
 }
