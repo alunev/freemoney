@@ -80,7 +80,7 @@ public class TransactionsController extends Controller {
 
         User user = userService.getUser(session());
 
-        Map<String, String> accountsMap = accountDao.findByOwnerId(user.getUserId()).stream().collect(
+        Map<String, String> accountsMap = accountDao.findByOwnerId(user.getId()).stream().collect(
                 Collectors.toMap(Account::getId, Account::getTitle)
         );
 

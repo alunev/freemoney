@@ -4,79 +4,43 @@ package model;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.Sets;
+import org.jongo.marshall.jackson.oid.MongoId;
+import org.jongo.marshall.jackson.oid.MongoObjectId;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Entity
-@Table(name = "users", schema = "RedisK@redis_pu")
 public class User implements Subject {
 
-    public static final User GUEST = User.createUser("", "guest@guest.com");
+    public static final User GUEST = User.createEmptyUser("", "guest@guest.com");
 
-    @Id
-    @Column(name = "user_id")
-    private String userId;
+    @MongoId // auto
+    @MongoObjectId
+    private final String id;
 
-    @Column(name = "email")
-    private String email;
+    private final String email;
 
-    // relations persistence is handled manually
-    @Transient
-    private Map<String, Account> accounts = new HashMap<>();
+    private final Set<Account> accounts;
 
-    @Transient
-    private Map<String, Transaction> transactions = new HashMap<>();
+    private final Set<Transaction> transactions;
 
-    public User() {
-        // required by jpa
+    @JsonCreator
+    public User(String id, String email, Set<Account> accounts, Set<Transaction> transactions) {
+        this.id = id;
+        this.email = email;
+        this.accounts = accounts;
+        this.transactions = transactions;
     }
 
-    public static User copyOf(User user) {
-        return createUser(user.getUserId(), user.getEmail(), user.getAccounts());
+    public static User createEmptyUser(String userId, String email) {
+        return new User(userId, email, Collections.emptySet(), Collections.emptySet());
     }
 
-    public static User createUser(String userId) {
-        return createUser(userId, "");
-    }
-
-    public static User createUser(String userId, String email) {
-        return createUser(userId, email, Collections.emptySet());
-    }
-
-    public static User createUser(String userId, String email, Set<Account> accounts) {
-        User user = new User();
-
-        user.userId = userId;
-        user.email = email;
-        user.accounts = accSetToMap(accounts);
-
-        return user;
-    }
-
-    private static Map<String, Account> accSetToMap(Set<Account> accounts) {
-        return accounts.stream().collect(Collectors.toMap(Account::getId, Function.identity()));
-    }
-
-    private static Map<String, Transaction> txSetToMap(Set<Transaction> accounts) {
-        return accounts.stream().collect(Collectors.toMap(Transaction::getTransactionId, Function.identity()));
-    }
-
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
     public String getEmail() {
@@ -84,47 +48,27 @@ public class User implements Subject {
     }
 
     public Set<Account> getAccounts() {
-        return Sets.newHashSet(accounts.values());
-    }
-
-    public void setAccounts(Set<Account> accounts) {
-        accounts.forEach(a -> this.accounts.put(a.getId(), a));
-    }
-
-    public Optional<Account> getAccountById(String id) {
-        if (accounts == null) {
-            return Optional.empty();
-        }
-
-        return Optional.ofNullable(accounts.get(id));
-    }
-
-    public void addAccount(Account account) {
-        this.accounts.put(account.getId(), account);
-    }
-
-    public void removeAccount(Account account) {
-        this.accounts.remove(account.getId());
-    }
-
-    public void removeAccountById(String id) {
-        this.accounts.remove(id);
-    }
-
-    public void addTransaction(Transaction transaction) {
-        this.transactions.put(transaction.getTransactionId(), transaction);
-    }
-
-    public void removeTransaction(Transaction transaction) {
-        transactions.remove(transaction.getTransactionId());
+        return Sets.newHashSet(accounts);
     }
 
     public Set<Transaction> getTransactions() {
-        return Sets.newHashSet(transactions.values());
+        return Sets.newHashSet(transactions);
     }
 
-    public void setTransactions(Set<Transaction> transactions) {
-        this.transactions = txSetToMap(transactions);
+    public void addAccount(Account account) {
+        this.accounts.add(account);
+    }
+
+    public void removeAccount(Account account) {
+        this.accounts.remove(account);
+    }
+
+    public void addTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+    }
+
+    public void removeTransaction(Transaction transaction) {
+        transactions.remove(transaction);
     }
 
     @Override
@@ -135,7 +79,7 @@ public class User implements Subject {
 
         User user = (User) o;
 
-        return Objects.equals(userId, user.userId);
+        return Objects.equals(id, user.id);
     }
 
 
@@ -143,7 +87,7 @@ public class User implements Subject {
         if (this == user) return true;
         if (user == null) return false;
 
-        return Objects.equals(userId, user.userId) &&
+        return Objects.equals(id, user.id) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(accounts, user.accounts) &&
                 Objects.equals(transactions, user.transactions);
@@ -151,7 +95,7 @@ public class User implements Subject {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(id);
     }
 
     @Override
@@ -166,6 +110,6 @@ public class User implements Subject {
 
     @Override
     public String getIdentifier() {
-        return userId;
+        return id;
     }
 }

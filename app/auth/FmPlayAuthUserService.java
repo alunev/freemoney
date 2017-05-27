@@ -10,7 +10,6 @@ import model.User;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Optional;
 
 @Singleton
 public class FmPlayAuthUserService extends AbstractUserService {
@@ -30,11 +29,11 @@ public class FmPlayAuthUserService extends AbstractUserService {
             return null;
         }
 
-        User user = User.createUser(googleAuthUser.getId(), googleAuthUser.getEmail());
+        User user = User.createEmptyUser(googleAuthUser.getId(), googleAuthUser.getEmail());
 
-		if (!userDao.idExistsInDb(user.getUserId())) {
+		if (!userDao.idExistsInDb(user.getId())) {
 			userDao.save(user);
-			return user.getUserId();
+			return user.getId();
 		} else {
 			return null;
 		}
@@ -47,7 +46,7 @@ public class FmPlayAuthUserService extends AbstractUserService {
 
         final User user = userDao.findById(identity.getId());
 
-		return user != null ? user.getUserId() : null;
+		return user != null ? user.getId() : null;
 	}
 
 	@Override

@@ -63,10 +63,14 @@ public class AccountsController extends Controller {
 
         if (Strings.isNullOrEmpty(account.getId())) {
             account.setId(UUID.nameUUIDFromBytes(account.getNumber().getBytes()).toString());
+            accountDao.save(account);
+
+            user.addAccount(account);
+            userDao.save(user);
+        } else {
+            accountDao.save(account);
         }
 
-        user.addAccount(account);
-        userDao.save(user);
 
         flash("success", "Saved successfully");
 

@@ -21,7 +21,7 @@ public class UserTest {
     @Test
     public void getAccountById() throws Exception {
         Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
-        User user = User.createUser("id1", "id1@mail.com", Sets.newHashSet(
+        User user = User.createEmptyUser("id1", "id1@mail.com", Sets.newHashSet(
                 ObjectsFactory.createDummyAccountWithId("acc1"),
                 acc2,
                 ObjectsFactory.createDummyAccountWithId("acc3")
@@ -35,7 +35,7 @@ public class UserTest {
     @Test
     public void removesAccountById() throws Exception {
         Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
-        User user = User.createUser("id1", "id1@mail.com", Sets.newHashSet(
+        User user = User.createEmptyUser("id1", "id1@mail.com", Sets.newHashSet(
                 ObjectsFactory.createDummyAccountWithId("acc1"),
                 acc2,
                 ObjectsFactory.createDummyAccountWithId("acc3")
@@ -52,7 +52,7 @@ public class UserTest {
     @Test
     public void sameIdCollapses() throws Exception {
         Account acc1 = ObjectsFactory.createDummyAccountWithId("acc1");
-        User user = User.createUser("id1", "id1@mail.com", Collections.emptySet());
+        User user = User.createEmptyUser("id1", "id1@mail.com", Collections.emptySet());
 
         user.addAccount(acc1);
         user.addAccount(acc1);
@@ -66,7 +66,7 @@ public class UserTest {
     public void replaceAccount() throws Exception {
         Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
 
-        User user = User.createUser("id1", "id1@mail.com", Sets.newHashSet(
+        User user = User.createEmptyUser("id1", "id1@mail.com", Sets.newHashSet(
                 ObjectsFactory.createDummyAccountWithId("acc1"),
                 acc2,
                 ObjectsFactory.createDummyAccountWithId("acc3")
