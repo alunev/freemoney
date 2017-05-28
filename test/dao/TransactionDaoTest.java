@@ -39,22 +39,31 @@ public class TransactionDaoTest extends RedisDaoTest {
 
     @Test
     public void canSaveAndFindById() throws Exception {
-        Account srcAcc = Account.createAccount("rub001", "user001", "XXX001", "run acc", Currency.getInstance("RUB"),
-                BigDecimal.valueOf(12.0), "*XXX001*");
-        Account destAcc = Account.createAccount("usd002", "user001", "XXX001", "run acc", Currency.getInstance("USD"),
-                BigDecimal.valueOf(12.0), "*XXX002*");
+        Account srcAcc = Account.createAccount("user001",
+                                               "rub001",
+                                               "run acc",
+                                               Currency.getInstance("RUB"),
+                                               BigDecimal.valueOf(12.0),
+                                               "*XXX001*"
+        );
+        Account destAcc = Account.createAccount("usd002",
+                                                "user001",
+                                                "run acc",
+                                                Currency.getInstance("USD"),
+                                                BigDecimal.valueOf(12.0),
+                                                "*XXX002*"
+        );
 
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
 
-        transactionDao.save(Transaction.createTransfer(
-                "test_owner",
-                "1",
-                BigDecimal.ONE,
-                BigDecimal.valueOf(60.0),
-                srcAcc,
-                destAcc,
-                category,
-                DateTime.now(DateTimeZone.UTC)
+        transactionDao.save(Transaction.createTransfer("test_owner",
+                                                       "1",
+                                                       BigDecimal.ONE,
+                                                       BigDecimal.valueOf(60.0),
+                                                       srcAcc,
+                                                       destAcc,
+                                                       category,
+                                                       DateTime.now(DateTimeZone.UTC)
         ));
 
         Transaction tx = transactionDao.findById("1");
@@ -68,33 +77,41 @@ public class TransactionDaoTest extends RedisDaoTest {
 
     @Test
     public void canSaveAndFindByOwnerId() throws Exception {
-        Account srcAcc = Account.createAccount("rub001", "user001", "XXX001", "run acc", Currency.getInstance("RUB"),
-                BigDecimal.valueOf(12.0), "*XXX001*");
-        Account destAcc = Account.createAccount("usd002", "user001", "XXX001", "run acc", Currency.getInstance("USD"),
-                BigDecimal.valueOf(12.0), "*XXX002*");
+        Account srcAcc = Account.createAccount("rub001",
+                                               "user001",
+                                               "XXX001",
+                                               Currency.getInstance("RUB"),
+                                               BigDecimal.valueOf(12.0),
+                                               "*XXX001*"
+        );
+        Account destAcc = Account.createAccount("usd002",
+                                                "user001",
+                                                "XXX001",
+                                                Currency.getInstance("USD"),
+                                                BigDecimal.valueOf(12.0),
+                                                "*XXX002*"
+        );
 
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
 
-        transactionDao.save(Transaction.createTransfer(
-                "test_owner",
-                "1",
-                BigDecimal.ONE,
-                BigDecimal.valueOf(60.0),
-                srcAcc,
-                destAcc,
-                category,
-                DateTime.now(DateTimeZone.UTC)
+        transactionDao.save(Transaction.createTransfer("test_owner",
+                                                       "1",
+                                                       BigDecimal.ONE,
+                                                       BigDecimal.valueOf(60.0),
+                                                       srcAcc,
+                                                       destAcc,
+                                                       category,
+                                                       DateTime.now(DateTimeZone.UTC)
         ));
 
-        transactionDao.save(Transaction.createTransfer(
-                "test_owner",
-                "2",
-                BigDecimal.ONE,
-                BigDecimal.valueOf(60.0),
-                srcAcc,
-                destAcc,
-                category,
-                DateTime.now(DateTimeZone.UTC)
+        transactionDao.save(Transaction.createTransfer("test_owner",
+                                                       "2",
+                                                       BigDecimal.ONE,
+                                                       BigDecimal.valueOf(60.0),
+                                                       srcAcc,
+                                                       destAcc,
+                                                       category,
+                                                       DateTime.now(DateTimeZone.UTC)
         ));
 
         Set<Transaction> txList = transactionDao.findByOwnerId("test_owner");
@@ -111,31 +128,39 @@ public class TransactionDaoTest extends RedisDaoTest {
 
     @Test
     public void canDelete() throws Exception {
-        Account srcAcc = Account.createAccount("rub001", "user001", "XXX001", "run acc", Currency.getInstance("RUB"),
-                BigDecimal.valueOf(12.0), "*XXX001*");
-        Account destAcc = Account.createAccount("usd002", "user001", "XXX001", "run acc", Currency.getInstance("USD"),
-                BigDecimal.valueOf(12.0), "*XXX002*");
+        Account srcAcc = Account.createAccount("rub001",
+                                               "user001",
+                                               "XXX001",
+                                               Currency.getInstance("RUB"),
+                                               BigDecimal.valueOf(12.0),
+                                               "*XXX001*"
+        );
+        Account destAcc = Account.createAccount("usd002",
+                                                "user001",
+                                                "XXX001",
+                                                Currency.getInstance("USD"),
+                                                BigDecimal.valueOf(12.0),
+                                                "*XXX002*"
+        );
 
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat001", "cat 1", "cat 1 desc");
 
-        transactionDao.save(Transaction.createTransfer(
-                "test_owner",
-                "1",
-                BigDecimal.ONE,
-                BigDecimal.valueOf(60.0),
-                srcAcc,
-                destAcc,
-                category,
-                DateTime.now(DateTimeZone.UTC)
+        transactionDao.save(Transaction.createTransfer("test_owner",
+                                                       "1",
+                                                       BigDecimal.ONE,
+                                                       BigDecimal.valueOf(60.0),
+                                                       srcAcc,
+                                                       destAcc,
+                                                       category,
+                                                       DateTime.now(DateTimeZone.UTC)
         ));
 
-        transactionDao.save(Transaction.createExpense(
-                "test_owner",
-                "2",
-                BigDecimal.ONE,
-                srcAcc,
-                category,
-                DateTime.now(DateTimeZone.UTC)
+        transactionDao.save(Transaction.createExpense("test_owner",
+                                                      "2",
+                                                      BigDecimal.ONE,
+                                                      srcAcc,
+                                                      category,
+                                                      DateTime.now(DateTimeZone.UTC)
         ));
 
         Transaction tx1 = transactionDao.findById("1");

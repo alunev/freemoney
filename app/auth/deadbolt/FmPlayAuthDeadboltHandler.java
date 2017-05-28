@@ -60,7 +60,7 @@ public class FmPlayAuthDeadboltHandler extends AbstractDeadboltHandler {
 		}
 
 		// Caching might be a good idea here
-		return CompletableFuture.completedFuture(Optional.ofNullable((Subject) userDao.findById(u.getId())));
+		return CompletableFuture.completedFuture(Optional.ofNullable((Subject) userDao.findByAuthId(u.getId())));
 	}
 
 	@Override

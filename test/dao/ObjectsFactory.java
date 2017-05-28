@@ -10,10 +10,9 @@ import java.util.Currency;
  * @since 0.0.1
  */
 public class ObjectsFactory {
-    public static Account createDummyAccountWithId(String id) {
+    public static Account createDummyAccount() {
         return Account.createAccount(
-                id,
-                null,
+                "",
                 "1111",
                 "test RUB account",
                 Currency.getInstance("RUB"),
@@ -22,11 +21,21 @@ public class ObjectsFactory {
         );
     }
 
-    public static Account createDummyAccountWithIdAndOwnerId(String id, String ownerId) {
+    public static Account createDummyAccountWithOwnerId(String ownerId) {
         return Account.createAccount(
-                id,
                 ownerId,
                 "1111",
+                "test RUB account",
+                Currency.getInstance("RUB"),
+                BigDecimal.valueOf(50.0),
+                "from XXXX"
+        );
+    }
+
+    public static Account createDummyAccountWithOwnerIdAndNumber(String ownerId, String number) {
+        return Account.createAccount(
+                ownerId,
+                number,
                 "test RUB account",
                 Currency.getInstance("RUB"),
                 BigDecimal.valueOf(50.0),

@@ -13,7 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author red
  * @since  0.0.1
  */
-public class AccountDaoTest extends RedisDaoTest {
+public class AccountDaoTest extends JongoDaoTest {
 
     private AccountDao accountDao;
 
@@ -27,31 +27,31 @@ public class AccountDaoTest extends RedisDaoTest {
 
     @Test
     public void canSaveWithoutError() throws Exception {
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("11"));
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("22"));
+        accountDao.save(ObjectsFactory.createDummyAccount());
+        accountDao.save(ObjectsFactory.createDummyAccount());
 
     }
 
     @Test
     public void canFindById() throws Exception {
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("1"));
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("2"));
-        Account account3 = ObjectsFactory.createDummyAccountWithId("3");
+        accountDao.save(ObjectsFactory.createDummyAccount());
+        accountDao.save(ObjectsFactory.createDummyAccount());
+        Account account3 = ObjectsFactory.createDummyAccount();
         accountDao.save(account3);
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("4"));
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("5"));
+        accountDao.save(ObjectsFactory.createDummyAccount());
+        accountDao.save(ObjectsFactory.createDummyAccount());
 
-        assertThat("found account", accountDao.findById("3"), is(account3));
+        assertThat("found account", accountDao.findById(account3.getId()), is(account3));
     }
 
     @Test
     public void canFindByOwnerId() throws Exception {
-        accountDao.save(ObjectsFactory.createDummyAccountWithIdAndOwnerId("1", "firstUserId"));
-        accountDao.save(ObjectsFactory.createDummyAccountWithIdAndOwnerId("2", "firstUserId"));
-        accountDao.save(ObjectsFactory.createDummyAccountWithIdAndOwnerId("3", "firstUserId"));
+        accountDao.save(ObjectsFactory.createDummyAccountWithOwnerId("firstUserId"));
+        accountDao.save(ObjectsFactory.createDummyAccountWithOwnerId("firstUserId"));
+        accountDao.save(ObjectsFactory.createDummyAccountWithOwnerId("firstUserId"));
 
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("4"));
-        accountDao.save(ObjectsFactory.createDummyAccountWithId("5"));
+        accountDao.save(ObjectsFactory.createDummyAccount());
+        accountDao.save(ObjectsFactory.createDummyAccount());
 
         Set<Account> accounts = accountDao.findByOwnerId("firstUserId");
 

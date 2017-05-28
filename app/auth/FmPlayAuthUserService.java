@@ -44,7 +44,7 @@ public class FmPlayAuthUserService extends AbstractUserService {
 		// For production: Caching might be a good idea here...
 		// ...and dont forget to sync the cache when users get deactivated/deleted
 
-        final User user = userDao.findById(identity.getId());
+        final User user = userDao.findByAuthId(identity.getId());
 
 		return user != null ? user.getId() : null;
 	}

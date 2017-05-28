@@ -30,6 +30,6 @@ public class UserService {
             return User.createEmptyUser("", "guest@guest.com");
         }
 
-        return userDao.findById(currentAuthUser.getId());
+        return userDao.findByAuthId(currentAuthUser.getId());
     }
 }

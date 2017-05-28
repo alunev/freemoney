@@ -17,11 +17,11 @@ import static org.junit.Assert.assertThat;
 public class UserTest {
     @Test
     public void getAccountById() throws Exception {
-        Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
-        User user = User.createUserWithAccounts("id1", "id1@mail.com", Sets.newHashSet(
-                ObjectsFactory.createDummyAccountWithId("acc1"),
+        Account acc2 = ObjectsFactory.createDummyAccount();
+        User user = User.createUserWithAccounts("id1@mail.com", Sets.newHashSet(
+                ObjectsFactory.createDummyAccount(),
                 acc2,
-                ObjectsFactory.createDummyAccountWithId("acc3")
+                ObjectsFactory.createDummyAccount()
         ));
 
         assertThat("found account ?", user.getAccounts(), contains(acc2));
@@ -29,11 +29,11 @@ public class UserTest {
 
     @Test
     public void removesAccountById() throws Exception {
-        Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
-        User user = User.createUserWithAccounts("id1", "id1@mail.com", Sets.newHashSet(
-                ObjectsFactory.createDummyAccountWithId("acc1"),
+        Account acc2 = ObjectsFactory.createDummyAccount();
+        User user = User.createUserWithAccounts("id1@mail.com", Sets.newHashSet(
+                ObjectsFactory.createDummyAccount(),
                 acc2,
-                ObjectsFactory.createDummyAccountWithId("acc3")
+                ObjectsFactory.createDummyAccount()
         ));
 
         assertThat("found account ?", user.getAccounts(), hasItem(acc2));
@@ -46,7 +46,7 @@ public class UserTest {
 
     @Test
     public void sameIdCollapses() throws Exception {
-        Account acc1 = ObjectsFactory.createDummyAccountWithId("acc1");
+        Account acc1 = ObjectsFactory.createDummyAccount();
         User user = User.createEmptyUser("id1", "id1@mail.com");
 
         user.addAccount(acc1);
@@ -59,16 +59,16 @@ public class UserTest {
 
     @Test
     public void updateAccount() throws Exception {
-        Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
+        Account acc2 = ObjectsFactory.createDummyAccount();
 
-        User user = User.createUserWithAccounts("id1", "id1@mail.com", Sets.newHashSet(
-                ObjectsFactory.createDummyAccountWithId("acc1"),
+        User user = User.createUserWithAccounts("id1@mail.com", Sets.newHashSet(
+                ObjectsFactory.createDummyAccount(),
                 acc2,
-                ObjectsFactory.createDummyAccountWithId("acc3")
+                ObjectsFactory.createDummyAccount()
         ));
 
-        Account replacement = ObjectsFactory.createDummyAccountWithId("acc2");
-        replacement.setNumber("222new");
+        Account replacement = ObjectsFactory.createDummyAccountWithOwnerIdAndNumber("", "222new");
+
         user.addAccount(replacement);
 
         assertThat("found account ?", user.getAccounts(), contains(acc2));

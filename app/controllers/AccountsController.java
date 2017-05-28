@@ -62,7 +62,6 @@ public class AccountsController extends Controller {
         User user = userService.getUser(session());
 
         if (Strings.isNullOrEmpty(account.getId())) {
-            account.setId(UUID.nameUUIDFromBytes(account.getNumber().getBytes()).toString());
             accountDao.save(account);
 
             user.addAccount(account);

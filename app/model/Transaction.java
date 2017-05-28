@@ -236,4 +236,8 @@ public class Transaction {
     public int hashCode() {
         return Objects.hash(transactionId);
     }
+
+    public static Transaction copyWithOwnerId(Transaction t, String ownerId) {
+        return null;
+    }
 }

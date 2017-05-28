@@ -1,13 +1,13 @@
 package dao;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import model.Account;
-import play.db.jpa.JPAApi;
+import org.bson.types.ObjectId;
+import org.jongo.MongoCursor;
 import play.db.jpa.Transactional;
+import uk.co.panaxiom.playjongo.PlayJongo;
 
-import javax.persistence.Query;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,72 +15,43 @@ import java.util.Set;
  */
 public class AccountDao {
 
-    private final JPAApi jpaApi;
+    private PlayJongo playJongo;
 
     @Inject
-    public AccountDao(JPAApi jpaApi) {
-        this.jpaApi = jpaApi;
+    public AccountDao(PlayJongo playJongo) {
+        this.playJongo = playJongo;
     }
 
-
-    @Transactional
     public Account findById(String accountId) {
-        return jpaApi.withTransaction(
-                em -> em.find(Account.class, accountId)
-        );
+        return accounts().findOne("{_id: #}", new ObjectId(accountId)).as(Account.class);
     }
 
-    @Transactional
     public Set<Account> findByOwnerId(String userId) {
-        return jpaApi.withTransaction(
-                em -> {
-                    Query query = em.createQuery(String.format(
-                            "Select a from Account a where a.ownerId = '%s'", userId
-                    ));
+        MongoCursor<Account> mongoCursor = accounts().find("{ownerId: #}", userId).as(Account.class);
 
-                    return new HashSet<>(query.getResultList());
-                }
-        );
+        return Sets.newHashSet(mongoCursor.iterator());
     }
 
     @Transactional
     public void save(Account account) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.persist(account);
-            return null;
-        });
+        accounts().save(account);
     }
 
     @Transactional
     public void saveAll(Set<Account> accounts) {
-        jpaApi.<Void>withTransaction(em -> {
-            for (Account account : accounts) {
-                em.persist(account);
-            }
-
-            return null;
-        });
+        accounts.forEach(this::save);
     }
 
     @Transactional
     public void delete(Account account) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.remove(account);
-            return null;
-        });
+        accounts().remove(new ObjectId(account.getId()));
     }
 
     public void deleteAll(Set<Account> accounts) {
-        if (accounts.isEmpty()) {
-            return;
-        }
+        accounts.forEach(this::delete);
+    }
 
-        jpaApi.<Void>withTransaction(em -> {
-            for (Account account : accounts) {
-                em.remove(account);
-            }
-
-            return null;
-        });
+    private org.jongo.MongoCollection accounts() {
+        return playJongo.getCollection("accounts");
     }
 }

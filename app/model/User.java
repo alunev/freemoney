@@ -5,8 +5,10 @@ import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Sets;
-import org.jongo.marshall.jackson.oid.MongoId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import java.util.Collections;
@@ -21,33 +23,90 @@ public class User implements Subject {
     @MongoObjectId
     private String _id;
 
+    private final String authId;
+
     private final String email;
 
+    @JsonIgnore
     private final Set<Account> accounts;
 
+    @JsonIgnore
     private final Set<Transaction> transactions;
 
     @JsonCreator
-    public User(String email, Set<Account> accounts, Set<Transaction> transactions) {
+    public User(@JsonProperty("_id") String _id,
+                @JsonProperty("authId") String authId,
+                @JsonProperty("email")String email,
+                @JsonProperty("accounts") Set<Account> accounts,
+                @JsonProperty("transactions") Set<Transaction> transactions) {
+        this._id = _id;
+        this.authId = authId;
         this.email = email;
         this.accounts = accounts;
         this.transactions = transactions;
     }
 
+    public User(String authId,
+                String email,
+                Set<Account> accounts,
+                Set<Transaction> transactions) {
+        this.authId = authId;
+        this.email = email;
+        this.accounts = accounts;
+        this.transactions = transactions;
+    }
+
+
     public static User createEmptyUser(String email) {
-        return new User(email, Collections.emptySet(), Collections.emptySet());
+        return createEmptyUser("", email);
     }
 
-    public static User createEmptyUser(String userId, String email) {
-        return new User(email, Collections.emptySet(), Collections.emptySet());
+    public static User createEmptyUser(String authId, String email) {
+        return new UserBuilder().withAuthId(authId)
+                                .withEmail(email)
+                                .withAccounts(Collections.emptySet())
+                                .withTransactions(Collections.emptySet())
+                                .build();
     }
 
-    public static User createUserWithAccounts(String userId, String email, Set<Account> accounts) {
-        return new User(email, accounts, Collections.emptySet());
+    public static User createUserWithAccounts(String email, Set<Account> accounts) {
+        return new UserBuilder().withEmail(email)
+                                .withAccounts(accounts)
+                                .withTransactions(Collections.emptySet())
+                                .build();
+    }
+
+    public static User createUserWithAccounts(String authId, String email, Set<Account> accounts) {
+        return new UserBuilder().withAuthId(authId)
+                                .withEmail(email)
+                                .withAccounts(accounts)
+                                .withTransactions(Collections.emptySet())
+                                .build();
+    }
+
+    public static User createUser(String authId, String email, Set<Account> accounts, Set<Transaction> transactions) {
+        return new UserBuilder().withAuthId(authId)
+                                .withEmail(email)
+                                .withAccounts(accounts)
+                                .withTransactions(Collections.emptySet())
+                                .build();
+    }
+
+    public static User createUser(String id, String authId, String email, Set<Account> accounts, Set<Transaction> transactions) {
+        return new UserBuilder().with_id(id)
+                                .withAuthId(authId)
+                                .withEmail(email)
+                                .withAccounts(accounts)
+                                .withTransactions(Collections.emptySet())
+                                .build();
     }
 
     public String getId() {
         return _id;
+    }
+
+    public String getAuthId() {
+        return authId;
     }
 
     public String getEmail() {
@@ -55,11 +114,11 @@ public class User implements Subject {
     }
 
     public Set<Account> getAccounts() {
-        return Sets.newHashSet(accounts);
+        return accounts == null ? Collections.emptySet() : Sets.newHashSet(accounts);
     }
 
     public Set<Transaction> getTransactions() {
-        return Sets.newHashSet(transactions);
+        return transactions == null ? Collections.emptySet() : Sets.newHashSet(transactions);
     }
 
     public void addAccount(Account account) {
@@ -103,6 +162,7 @@ public class User implements Subject {
         if (user == null) return false;
 
         return Objects.equals(_id, user._id) &&
+                Objects.equals(authId, user.authId) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(accounts, user.accounts) &&
                 Objects.equals(transactions, user.transactions);
@@ -125,6 +185,26 @@ public class User implements Subject {
 
     @Override
     public String getIdentifier() {
-        return _id;
+        return authId;
     }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("_id", _id)
+                .add("authId", authId)
+                .add("email", email)
+                .add("accounts", accounts)
+                .add("transactions", transactions)
+                .toString();
+    }
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
+    public static UserBuilder builder(User user) {
+        return new UserBuilder(user);
+    }
+
 }
