@@ -2,63 +2,72 @@ package dao;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.mongodb.WriteResult;
 import model.Account;
 import model.Transaction;
 import model.User;
-import play.db.jpa.JPAApi;
+import org.bson.types.ObjectId;
+import uk.co.panaxiom.playjongo.PlayJongo;
 
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Singleton
 public class UserDao {
-    private final JPAApi jpaApi;
+    private PlayJongo playJongo;
 
     private final AccountDao accountDao;
 
     private final TransactionDao transactionDao;
 
     @Inject
-    public UserDao(JPAApi jpaApi, AccountDao accountDao, TransactionDao transactionDao) {
-        this.jpaApi = jpaApi;
+    public UserDao(PlayJongo playJongo, AccountDao accountDao, TransactionDao transactionDao) {
+        this.playJongo = playJongo;
         this.accountDao = accountDao;
         this.transactionDao = transactionDao;
     }
 
-    public User findById(String userId) {
-        return jpaApi.withTransaction(
-                em -> {
-                    User user = em.find(User.class, userId);
+    public User findById(String id) {
+        User user = users().findOne("{_id: #}", new ObjectId(id)).as(User.class);
 
-                    if (user != null) {
-                        user.setAccounts(accountDao.findByOwnerId(userId));
-                        user.setTransactions(transactionDao.findByOwnerId(userId));
-                    }
-
-                    return user;
-                }
-        );
+        return resolveReferences(user);
     }
 
-    public void save(User user) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.persist(user);
+    public User findByAuthId(String authId) {
+        User user = users().findOne("{authId: #}", authId).as(User.class);
 
-            updateAccounts(user);
-            updateTransactions(user);
+        resolveReferences(user);
 
-            return null;
-        });
+        return user;
     }
 
-    private void updateAccounts(User user) {
-        Set<Account> newAccounts = user.getAccounts();
-        Set<Account> oldAccounts = accountDao.findByOwnerId(user.getUserId());
+    public String save(User user) {
+        WriteResult result = users().save(user);
 
-        newAccounts.forEach(a -> a.setOwnerId(user.getUserId()));
+        saveAccounts(user);
 
-        // save existing accounts
+        return result.isUpdateOfExisting() ? user.getId() : result.getUpsertedId().toString();
+    }
+
+    private User resolveReferences(User user) {
+        return User.builder(user)
+                   .withAccounts(accountDao.findByOwnerId(user.getId()))
+                   .withTransactions(transactionDao.findByOwnerId(user.getId()))
+                   .build();
+    }
+
+    private void saveAccounts(User user) {
+        User.createUser(user.getAuthId(), user.getEmail(), user.getAccounts(), user.getTransactions());
+
+        Set<Account> newAccounts = user.getAccounts()
+                                       .stream()
+                                       .map(a -> Account.copyWithOwnerId(a, user.getId()))
+                                       .collect(Collectors.toSet());
+
+        Set<Account> oldAccounts = accountDao.findByOwnerId(user.getId());
+
+        // save all new accounts
         accountDao.saveAll(newAccounts);
 
         // delete old but deleted accounts
@@ -67,30 +76,30 @@ public class UserDao {
     }
 
     private void updateTransactions(User user) {
-        Set<Transaction> newTransactions = user.getTransactions();
-        Set<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getUserId());
+        Set<Transaction> newTransactions = user.getTransactions()
+                                               .stream()
+                                               .map(a -> Transaction.copyWithOwnerId(a, user.getId()))
+                                               .collect(Collectors.toSet());
 
-        newTransactions.forEach(t -> t.setOwnerId(user.getUserId()));
+        Set<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getId());
 
-        // save existing accounts
+        // save all ne tx
         transactionDao.saveAll(newTransactions);
 
-        // delete old but deleted accounts
+        // delete old but deleted tx
         oldTransactions.removeAll(newTransactions);
         transactionDao.deleteAll(oldTransactions);
     }
 
     public void delete(User user) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.remove(user);
-
-            accountDao.deleteAll(user.getAccounts());
-
-            return null;
-        });
+        users().remove(new ObjectId(user.getId()));
     }
 
     public boolean idExistsInDb(String userId) {
-        return jpaApi.withTransaction(em -> em.find(User.class, userId)) != null;
+        return users().findOne(userId).as(User.class) != null;
+    }
+
+    private org.jongo.MongoCollection users() {
+        return playJongo.getCollection("users");
     }
 }

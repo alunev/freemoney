@@ -2,15 +2,11 @@ package dao;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import model.Account;
-import model.Sms;
-import model.Transaction;
 import model.Sms;
 import play.db.jpa.JPAApi;
 
 import javax.persistence.Query;
 import java.math.BigInteger;
-import java.util.List;
 
 
 @Singleton

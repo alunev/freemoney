@@ -15,8 +15,6 @@ import services.UserService;
 import views.html.accounts;
 import views.html.edit_account;
 
-import java.util.UUID;
-
 public class AccountsController extends Controller {
 
     private final PlayAuthenticate auth;
@@ -62,11 +60,14 @@ public class AccountsController extends Controller {
         User user = userService.getUser(session());
 
         if (Strings.isNullOrEmpty(account.getId())) {
-            account.setId(UUID.nameUUIDFromBytes(account.getNumber().getBytes()).toString());
+            accountDao.save(account);
+
+            user.addAccount(account);
+            userDao.save(user);
+        } else {
+            accountDao.save(account);
         }
 
-        user.addAccount(account);
-        userDao.save(user);
 
         flash("success", "Saved successfully");
 

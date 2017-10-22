@@ -5,11 +5,7 @@ import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 import org.joda.time.DateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -235,5 +231,9 @@ public class Transaction {
     @Override
     public int hashCode() {
         return Objects.hash(transactionId);
+    }
+
+    public static Transaction copyWithOwnerId(Transaction t, String ownerId) {
+        return null;
     }
 }

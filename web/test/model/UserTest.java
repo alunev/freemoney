@@ -4,12 +4,9 @@ import com.google.common.collect.Sets;
 import dao.ObjectsFactory;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.Optional;
-
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
@@ -20,25 +17,23 @@ import static org.junit.Assert.assertThat;
 public class UserTest {
     @Test
     public void getAccountById() throws Exception {
-        Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
-        User user = User.createUser("id1", "id1@mail.com", Sets.newHashSet(
-                ObjectsFactory.createDummyAccountWithId("acc1"),
+        Account acc2 = ObjectsFactory.createDummyAccount();
+        User user = User.createUserWithAccounts("id1@mail.com", Sets.newHashSet(
+                ObjectsFactory.createDummyAccount(),
                 acc2,
-                ObjectsFactory.createDummyAccountWithId("acc3")
+                ObjectsFactory.createDummyAccount()
         ));
 
-        Optional<Account> foundAccount = user.getAccountById("acc2");
-        assertThat("found account ?", foundAccount.isPresent(), is(true));
-        assertThat("acc2 account", foundAccount.get(), is(acc2));
+        assertThat("found account ?", user.getAccounts(), contains(acc2));
     }
 
     @Test
     public void removesAccountById() throws Exception {
-        Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
-        User user = User.createUser("id1", "id1@mail.com", Sets.newHashSet(
-                ObjectsFactory.createDummyAccountWithId("acc1"),
+        Account acc2 = ObjectsFactory.createDummyAccount();
+        User user = User.createUserWithAccounts("id1@mail.com", Sets.newHashSet(
+                ObjectsFactory.createDummyAccount(),
                 acc2,
-                ObjectsFactory.createDummyAccountWithId("acc3")
+                ObjectsFactory.createDummyAccount()
         ));
 
         assertThat("found account ?", user.getAccounts(), hasItem(acc2));
@@ -51,8 +46,8 @@ public class UserTest {
 
     @Test
     public void sameIdCollapses() throws Exception {
-        Account acc1 = ObjectsFactory.createDummyAccountWithId("acc1");
-        User user = User.createUser("id1", "id1@mail.com", Collections.emptySet());
+        Account acc1 = ObjectsFactory.createDummyAccount();
+        User user = User.createEmptyUser("id1", "id1@mail.com");
 
         user.addAccount(acc1);
         user.addAccount(acc1);
@@ -63,20 +58,20 @@ public class UserTest {
     }
 
     @Test
-    public void replaceAccount() throws Exception {
-        Account acc2 = ObjectsFactory.createDummyAccountWithId("acc2");
+    public void updateAccount() throws Exception {
+        Account acc2 = ObjectsFactory.createDummyAccount();
 
-        User user = User.createUser("id1", "id1@mail.com", Sets.newHashSet(
-                ObjectsFactory.createDummyAccountWithId("acc1"),
+        User user = User.createUserWithAccounts("id1@mail.com", Sets.newHashSet(
+                ObjectsFactory.createDummyAccount(),
                 acc2,
-                ObjectsFactory.createDummyAccountWithId("acc3")
+                ObjectsFactory.createDummyAccount()
         ));
 
-        Account replacement = ObjectsFactory.createDummyAccountWithId("acc2");
-        replacement.setNumber("222new");
+        Account replacement = ObjectsFactory.createDummyAccountWithOwnerIdAndNumber("", "222new");
+
         user.addAccount(replacement);
 
-        assertThat("found account ?", user.getAccountById("acc2").get().getNumber(), is("222new"));
+        assertThat("found account ?", user.getAccounts(), contains(acc2));
     }
 
 }

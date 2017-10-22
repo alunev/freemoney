@@ -7,11 +7,7 @@ import dao.AccountDao;
 import dao.TransactionCategoryDao;
 import dao.TransactionDao;
 import dao.UserDao;
-import model.Account;
-import model.Transaction;
-import model.TransactionCategory;
-import model.TransactionType;
-import model.User;
+import model.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -80,7 +76,7 @@ public class TransactionsController extends Controller {
 
         User user = userService.getUser(session());
 
-        Map<String, String> accountsMap = accountDao.findByOwnerId(user.getUserId()).stream().collect(
+        Map<String, String> accountsMap = accountDao.findByOwnerId(user.getId()).stream().collect(
                 Collectors.toMap(Account::getId, Account::getTitle)
         );
 

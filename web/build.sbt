@@ -32,3 +32,7 @@ resolvers += "Riptano" at "http://mvn.riptano.com/content/repositories/public"
 resolvers += Resolver.sonatypeRepo("snapshots")
 //resolvers += "Kundera missing" at "http://kundera.googlecode.com/svn/maven2/maven-missing-resources"
 //resolvers += "Scale 7" at "https://github.com/s7/mvnrepo/raw/master"
+
+libraryDependencies += "org.mongodb" % "mongo-java-driver" % "3.4.2"
+libraryDependencies += "uk.co.panaxiom" %% "play-jongo" % "2.0.0-jongo1.3"
+libraryDependencies += "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.0.0"

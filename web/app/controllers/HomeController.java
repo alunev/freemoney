@@ -3,10 +3,11 @@ package controllers;
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.inject.Inject;
 import model.User;
-import play.mvc.*;
-
+import play.mvc.Controller;
+import play.mvc.Result;
 import services.UserService;
-import views.html.*;
+import views.html.index;
+import views.html.logon_failed;
 
 /**
  * This controller contains an action to handle HTTP requests
