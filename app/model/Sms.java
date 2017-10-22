@@ -2,13 +2,14 @@ package model;
 
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
-import org.joda.time.DateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -33,13 +34,13 @@ public class Sms {
     private String text;
 
     @Column(name = "createdTs")
-    private DateTime createdTs;
+    private LocalDateTime createdTs;
 
     public Sms() {
         // for jpa
     }
 
-    private Sms(String id, String ownerId, String deviceId, String text, DateTime createdTs) {
+    private Sms(String id, String ownerId, String deviceId, String text, LocalDateTime createdTs) {
         this.id = id;
         this.ownerId = ownerId;
         this.deviceId = deviceId;
@@ -47,12 +48,21 @@ public class Sms {
         this.createdTs = createdTs;
     }
 
-    public static Sms createSms(String id, String ownerId, String deviceId, String text, DateTime createdTs) {
+    public static Sms createSms(String id, String ownerId, String deviceId, String text, LocalDateTime createdTs) {
+        ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
         return new Sms(id, ownerId, deviceId, text, createdTs);
+    }
+
+    public static Sms createSms(String ownerId, String deviceId, String text, LocalDateTime createdTs) {
+        return new Sms("", ownerId, deviceId, text, createdTs);
     }
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getOwnerId() {
@@ -67,7 +77,7 @@ public class Sms {
         return text;
     }
 
-    public DateTime getCreatedTs() {
+    public LocalDateTime getCreatedTs() {
         return createdTs;
     }
 

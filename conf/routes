@@ -15,6 +15,8 @@ GET         /transactions/edit/:txId              controllers.TransactionsContro
 GET         /transactions/delete/:txId            controllers.TransactionsController.deleteTransaction(txId : String)
 POST        /transactions/save                    controllers.TransactionsController.saveTransactionForm()
 
+# REST methods for calling from Android
+POST        /sms/process                          controllers.RestApiController.processSms
 
 # An example controller showing how to write asynchronous code
 GET         /message                              controllers.AsyncController.message

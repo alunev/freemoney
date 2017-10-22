@@ -27,7 +27,7 @@ public class SmsDao {
     public long nextId() {
         return jpaApi.withTransaction(
                 em -> {
-                    Query q = em.createNativeQuery("INCR " + ID_SEQ_NAME, Sms.class);
+                    Query q = em.createNativeQuery("INCR " + ID_SEQ_NAME, Long.class);
                     return ((BigInteger) q.getSingleResult()).longValue();
                 }
         );
