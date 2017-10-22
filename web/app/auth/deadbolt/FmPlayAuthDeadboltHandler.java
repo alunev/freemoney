@@ -46,7 +46,7 @@ public class FmPlayAuthDeadboltHandler extends AbstractDeadboltHandler {
 			final String originalUrl = this.auth.storeOriginalUrl(context);
 
 			context.flash().put("error",
-					"You need to log in first, to view '" + originalUrl + "'");
+								"You need to log in first, to view '" + originalUrl + "'");
 			return CompletableFuture.completedFuture(Optional.ofNullable(redirect(this.auth.getResolver().login())));
 		}
 	}
@@ -60,7 +60,7 @@ public class FmPlayAuthDeadboltHandler extends AbstractDeadboltHandler {
 		}
 
 		// Caching might be a good idea here
-		return CompletableFuture.completedFuture(Optional.ofNullable((Subject) userDao.findById(u.getId())));
+		return CompletableFuture.completedFuture(Optional.ofNullable((Subject) userDao.findByAuthId(u.getId())));
 	}
 
 	@Override
@@ -71,10 +71,10 @@ public class FmPlayAuthDeadboltHandler extends AbstractDeadboltHandler {
 
 	@Override
 	public CompletionStage<Result> onAuthFailure(final Http.Context context,
-                                                 final Optional<String> content) {
+												 final Optional<String> content) {
 		// if the user has a cookie with a valid user and the local user has
 		// been deactivated/deleted in between, it is possible that this gets
 		// shown. You might want to consider to sign the user out in this case.
-        return CompletableFuture.completedFuture(forbidden("Forbidden"));
+		return CompletableFuture.completedFuture(forbidden("Forbidden"));
 	}
 }

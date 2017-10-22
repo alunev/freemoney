@@ -162,10 +162,10 @@ public class User implements Subject {
         if (user == null) return false;
 
         return Objects.equals(_id, user._id) &&
-                Objects.equals(authId, user.authId) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(accounts, user.accounts) &&
-                Objects.equals(transactions, user.transactions);
+               Objects.equals(authId, user.authId) &&
+               Objects.equals(email, user.email) &&
+               Objects.equals(accounts, user.accounts) &&
+               Objects.equals(transactions, user.transactions);
     }
 
     @Override
@@ -191,12 +191,12 @@ public class User implements Subject {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("_id", _id)
-                .add("authId", authId)
-                .add("email", email)
-                .add("accounts", accounts)
-                .add("transactions", transactions)
-                .toString();
+                          .add("_id", _id)
+                          .add("authId", authId)
+                          .add("email", email)
+                          .add("accounts", accounts)
+                          .add("transactions", transactions)
+                          .toString();
     }
 
     public static UserBuilder builder() {
