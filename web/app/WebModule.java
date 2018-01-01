@@ -9,6 +9,7 @@ import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
 import dao.UserDao;
 import services.ApplicationTimer;
+import uk.co.panaxiom.playjongo.PlayJongo;
 
 import java.time.Clock;
 
@@ -32,6 +33,7 @@ public class WebModule extends AbstractModule {
         // application starts.
         bind(ApplicationTimer.class).asEagerSingleton();
 
+        bind(PlayJongo.class).asEagerSingleton();
 
         bind(UserDao.class).asEagerSingleton();
 
