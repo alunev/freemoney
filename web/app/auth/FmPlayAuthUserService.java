@@ -24,12 +24,12 @@ public class FmPlayAuthUserService extends AbstractUserService {
 
 	@Override
 	public String save(final AuthUser authUser) {
-		GoogleAuthUser googleAuthUser = AuthUserConverter.toGoogleAuthUser(authUser);
-		if (googleAuthUser == null) {
-			return null;
-		}
+        GoogleAuthUser googleAuthUser = AuthUserConverter.toGoogleAuthUser(authUser);
+        if (googleAuthUser == null) {
+            return null;
+        }
 
-		User user = User.createEmptyUser(googleAuthUser.getId(), googleAuthUser.getEmail());
+        User user = User.createEmptyUser(googleAuthUser.getId(), googleAuthUser.getEmail());
 
 		if (!userDao.idExistsInDb(user.getId())) {
 			userDao.save(user);
@@ -40,11 +40,11 @@ public class FmPlayAuthUserService extends AbstractUserService {
 	}
 
 	@Override
-	public String getLocalIdentity(final AuthUserIdentity identity) {
+    public String getLocalIdentity(final AuthUserIdentity identity) {
 		// For production: Caching might be a good idea here...
 		// ...and dont forget to sync the cache when users get deactivated/deleted
 
-		final User user = userDao.findByAuthId(identity.getId());
+        final User user = userDao.findByAuthId(identity.getId());
 
 		return user != null ? user.getId() : null;
 	}
