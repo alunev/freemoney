@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="SBT 1" modules="root">
+    <profile name="SBT 1" modules=".idea-root,root">
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />
       <parameters>
@@ -9,5 +9,6 @@
         <parameter value="utf8" />
       </parameters>
     </profile>
+    <profile name="sbt 1" modules="modules" />
   </component>
 </project>
