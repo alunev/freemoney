@@ -1,122 +1,80 @@
 package dao;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import model.Account;
 import model.Transaction;
+import org.bson.types.ObjectId;
+import org.jongo.MongoCursor;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
+import uk.co.panaxiom.playjongo.PlayJongo;
 
 import javax.persistence.Query;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Singleton
 public class TransactionDao {
-    private final JPAApi jpaApi;
+    private PlayJongo playJongo;
 
     private final AccountDao accountDao;
     private final TransactionCategoryDao categoryDao;
 
     @Inject
-    public TransactionDao(JPAApi jpaApi, AccountDao accountDao, TransactionCategoryDao categoryDao) {
-        this.jpaApi = jpaApi;
+    public TransactionDao(PlayJongo playJongo, AccountDao accountDao, TransactionCategoryDao categoryDao) {
+        this.playJongo = playJongo;
         this.accountDao = accountDao;
         this.categoryDao = categoryDao;
     }
 
     public Transaction findById(String transactionId) {
-        return jpaApi.withTransaction(
-                em -> {
-                    Transaction transaction = em.find(Transaction.class, transactionId);
+        Transaction transaction = transactions().findOne("{_id: #}", new ObjectId(transactionId)).as(Transaction.class);
 
-                    if (transaction != null) {
-                        updateTransientFields(transaction);
-                    }
+        if (transaction == null) {
+            return null;
+        }
 
-                    return transaction;
-                }
-        );
+        return updateTransientFields(transaction);
     }
 
-    @Transactional
     public Set<Transaction> findByOwnerId(String userId) {
-        return jpaApi.withTransaction(
-                em -> {
-                    Query query = em.createQuery(String.format(
-                            "Select t from Transaction t where t.ownerId = '%s'", userId
-                    ));
+        MongoCursor<Transaction> mongoCursor = transactions().find("{ownerId: #}", userId).as(Transaction.class);
 
-                    return ((List<Transaction>) query.getResultList()).stream().map(t -> {
-                        updateTransientFields(t);
-
-                        return t;
-                    }).collect(Collectors.toSet());
-                }
-        );
+        return Sets.newHashSet(mongoCursor.iterator()).stream()
+                .map(this::updateTransientFields)
+                .collect(Collectors.toSet());
     }
 
     public void save(Transaction transaction) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.persist(transaction);
-
-            saveTransientFields(transaction);
-
-            return null;
-        });
+        transactions().save(transaction);
     }
 
     public void delete(Transaction transaction) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.remove(transaction);
-
-            deleteTransientFields(transaction);
-
-            return null;
-        });
+        transactions().remove(new ObjectId(transaction.getId()));
     }
 
     public void saveAll(Set<Transaction> transactions) {
-        jpaApi.<Void>withTransaction(em -> {
-            for (Transaction tx : transactions) {
-                em.persist(tx);
-
-                saveTransientFields(tx);
-            }
-
-            return null;
-        });
+        transactions.forEach(this::save);
     }
 
     public void deleteAll(Set<Transaction> transactions) {
-        if (transactions.isEmpty()) {
-            return;
-        }
-
-        jpaApi.<Void>withTransaction(em -> {
-            for (Transaction tx : transactions) {
-                em.remove(tx);
-            }
-
-            return null;
-        });
+        transactions.forEach(this::delete);
     }
 
-    private void saveTransientFields(Transaction transaction) {
-        categoryDao.save(transaction.getCategory());
-        accountDao.save(transaction.getSourceAccount());
-        accountDao.save(transaction.getDestAccount());
-    }
-
-    private void deleteTransientFields(Transaction transaction) {
-        categoryDao.delete(transaction.getCategory());
-        accountDao.delete(transaction.getSourceAccount());
-        accountDao.delete(transaction.getDestAccount());
-    }
-
-    public void updateTransientFields(Transaction transaction) {
+    private Transaction updateTransientFields(Transaction transaction) {
         transaction.setCategory(categoryDao.findById(transaction.getCategoryId()));
         transaction.setSourceAccount(accountDao.findById(transaction.getSourceId()));
         transaction.setDestAccount(accountDao.findById(transaction.getDestId()));
+
+        return transaction;
+    }
+
+    private org.jongo.MongoCollection transactions() {
+        return playJongo.getCollection("transactions");
     }
 }

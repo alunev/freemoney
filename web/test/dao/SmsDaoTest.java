@@ -7,15 +7,13 @@ import org.junit.Test;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author red
  * @since 0.0.1
  */
-public class SmsDaoTest extends RedisDaoTest {
+public class SmsDaoTest extends JongoDaoTest {
 
     private SmsDao smsDao;
 
@@ -28,15 +26,10 @@ public class SmsDaoTest extends RedisDaoTest {
     }
 
     @Test
-    public void nextId() throws Exception {
-        assertThat(smsDao.nextId(), is(1));
-    }
-
-    @Test
     public void saved() throws Exception {
-        Sms sms = Sms.createSms("1", "1", "andr001", "PAY 444.99", ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
+        Sms sms = Sms.createSms("1", "andr001", "PAY 444.99", ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
         smsDao.save(sms);
 
-        assertTrue("read same as saved", smsDao.findById("1").sameAs(sms));
+        assertTrue("read same as saved", smsDao.findById(sms.getId()).sameAs(sms));
     }
 }

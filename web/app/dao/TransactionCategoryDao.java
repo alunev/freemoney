@@ -1,13 +1,15 @@
 package dao;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import model.TransactionCategory;
-import play.db.jpa.JPAApi;
+import org.bson.types.ObjectId;
+import org.jongo.MongoCursor;
 import play.db.jpa.Transactional;
+import uk.co.panaxiom.playjongo.PlayJongo;
 
-import javax.persistence.Query;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by red on 30.12.16.
@@ -16,45 +18,34 @@ import java.util.List;
 @Singleton
 public class TransactionCategoryDao {
 
-    private final JPAApi jpaApi;
+    private PlayJongo playJongo;
 
     @Inject
-    public TransactionCategoryDao(JPAApi jpaApi) {
-        this.jpaApi = jpaApi;
+    public TransactionCategoryDao(PlayJongo playJongo) {
+        this.playJongo = playJongo;
     }
 
-
-    @Transactional
     public TransactionCategory findById(String categoryId) {
-        return jpaApi.withTransaction(
-                em -> em.find(TransactionCategory.class, categoryId)
-        );
+        return categories().findOne("{_id: #}", new ObjectId(categoryId)).as(TransactionCategory.class);
     }
 
-    @Transactional
-    public List<TransactionCategory> findAll() {
-        return jpaApi.withTransaction(
-                em -> {
-                    Query query = em.createQuery("Select c from TransactionCategory c");
+    public Set<TransactionCategory> findAll() {
+        MongoCursor<TransactionCategory> mongoCursor = categories().find().as(TransactionCategory.class);
 
-                    return ((List<TransactionCategory>) query.getResultList());
-                }
-        );
+        return Sets.newHashSet(mongoCursor.iterator());
     }
 
     @Transactional
     public void save(TransactionCategory category) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.persist(category);
-            return null;
-        });
+        categories().save(category);
     }
 
     @Transactional
     public void delete(TransactionCategory category) {
-        jpaApi.<Void>withTransaction(em -> {
-            em.remove(category);
-            return null;
-        });
+        categories().remove(new ObjectId(category.getId()));
+    }
+
+    private org.jongo.MongoCollection categories() {
+        return playJongo.getCollection("categories");
     }
 }

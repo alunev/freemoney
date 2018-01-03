@@ -47,7 +47,7 @@
                 <tbody>
                     @for(tx <- user.getTransactions) {
                         <tr>
-                            <td>@tx.getTransactionId</td>
+                            <td>@tx.getId</td>
                             <td>@tx.getAddedTime</td>
                             <td>@tx.getTransactionType</td>
                             <td>@tx.getCategory.getName</td>
@@ -60,8 +60,8 @@
                             <td>@tx.getSourceAmount</td>
                             <td>@tx.getSourceAccount.getCurrency</td>
                             }
-                            <td><a href="@routes.TransactionsController.showEditForm(tx.getTransactionId)">Edit</a></td>
-                            <td><a href="@routes.TransactionsController.deleteTransaction(tx.getTransactionId)">Delete</a></td>
+                            <td><a href="@routes.TransactionsController.showEditForm(tx.getId)">Edit</a></td>
+                            <td><a href="@routes.TransactionsController.deleteTransaction(tx.getId)">Delete</a></td>
                         </tr>
                     }
                 </tbody>

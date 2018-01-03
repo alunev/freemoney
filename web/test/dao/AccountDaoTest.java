@@ -6,8 +6,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author red
@@ -33,6 +32,14 @@ public class AccountDaoTest extends JongoDaoTest {
     }
 
     @Test
+    public void idIsGeneratedAndSet() throws Exception {
+        Account account = ObjectsFactory.createDummyAccount();
+        accountDao.save(account);
+
+        assertThat(account.getId()).isNotBlank();
+    }
+
+    @Test
     public void canFindById() throws Exception {
         accountDao.save(ObjectsFactory.createDummyAccount());
         accountDao.save(ObjectsFactory.createDummyAccount());
@@ -41,7 +48,7 @@ public class AccountDaoTest extends JongoDaoTest {
         accountDao.save(ObjectsFactory.createDummyAccount());
         accountDao.save(ObjectsFactory.createDummyAccount());
 
-        assertThat("found account", accountDao.findById(account3.getId()), is(account3));
+        assertThat(accountDao.findById(account3.getId())).isEqualTo(account3);
     }
 
     @Test
@@ -55,6 +62,6 @@ public class AccountDaoTest extends JongoDaoTest {
 
         Set<Account> accounts = accountDao.findByOwnerId("firstUserId");
 
-        assertThat("found account", accounts.size(), is(3));
+        assertThat(accounts).hasSize(3);
     }
 }

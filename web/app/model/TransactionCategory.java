@@ -1,34 +1,32 @@
 package model;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import org.jongo.marshall.jackson.oid.MongoObjectId;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Objects;
 
-@Entity
-@Table(name = "transactions", schema = "RedisK@redis_pu")
 public class TransactionCategory {
 
-    @Id
-    @Column(name = "category_id")
-    private String categoryId;
+    @MongoObjectId
+    private String _id;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
     private String description;
 
-    public TransactionCategory() {
-        // required by JPA
+    @JsonCreator
+    private TransactionCategory(@JsonProperty("_id") String categoryId,
+                                @JsonProperty("name") String name,
+                                @JsonProperty("description") String description) {
+        this._id = categoryId;
+        this.name = name;
+        this.description = description;
     }
 
-    private TransactionCategory(String categoryId, String name, String description) {
-        this.categoryId = categoryId;
+    public TransactionCategory(String name, String description) {
         this.name = name;
         this.description = description;
     }
@@ -37,8 +35,12 @@ public class TransactionCategory {
         return new TransactionCategory(categoryId, name, description);
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public static TransactionCategory createTransactionCategory(String name, String description) {
+        return new TransactionCategory(name, description);
+    }
+
+    public String getId() {
+        return _id;
     }
 
     public String getName() {
@@ -53,19 +55,32 @@ public class TransactionCategory {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         TransactionCategory that = (TransactionCategory) o;
-        return Objects.equals(categoryId, that.categoryId);
+
+        return Objects.equals(_id, that._id);
+    }
+
+    public boolean identicalTo(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TransactionCategory that = (TransactionCategory) o;
+
+        return Objects.equals(_id, that._id)
+                && Objects.equals(name, that.name)
+                && Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(categoryId);
+        return Objects.hash(_id);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("categoryId", categoryId)
+                .add("categoryId", _id)
                 .add("name", name)
                 .add("description", description)
                 .toString();

@@ -1,47 +1,43 @@
 package model;
 
-import com.impetus.kundera.index.Index;
-import com.impetus.kundera.index.IndexCollection;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jongo.marshall.jackson.oid.MongoObjectId;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
  * @author red
  * @since 0.0.1
  */
-@Entity
-@Table(name = "smses", schema = "RedisK@redis_pu")
-@IndexCollection(columns={@Index(name="ownerId")})
 public class Sms {
-    @Id
-    @Column(name = "id")
-    private String id;
 
-    @Column(name = "ownerId")
+    @MongoObjectId
+    private String _id;
+
     private String ownerId;
 
-    @Column(name = "deviceId")
     private String deviceId;
 
-    @Column(name = "text")
     private String text;
 
-    @Column(name = "createdTs")
     private LocalDateTime createdTs;
 
-    public Sms() {
-        // for jpa
+    @JsonCreator
+    private Sms(@JsonProperty("id") String id,
+                @JsonProperty("ownerId") String ownerId,
+                @JsonProperty("deviceId") String deviceId,
+                @JsonProperty("text") String text,
+                @JsonProperty("createdTs") LocalDateTime createdTs) {
+        this._id = id;
+        this.ownerId = ownerId;
+        this.deviceId = deviceId;
+        this.text = text;
+        this.createdTs = createdTs;
     }
 
-    private Sms(String id, String ownerId, String deviceId, String text, LocalDateTime createdTs) {
-        this.id = id;
+    public Sms(String ownerId, String deviceId, String text, LocalDateTime createdTs) {
         this.ownerId = ownerId;
         this.deviceId = deviceId;
         this.text = text;
@@ -49,20 +45,15 @@ public class Sms {
     }
 
     public static Sms createSms(String id, String ownerId, String deviceId, String text, LocalDateTime createdTs) {
-        ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
         return new Sms(id, ownerId, deviceId, text, createdTs);
     }
 
     public static Sms createSms(String ownerId, String deviceId, String text, LocalDateTime createdTs) {
-        return new Sms("", ownerId, deviceId, text, createdTs);
+        return new Sms(ownerId, deviceId, text, createdTs);
     }
 
     public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        return _id;
     }
 
     public String getOwnerId() {
@@ -85,13 +76,15 @@ public class Sms {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Sms sms = (Sms) o;
-        return Objects.equals(id, sms.id);
+
+        return Objects.equals(_id, sms._id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(_id);
     }
 
     public boolean sameAs(Sms o) {
@@ -100,7 +93,7 @@ public class Sms {
 
         Sms sms = (Sms) o;
 
-        return Objects.equals(id, sms.id) &&
+        return Objects.equals(_id, sms._id) &&
                 Objects.equals(ownerId, sms.ownerId) &&
                 Objects.equals(deviceId, sms.deviceId) &&
                 Objects.equals(text, sms.text) &&

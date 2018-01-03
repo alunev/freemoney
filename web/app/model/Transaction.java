@@ -1,48 +1,40 @@
 package model;
 
 
-import com.impetus.kundera.index.Index;
-import com.impetus.kundera.index.IndexCollection;
-import org.joda.time.DateTime;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jongo.marshall.jackson.oid.MongoObjectId;
 
-import javax.persistence.*;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Entity
-@Table(name = "transactions", schema = "RedisK@redis_pu")
-@IndexCollection(columns={@Index(name="ownerId")})
 public class Transaction {
 
-    @Id
-    @Column(name = "transaction_id")
-    private String transactionId;
+    @MongoObjectId
+    private String _id;
 
-    @Column(name = "type")
+    private String ownerId;
+
     private TransactionType transactionType;
 
-    @Column(name = "categoryId")
     private String categoryId;
 
-    @Column(name = "source_id")
     private String sourceId;
 
-    @Column(name = "dest_id")
     private String destId;
 
-    @Column(name = "sourceAmount")
     private BigDecimal sourceAmount;
 
-    @Column(name = "destAmount")
     private BigDecimal destAmount;
 
-    @Column(name = "added_date")
-    private DateTime addedTime;
+    private LocalDateTime addedTime;
 
-    @Column(name = "ownerId")
-    private String ownerId;
+    @Transient
+    private TransactionCategory category;
 
     @Transient
     private Account sourceAccount;
@@ -50,79 +42,141 @@ public class Transaction {
     @Transient
     private Account destAccount;
 
-    @Transient
-    private TransactionCategory category;
-
     public Transaction() {
         // required by jpa
     }
 
+    @JsonCreator
+    private Transaction(@JsonProperty("_id") String _id,
+                        @JsonProperty("ownerId") String ownerId,
+                        @JsonProperty("transactionType") TransactionType transactionType,
+                        @JsonProperty("sourceAmount") BigDecimal sourceAmount,
+                        @JsonProperty("destAmount") BigDecimal destAmount,
+                        @JsonProperty("sourceId") String sourceId,
+                        @JsonProperty("destId") String destId,
+                        @JsonProperty("categoryId") String categoryId,
+                        @JsonProperty("addedTime") LocalDateTime addedTime) {
+        checkNotNull(_id);
+        checkNotNull(ownerId);
+        checkNotNull(transactionType);
+        checkNotNull(sourceId);
+        checkNotNull(destId);
+        checkNotNull(categoryId);
+        checkNotNull(addedTime);
+
+        this._id = _id;
+        this.ownerId = ownerId;
+        this.transactionType = transactionType;
+        this.sourceId = sourceId;
+        this.destId = destId;
+        this.sourceAmount = sourceAmount;
+        this.destAmount = destAmount;
+        this.categoryId = categoryId;
+        this.addedTime = addedTime;
+    }
+
     private Transaction(String ownerId,
-                        String transactionId,
                         TransactionType transactionType,
                         BigDecimal sourceAmount,
                         BigDecimal destAmount,
-                        Account sourceAccount,
-                        Account destAccount,
-                        TransactionCategory category,
-                        DateTime addedTime) {
+                        String sourceId,
+                        String destId,
+                        String categoryId,
+                        LocalDateTime addedTime) {
         checkNotNull(ownerId);
-        checkNotNull(transactionId);
         checkNotNull(transactionType);
-        checkNotNull(sourceAccount);
-        checkNotNull(destAccount);
-        checkNotNull(category);
+        checkNotNull(sourceId);
+        checkNotNull(destId);
+        checkNotNull(categoryId);
 
         this.ownerId = ownerId;
-        this.transactionId = transactionId;
         this.transactionType = transactionType;
-        this.sourceId = sourceAccount.getId();
-        this.destId = destAccount.getId();
+        this.sourceId = sourceId;
+        this.destId = destId;
         this.sourceAmount = sourceAmount;
         this.destAmount = destAmount;
-        this.categoryId = category.getCategoryId();
-        this.sourceAccount = sourceAccount;
-        this.destAccount = destAccount;
-        this.category = category;
+        this.categoryId = categoryId;
         this.addedTime = addedTime;
     }
 
     public static Transaction createTransfer(String ownerId,
-                                             String transactionId,
                                              BigDecimal sourceAmount,
                                              BigDecimal destAmount,
                                              Account sourceAccount,
                                              Account destAccount,
                                              TransactionCategory category,
-                                             DateTime addedTime) {
-        return new Transaction(ownerId, transactionId, TransactionType.TRANSFER, sourceAmount, destAmount, sourceAccount, destAccount, category, addedTime);
+                                             LocalDateTime addedTime) {
+        return new Transaction(
+                ownerId,
+                TransactionType.TRANSFER,
+                sourceAmount,
+                destAmount,
+                sourceAccount.getId(),
+                destAccount.getId(),
+                category.getId(),
+                addedTime);
+    }
+
+    public static Transaction createTransfer(String transactionId,
+                                             String ownerId,
+                                             BigDecimal sourceAmount,
+                                             BigDecimal destAmount,
+                                             Account sourceAccount,
+                                             Account destAccount,
+                                             TransactionCategory category,
+                                             LocalDateTime addedTime) {
+        return new Transaction(
+                transactionId,
+                ownerId,
+                TransactionType.TRANSFER,
+                sourceAmount,
+                destAmount,
+                sourceAccount.getId(),
+                destAccount.getId(),
+                category.getId(),
+                addedTime
+        );
     }
 
     public static Transaction createExpense(String ownerId,
-                                            String transactionId,
                                             BigDecimal amount,
                                             Account account,
                                             TransactionCategory category,
-                                            DateTime addedTime) {
-        return new Transaction(ownerId, transactionId, TransactionType.EXPENSE, amount, BigDecimal.ZERO, account, Account.EXPENSE_ACCOUNT, category, addedTime);
+                                            LocalDateTime addedTime) {
+        return new Transaction(
+                ownerId,
+                TransactionType.EXPENSE,
+                amount,
+                BigDecimal.ZERO,
+                account.getId(),
+                Account.EXPENSE_ACCOUNT.getId(),
+                category.getId(),
+                addedTime
+        );
     }
 
     public static Transaction createIncome(String ownerId,
-                                           String transactionId,
                                            BigDecimal amount,
                                            Account account,
                                            TransactionCategory category,
-                                           DateTime addedTime) {
-        return new Transaction(ownerId, transactionId, TransactionType.INCOME, amount, BigDecimal.ZERO, account, Account.INCOME_ACCOUNT, category, addedTime);
+                                           LocalDateTime addedTime) {
+        return new Transaction(
+                ownerId,
+                TransactionType.INCOME,
+                amount,
+                BigDecimal.ZERO,
+                account.getId(),
+                Account.INCOME_ACCOUNT.getId(),
+                category.getId(),
+                addedTime);
     }
 
-
-    public String getTransactionId() {
-        return transactionId;
+    public static Transaction copyWithOwnerId(Transaction t, String ownerId) {
+        throw new RuntimeException("copyWithOwnerId()");
     }
 
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
+    public String getId() {
+        return _id;
     }
 
     public TransactionType getTransactionType() {
@@ -131,6 +185,22 @@ public class Transaction {
 
     public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public void setId(String id) {
+        this._id = id;
+    }
+
+    public Account getSourceAccount() {
+        return sourceAccount;
+    }
+
+    public void setSourceAccount(Account sourceAccount) {
+        this.sourceAccount = sourceAccount;
+    }
+
+    public Account getDestAccount() {
+        return destAccount;
     }
 
     public String getCategoryId() {
@@ -173,39 +243,20 @@ public class Transaction {
         this.destAmount = destAmount;
     }
 
-    public DateTime getAddedTime() {
-        return addedTime;
-    }
-
-    public void setAddedTime(DateTime addedTime) {
-        this.addedTime = addedTime;
-    }
-
-    public Account getSourceAccount() {
-        return sourceAccount;
-    }
-
-    public void setSourceAccount(Account sourceAccount) {
-        this.sourceId = sourceAccount.getId();
-        this.sourceAccount = sourceAccount;
-    }
-
-    public Account getDestAccount() {
-        return destAccount;
-    }
-
     public void setDestAccount(Account destAccount) {
-        this.destId = destAccount.getId();
         this.destAccount = destAccount;
+    }
+
+    public LocalDateTime getAddedTime() {
+        return addedTime;
     }
 
     public TransactionCategory getCategory() {
         return category;
     }
 
-    public void setCategory(TransactionCategory category) {
-        this.categoryId = category.getCategoryId();
-        this.category = category;
+    public void setAddedTime(LocalDateTime addedTime) {
+        this.addedTime = addedTime;
     }
 
     public String getOwnerId() {
@@ -220,20 +271,21 @@ public class Transaction {
         return transactionType == TransactionType.TRANSFER;
     }
 
+    public void setCategory(TransactionCategory category) {
+        this.categoryId = category.getId();
+        this.category = category;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return Objects.equals(transactionId, that.transactionId);
+        return Objects.equals(_id, that._id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(transactionId);
-    }
-
-    public static Transaction copyWithOwnerId(Transaction t, String ownerId) {
-        return null;
+        return Objects.hash(_id);
     }
 }

@@ -31,6 +31,10 @@ public class UserDao {
     public User findById(String id) {
         User user = users().findOne("{_id: #}", new ObjectId(id)).as(User.class);
 
+        if (user == null) {
+            return null;
+        }
+
         return resolveReferences(user);
     }
 
@@ -58,8 +62,6 @@ public class UserDao {
     }
 
     private void saveAccounts(User user) {
-        User.createUser(user.getAuthId(), user.getEmail(), user.getAccounts(), user.getTransactions());
-
         Set<Account> newAccounts = user.getAccounts()
                                        .stream()
                                        .map(a -> Account.copyWithOwnerId(a, user.getId()))

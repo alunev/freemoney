@@ -25,6 +25,7 @@ public class Account {
     public static final Account EXPENSE_ACCOUNT = createAccount("507f191e810c19729de860ea",
                                                                 RedisNull.NULL,
                                                                 RedisNull.NULL,
+                                                                RedisNull.NULL,
                                                                 Currency.getInstance("USD"),
                                                                 BigDecimal.ZERO,
                                                                 RedisNull.NULL
@@ -85,8 +86,22 @@ public class Account {
         return new Account(ownerId, number, title, currency, balance, smsPattern);
     }
 
+    public static Account createAccount(String id,
+                                        String ownerId,
+                                        String number,
+                                        String title,
+                                        Currency currency,
+                                        BigDecimal balance,
+                                        String smsPattern) {
+        return new Account(id, ownerId, number, title, currency, balance, smsPattern);
+    }
+
+    public static Account createAccount(Account account) {
+        return new Account(account.getId(), account.getOwnerId(), account.getNumber(), account.getTitle(), account.getCurrency(), account.getBalance(), account.getSmsPattern());
+    }
+
     public static Account copyWithOwnerId(Account a, String ownerId) {
-        return new Account(ownerId, a.getNumber(), a.getTitle(), a.getCurrency(), a.getBalance(), a.getSmsPattern());
+        return new Account(a.getId(), ownerId, a.getNumber(), a.getTitle(), a.getCurrency(), a.getBalance(), a.getSmsPattern());
     }
 
     public String getId() {

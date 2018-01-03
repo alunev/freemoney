@@ -71,7 +71,7 @@ public class TransactionsController extends Controller {
         }
 
         Map<String, String> catMap = transactionCategoryDao.findAll().stream().collect(
-                Collectors.toMap(TransactionCategory::getCategoryId, TransactionCategory::getName)
+                Collectors.toMap(TransactionCategory::getId, TransactionCategory::getName)
         );
 
         User user = userService.getUser(session());
@@ -86,16 +86,14 @@ public class TransactionsController extends Controller {
     public Result saveTransactionForm() {
         Transaction tx = formFactory.form(Transaction.class).bindFromRequest().get();
 
-        if (Strings.isNullOrEmpty(tx.getTransactionId())) {
-            tx.setTransactionId(UUID.nameUUIDFromBytes(tx.toString().getBytes()).toString());
+        if (Strings.isNullOrEmpty(tx.getId())) {
+            tx.setId(UUID.nameUUIDFromBytes(tx.toString().getBytes()).toString());
 
             if (tx.getTransactionType() == TransactionType.EXPENSE) {
                 tx.setDestAccount(Account.EXPENSE_ACCOUNT);
             } else if (tx.getTransactionType() == TransactionType.INCOME) {
                 tx.setDestAccount(Account.INCOME_ACCOUNT);
             }
-
-            transactionDao.updateTransientFields(tx);
 
             User user = userService.getUser(session());
             user.addTransaction(tx);
@@ -107,7 +105,7 @@ public class TransactionsController extends Controller {
 
         flash("success", "Saved successfully");
 
-        return redirect(controllers.routes.TransactionsController.showEditForm(tx.getTransactionId()));
+        return redirect(controllers.routes.TransactionsController.showEditForm(tx.getId()));
     }
 
     public Result deleteTransaction(String txId) {

@@ -27,7 +27,6 @@ public class RestApiController extends Controller{
         JsonNode jsonNode = request().body().asJson();
 
         Sms sms = Json.fromJson(jsonNode, Sms.class);
-        sms.setId(UUID.nameUUIDFromBytes(jsonNode.toString().getBytes()).toString());
 
         smsDao.save(sms);
 

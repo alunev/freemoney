@@ -44,8 +44,8 @@ public class UserTest {
 
     }
 
-    @Test
-    public void sameIdCollapses() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void duplicateIdThrowsException() throws Exception {
         Account acc1 = ObjectsFactory.createDummyAccount();
         User user = User.createEmptyUser("id1", "id1@mail.com");
 
@@ -59,19 +59,21 @@ public class UserTest {
 
     @Test
     public void updateAccount() throws Exception {
-        Account acc2 = ObjectsFactory.createDummyAccount();
+        Account acc2 = ObjectsFactory.createDummyAccountWithId("1234");
 
         User user = User.createUserWithAccounts("id1@mail.com", Sets.newHashSet(
                 ObjectsFactory.createDummyAccount(),
                 acc2,
-                ObjectsFactory.createDummyAccount()
+                ObjectsFactory.createDummyAccountWithId("1111")
         ));
 
-        Account replacement = ObjectsFactory.createDummyAccountWithOwnerIdAndNumber("", "222new");
+        Account replacement = ObjectsFactory.createDummyAccountWithId("1234");
+
+        user.removeAccount(acc2);
+        assertThat("found account ?", user.getAccounts(), not(hasItem(acc2)));
 
         user.addAccount(replacement);
-
-        assertThat("found account ?", user.getAccounts(), contains(acc2));
+        assertThat("found account ?", user.getAccounts(), hasItem(replacement));
     }
 
 }
