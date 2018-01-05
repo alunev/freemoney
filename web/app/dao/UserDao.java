@@ -15,11 +15,9 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class UserDao {
-    private PlayJongo playJongo;
-
     private final AccountDao accountDao;
-
     private final TransactionDao transactionDao;
+    private PlayJongo playJongo;
 
     @Inject
     public UserDao(PlayJongo playJongo, AccountDao accountDao, TransactionDao transactionDao) {
@@ -56,16 +54,16 @@ public class UserDao {
 
     private User resolveReferences(User user) {
         return User.builder(user)
-                   .withAccounts(accountDao.findByOwnerId(user.getId()))
-                   .withTransactions(transactionDao.findByOwnerId(user.getId()))
-                   .build();
+                .withAccounts(accountDao.findByOwnerId(user.getId()))
+                .withTransactions(transactionDao.findByOwnerId(user.getId()))
+                .build();
     }
 
     private void saveAccounts(User user) {
         Set<Account> newAccounts = user.getAccounts()
-                                       .stream()
-                                       .map(a -> Account.copyWithOwnerId(a, user.getId()))
-                                       .collect(Collectors.toSet());
+                .stream()
+                .map(a -> Account.copyWithOwnerId(a, user.getId()))
+                .collect(Collectors.toSet());
 
         Set<Account> oldAccounts = accountDao.findByOwnerId(user.getId());
 
@@ -79,9 +77,9 @@ public class UserDao {
 
     private void updateTransactions(User user) {
         Set<Transaction> newTransactions = user.getTransactions()
-                                               .stream()
-                                               .map(a -> Transaction.copyWithOwnerId(a, user.getId()))
-                                               .collect(Collectors.toSet());
+                .stream()
+                .map(a -> Transaction.copyWithOwnerId(a, user.getId()))
+                .collect(Collectors.toSet());
 
         Set<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getId());
 

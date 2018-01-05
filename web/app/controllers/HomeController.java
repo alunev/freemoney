@@ -18,11 +18,15 @@ public class HomeController extends Controller {
     private final PlayAuthenticate auth;
 
     private final UserService userService;
+    private views.html.logon_failed logon_failed;
+    private views.html.index index;
 
     @Inject
-    public HomeController(PlayAuthenticate auth, UserService userService) {
+    public HomeController(PlayAuthenticate auth, UserService userService, views.html.logon_failed logon_failed, views.html.index index) {
         this.auth = auth;
         this.userService = userService;
+        this.logon_failed = logon_failed;
+        this.index = index;
     }
 
     public Result oAuthDenied(String provider, String errorMessage) {

@@ -4,15 +4,17 @@
 * two arguments, a `String` for the title of the page and an `Html`
 * object to insert into the body of the page.
 *@
+
 @import com.feth.play.module.pa.PlayAuthenticate
 @import model.User
 
-@import be.objectify.deadbolt.java.views.html._
-@import be.objectify.deadbolt.java.utils.TemplateUtils._
+@import be.objectify.deadbolt.java.views.html.di.{subjectPresent, subjectPresentOr}
+@import com.feth.play.module.pa.views.html.{currentAuth, forProviders}
+
+@this(subjectPresent: subjectPresent)
 
 @(title: String, playAuth: PlayAuthenticate, user: User)(content: Html)
 
-@import com.feth.play.module.pa.views.html._
 
 <!DOCTYPE html>
 
@@ -86,14 +88,14 @@
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @currentAuth(playAuth) { auth =>
-                            @if(auth != null) {
+                        @subjectPresent() {
+                            @if(user.isGuest) {
+                                @defining(playAuth.getProvider("google")) { provider =>
+                                    <li> <a href="@provider.getUrl">Login with @provider.getKey</a> </li>
+                                }
+                            } else {
                                 <li><a href=""> Hello, @user.getEmail !!! </a></li>
                                 <li><a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout">Log out</a></li>
-                            } else {
-                                @forProviders(playAuth) { p =>
-                                    <li> <a href="@p.getUrl()">Login with @p.getKey()</a> </li>
-                                }
                             }
                         }
                     </ul>

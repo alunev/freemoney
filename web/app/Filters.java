@@ -6,6 +6,11 @@ import play.mvc.*;
 
 import filters.ExampleFilter;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * This class configures filters that run on every request. This
  * class is queried by Play to get a list of filters.
@@ -32,15 +37,15 @@ public class Filters implements HttpFilters {
     }
 
     @Override
-    public EssentialFilter[] filters() {
-      // Use the example filter if we're running development mode. If
-      // we're running in production or test mode then don't use any
-      // filters at all.
-      if (env.mode().equals(Mode.DEV)) {
-          return new EssentialFilter[] { exampleFilter };
-      } else {
-         return new EssentialFilter[] {};
-      }
+    public List<EssentialFilter> getFilters() {
+        // Use the example filter if we're running development mode. If
+        // we're running in production or test mode then don't use any
+        // filters at all.
+        if (env.mode().equals(Mode.DEV)) {
+            return Collections.singletonList(exampleFilter);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
 }

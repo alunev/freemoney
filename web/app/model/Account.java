@@ -22,7 +22,7 @@ public class Account {
                                                              RedisNull.NULL
     );
 
-    public static final Account EXPENSE_ACCOUNT = createAccount("507f191e810c19729de860ea",
+    public static final Account EXPENSE_ACCOUNT = createAccount("5a4ec3822eac72ad597c3671",
                                                                 RedisNull.NULL,
                                                                 RedisNull.NULL,
                                                                 RedisNull.NULL,

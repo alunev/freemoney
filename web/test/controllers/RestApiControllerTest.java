@@ -15,6 +15,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -49,7 +51,7 @@ public class RestApiControllerTest extends WithApplication {
         Sms sms = Sms.createSms("owner123",
                                 "android-1",
                                 "CASH 45.12 CAFE",
-                                ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime()
+                                LocalDateTime.now(ZoneId.of("UTC"))
         );
 
         JsonNode jsonNode = Json.toJson(sms);

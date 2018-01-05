@@ -5,7 +5,8 @@
 
 @import views.html.b3
 
-@import model.TransactionCategory
+@this(main: main)
+
 @(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: User, form: Form[Transaction], catMap: Map[String, String], accountsMap: Map[String, String])
 
 @implicitFieldConstructor = @{

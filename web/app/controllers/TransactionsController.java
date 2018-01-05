@@ -39,11 +39,16 @@ public class TransactionsController extends Controller {
     private final AccountDao accountDao;
 
     private final FormFactory formFactory;
+    private views.html.transactions transactions;
+    private views.html.edit_transaction edit_transaction;
 
     @Inject
     public TransactionsController(PlayAuthenticate auth, UserService userService, TransactionDao transactionDao,
                                   TransactionCategoryDao transactionCategoryDao, UserDao userDao, AccountDao accountDao,
-                                  FormFactory formFactory) {
+                                  FormFactory formFactory,
+                                  views.html.transactions transactions,
+                                  views.html.edit_transaction edit_transaction
+    ) {
         this.auth = auth;
         this.userService = userService;
         this.transactionDao = transactionDao;
@@ -51,6 +56,8 @@ public class TransactionsController extends Controller {
         this.userDao = userDao;
         this.accountDao = accountDao;
         this.formFactory = formFactory;
+        this.transactions = transactions;
+        this.edit_transaction = edit_transaction;
     }
 
     public Result transactions() {
