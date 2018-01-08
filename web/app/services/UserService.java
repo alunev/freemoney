@@ -27,7 +27,7 @@ public class UserService {
         final AuthUser currentAuthUser = this.auth.getUser(session);
 
         if (currentAuthUser == null) {
-            return User.createEmptyUser("", "guest@guest.com");
+            return User.GUEST;
         }
 
         return userDao.findByAuthId(currentAuthUser.getId());

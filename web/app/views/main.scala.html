@@ -88,18 +88,15 @@
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @subjectPresent() {
-                            @if(user.isGuest) {
-                                @defining(playAuth.getProvider("google")) { provider =>
-                                    <li> <a href="@provider.getUrl">Login with @provider.getKey</a> </li>
-                                }
-                            } else {
-                                <li><a href=""> Hello, @user.getEmail !!! </a></li>
-                                <li><a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout">Log out</a></li>
+                        @if(user.isGuest) {
+                            @defining(playAuth.getProvider("google")) { provider =>
+                                <li> <a href="@provider.getUrl">Login with @provider.getKey</a> </li>
                             }
+                        } else {
+                            <li><a href=""> Hello, @user.getEmail !!! </a></li>
+                            <li><a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout">Log out</a></li>
                         }
                     </ul>
-
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
