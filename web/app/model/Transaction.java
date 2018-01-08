@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -33,13 +32,10 @@ public class Transaction {
 
     private LocalDateTime addedTime;
 
-    @Transient
     private TransactionCategory category;
 
-    @Transient
     private Account sourceAccount;
 
-    @Transient
     private Account destAccount;
 
     public Transaction() {

@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import model.TransactionCategory;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
-import play.db.jpa.Transactional;
 import uk.co.panaxiom.playjongo.PlayJongo;
 
 import java.util.Set;
@@ -35,12 +34,10 @@ public class TransactionCategoryDao {
         return Sets.newHashSet(mongoCursor.iterator());
     }
 
-    @Transactional
     public void save(TransactionCategory category) {
         categories().save(category);
     }
 
-    @Transactional
     public void delete(TransactionCategory category) {
         categories().remove(new ObjectId(category.getId()));
     }

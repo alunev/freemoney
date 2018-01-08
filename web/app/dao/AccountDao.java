@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import model.Account;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
-import play.db.jpa.Transactional;
 import uk.co.panaxiom.playjongo.PlayJongo;
 
 import java.util.Set;
@@ -32,17 +31,14 @@ public class AccountDao {
         return Sets.newHashSet(mongoCursor.iterator());
     }
 
-    @Transactional
     public void save(Account account) {
         accounts().save(account);
     }
 
-    @Transactional
     public void saveAll(Set<Account> accounts) {
         accounts.forEach(this::save);
     }
 
-    @Transactional
     public void delete(Account account) {
         accounts().remove(new ObjectId(account.getId()));
     }

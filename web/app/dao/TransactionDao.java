@@ -3,20 +3,13 @@ package dao;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import model.Account;
 import model.Transaction;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
-import play.db.jpa.JPAApi;
-import play.db.jpa.Transactional;
 import uk.co.panaxiom.playjongo.PlayJongo;
 
-import javax.persistence.Query;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Singleton
 public class TransactionDao {

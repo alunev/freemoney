@@ -41,9 +41,11 @@ public class UserDao {
     public User findByAuthId(String authId) {
         User user = users().findOne("{authId: #}", authId).as(User.class);
 
-        resolveReferences(user);
+        if (user == null) {
+            return null;
+        }
 
-        return user;
+        return resolveReferences(user);
     }
 
     public String save(User user) {

@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class User implements Subject {
 
-    public static final User GUEST = User.createEmptyUser("", "guest@guest.com");
+    public static final User GUEST = User.createEmptyUser("5a4ec3a6b7bae729a6d9a18a", "", "guest@guest.com");
 
     @MongoObjectId
     private String _id;
@@ -59,6 +59,15 @@ public class User implements Subject {
 
     public static User createEmptyUser(String email) {
         return createEmptyUser("", email);
+    }
+
+    public static User createEmptyUser(String id, String authId, String email) {
+        return new UserBuilder().withAuthId(authId)
+                .with_id(id)
+                .withEmail(email)
+                .withAccounts(Collections.emptySet())
+                .withTransactions(Collections.emptySet())
+                .build();
     }
 
     public static User createEmptyUser(String authId, String email) {
@@ -166,6 +175,10 @@ public class User implements Subject {
                Objects.equals(email, user.email) &&
                Objects.equals(accounts, user.accounts) &&
                Objects.equals(transactions, user.transactions);
+    }
+
+    public boolean isGuest() {
+        return this.equals(GUEST);
     }
 
     @Override
