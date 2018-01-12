@@ -99,10 +99,6 @@ public class UserDao {
         users().remove(new ObjectId(user.getId()));
     }
 
-    public boolean idExistsInDb(String userId) {
-        return users().findOne(userId).as(User.class) != null;
-    }
-
     private org.jongo.MongoCollection users() {
         return playJongo.getCollection("users");
     }

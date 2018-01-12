@@ -29,14 +29,15 @@ public class FmPlayAuthUserService extends AbstractUserService {
             return null;
         }
 
-        User user = User.createEmptyUser(googleAuthUser.getId(), googleAuthUser.getEmail());
+        String authUserId = googleAuthUser.getId();
 
-		if (!userDao.idExistsInDb(user.getId())) {
+        User user = userDao.findByAuthId(authUserId);
+        if (user == null) {
+            user = User.createEmptyUser(googleAuthUser.getId(), googleAuthUser.getEmail());
 			userDao.save(user);
-			return user.getId();
-		} else {
-			return null;
-		}
+        }
+
+        return user.getId();
 	}
 
 	@Override
