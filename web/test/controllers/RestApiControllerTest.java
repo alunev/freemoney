@@ -21,7 +21,9 @@ import java.time.ZonedDateTime;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static play.inject.Bindings.bind;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.route;
@@ -46,11 +48,12 @@ public class RestApiControllerTest extends WithApplication {
 
     @Test
     public void savesSmsFine() throws Exception {
-        Sms sms = Sms.createSms("owner123",
-                                "android-1",
-                                "CASH 45.12 CAFE",
-                                ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime()
-        );
+        Sms sms = Sms.createSms(
+                "owner123",
+                "android-1",
+                "",
+                "CASH 45.12 CAFE",
+                ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
 
         JsonNode jsonNode = Json.toJson(sms);
 

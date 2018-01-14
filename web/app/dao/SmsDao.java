@@ -18,8 +18,10 @@ public class SmsDao {
         return smses().findOne("{_id: #}", new ObjectId(id)).as(Sms.class);
     }
 
-    public void save(Sms sms) {
+    public Sms save(Sms sms) {
         smses().save(sms);
+
+        return sms;
     }
 
     public void delete(Sms sms) {

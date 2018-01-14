@@ -20,6 +20,8 @@ public class Sms {
 
     private String deviceId;
 
+    private String sender;
+
     private String text;
 
     private LocalDateTime createdTs;
@@ -28,28 +30,40 @@ public class Sms {
     private Sms(@JsonProperty("id") String id,
                 @JsonProperty("ownerId") String ownerId,
                 @JsonProperty("deviceId") String deviceId,
+                @JsonProperty("sender") String sender,
                 @JsonProperty("text") String text,
                 @JsonProperty("createdTs") LocalDateTime createdTs) {
         this._id = id;
         this.ownerId = ownerId;
         this.deviceId = deviceId;
+        this.sender = sender;
         this.text = text;
         this.createdTs = createdTs;
     }
 
-    public Sms(String ownerId, String deviceId, String text, LocalDateTime createdTs) {
+    public Sms(String ownerId, String deviceId, String sender, String text, LocalDateTime createdTs) {
         this.ownerId = ownerId;
         this.deviceId = deviceId;
+        this.sender = sender;
         this.text = text;
         this.createdTs = createdTs;
     }
 
-    public static Sms createSms(String id, String ownerId, String deviceId, String text, LocalDateTime createdTs) {
-        return new Sms(id, ownerId, deviceId, text, createdTs);
+    public static Sms createSms(String id,
+                                String ownerId,
+                                String deviceId,
+                                String sender,
+                                String text,
+                                LocalDateTime createdTs) {
+        return new Sms(id, ownerId, deviceId, sender, text, createdTs);
     }
 
-    public static Sms createSms(String ownerId, String deviceId, String text, LocalDateTime createdTs) {
-        return new Sms(ownerId, deviceId, text, createdTs);
+    public static Sms createSms(String ownerId,
+                                String deviceId,
+                                String sender,
+                                String text,
+                                LocalDateTime createdTs) {
+        return new Sms(ownerId, deviceId, sender, text, createdTs);
     }
 
     public String getId() {
@@ -62,6 +76,10 @@ public class Sms {
 
     public String getDeviceId() {
         return deviceId;
+    }
+
+    public String getSender() {
+        return sender;
     }
 
     public String getText() {
