@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 import uk.co.panaxiom.playjongo.PlayJongo;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,8 +52,10 @@ public class TransactionDao {
         transactions().remove(new ObjectId(transaction.getId()));
     }
 
-    public void saveAll(Set<Transaction> transactions) {
+    public Collection<Transaction> saveAll(Collection<Transaction> transactions) {
         transactions.forEach(this::save);
+
+        return transactions;
     }
 
     public void deleteAll(Set<Transaction> transactions) {
