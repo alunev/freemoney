@@ -1,5 +1,6 @@
 package dao;
 
+import common.DateUtils;
 import model.Account;
 import model.Transaction;
 import model.TransactionCategory;
@@ -71,7 +72,7 @@ public class TransactionDaoTest extends JongoDaoTest {
                 srcAcc,
                 destAcc,
                 category,
-                LocalDateTime.now(ZoneId.of("UTC"))
+                DateUtils.now()
         );
         transactionDao.save(transaction);
 
@@ -114,7 +115,7 @@ public class TransactionDaoTest extends JongoDaoTest {
                 srcAcc,
                 destAcc,
                 category,
-                LocalDateTime.now(ZoneId.of("UTC"))
+                DateUtils.now()
         ));
 
         transactionDao.save(Transaction.createTransfer(
@@ -124,7 +125,7 @@ public class TransactionDaoTest extends JongoDaoTest {
                 srcAcc,
                 destAcc,
                 category,
-                LocalDateTime.now(ZoneId.of("UTC"))
+                DateUtils.now()
         ));
 
         Set<Transaction> txList = transactionDao.findByOwnerId("test_owner");
@@ -171,7 +172,7 @@ public class TransactionDaoTest extends JongoDaoTest {
                 srcAcc,
                 destAcc,
                 category,
-                LocalDateTime.now(ZoneId.of("UTC"))
+                DateUtils.now()
         );
         transactionDao.save(transfer);
 
@@ -180,7 +181,7 @@ public class TransactionDaoTest extends JongoDaoTest {
                 BigDecimal.ONE,
                 srcAcc,
                 category,
-                LocalDateTime.now(ZoneId.of("UTC"))
+                DateUtils.now()
         );
         transactionDao.save(expense);
 

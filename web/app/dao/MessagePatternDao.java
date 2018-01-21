@@ -23,14 +23,14 @@ public class MessagePatternDao {
         this.playJongo = playJongo;
     }
 
-    public Set<MessagePattern> findByOwnerId(String userId) {
-        MongoCursor<MessagePattern> mongoCursor = patterns().find("{ownerId: #}", userId).as(MessagePattern.class);
+    public Set<MessagePattern> findByOwnerId(String ownerId) {
+        MongoCursor<MessagePattern> mongoCursor = patterns().find("{ownerId: #}", ownerId).as(MessagePattern.class);
 
         return Sets.newHashSet(mongoCursor.iterator());
     }
 
-    public Set<MessagePattern> findByBankName(String bankName) {
-        MongoCursor<MessagePattern> mongoCursor = patterns().find("{bankName: #}", bankName).as(MessagePattern.class);
+    public Set<MessagePattern> findByOwnerIdBankName(String ownerId, String bankName) {
+        MongoCursor<MessagePattern> mongoCursor = patterns().find("{ownerId: #; bankName: #}", bankName).as(MessagePattern.class);
 
         return Sets.newHashSet(mongoCursor.iterator());
     }

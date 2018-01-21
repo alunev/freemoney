@@ -1,17 +1,23 @@
 package core;
 
-import core.message.ParserFactory;
-import core.message.RegexMessageMatcher;
+import core.message.ParserSelector;
+import core.message.RegexBankMatcher;
+import core.message.parser.AccountMatcher;
+import core.message.parser.MessageParser;
+import core.message.parser.ParseResult;
 import dao.MessagePatternDao;
+import model.Account;
 import model.MessagePattern;
 import model.Sms;
 import model.Transaction;
 import model.User;
+import org.assertj.core.util.Lists;
 
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
+
+import static model.TransactionType.EXPENSE;
 
 /**
  * @author red
@@ -19,21 +25,41 @@ import java.util.Set;
  */
 public class ParsingTransactionGenerator implements TransactionGenerator {
     private final MessagePatternDao messagePatternDao;
-    private final ParserFactory parserFactory;
+    private final ParserSelector parserSelector;
+    private final AccountMatcher accountMatcher;
 
     @Inject
-    public ParsingTransactionGenerator(MessagePatternDao messagePatternDao, ParserFactory parserFactory) {
+    public ParsingTransactionGenerator(MessagePatternDao messagePatternDao,
+                                       ParserSelector parserSelector,
+                                       AccountMatcher accountMatcher) {
         this.messagePatternDao = messagePatternDao;
-        this.parserFactory = parserFactory;
+        this.parserSelector = parserSelector;
+        this.accountMatcher = accountMatcher;
     }
 
     @Override
     public Collection<Transaction> generate(Sms sms, User user) {
-        Set<MessagePattern> patterns = messagePatternDao.findByOwnerId(user.getId());
-        MessagePattern pattern = new RegexMessageMatcher(patterns).getBestMatch(sms);
+        Set<MessagePattern> userPatterns = messagePatternDao.findByOwnerId(user.getId());
+        String bankName = new RegexBankMatcher(userPatterns).getBestMatch(sms);
 
-        parserFactory.createParserForBank(pattern.getBankName());
+        Set<MessagePattern> bankPatterns = messagePatternDao.findByOwnerIdBankName(user.getId(), bankName);
 
-        return Collections.emptyList();
+        MessageParser parser = parserSelector.getParserForBank(bankName);
+        ParseResult result = parser.parse(sms, bankPatterns);
+
+        Transaction.TransactionBuilder builder = Transaction.builder();
+        builder.transactionType(result.getTransactionType());
+        builder.sourceAmount(result.getAmount());
+        builder.destAmount(result.getAmount());
+
+        switch (result.getTransactionType()) {
+            case EXPENSE:
+                Account sourceAccount = accountMatcher.getBestMatch(result.getSourceString());
+                builder.sourceId(sourceAccount.getId());
+                builder.destId(Account.EXPENSE_ACCOUNT.getId());
+            break;
+        }
+
+        return Lists.newArrayList(builder.build());
     }
 }

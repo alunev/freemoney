@@ -36,6 +36,16 @@ public class MessagePattern {
         this.createdTs = createdTs;
     }
 
+    public MessagePattern(@JsonProperty("ownerId") String ownerId,
+                          @JsonProperty("regex") String regex,
+                          @JsonProperty("bankName") String bankName,
+                          @JsonProperty("createdTs") LocalDateTime createdTs) {
+        this.ownerId = ownerId;
+        this.regex = regex;
+        this.bankName = bankName;
+        this.createdTs = createdTs;
+    }
+
     public String getOwnerId() {
         return ownerId;
     }

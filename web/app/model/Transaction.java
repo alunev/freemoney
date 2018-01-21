@@ -3,6 +3,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import java.math.BigDecimal;
@@ -43,15 +44,15 @@ public class Transaction {
     }
 
     @JsonCreator
-    private Transaction(@JsonProperty("_id") String _id,
-                        @JsonProperty("ownerId") String ownerId,
-                        @JsonProperty("transactionType") TransactionType transactionType,
-                        @JsonProperty("sourceAmount") BigDecimal sourceAmount,
-                        @JsonProperty("destAmount") BigDecimal destAmount,
-                        @JsonProperty("sourceId") String sourceId,
-                        @JsonProperty("destId") String destId,
-                        @JsonProperty("categoryId") String categoryId,
-                        @JsonProperty("addedTime") LocalDateTime addedTime) {
+    public Transaction(@JsonProperty("_id") String _id,
+                       @JsonProperty("ownerId") String ownerId,
+                       @JsonProperty("transactionType") TransactionType transactionType,
+                       @JsonProperty("sourceAmount") BigDecimal sourceAmount,
+                       @JsonProperty("destAmount") BigDecimal destAmount,
+                       @JsonProperty("sourceId") String sourceId,
+                       @JsonProperty("destId") String destId,
+                       @JsonProperty("categoryId") String categoryId,
+                       @JsonProperty("addedTime") LocalDateTime addedTime) {
         checkNotNull(_id);
         checkNotNull(ownerId);
         checkNotNull(transactionType);
@@ -71,6 +72,7 @@ public class Transaction {
         this.addedTime = addedTime;
     }
 
+    @Builder
     private Transaction(String ownerId,
                         TransactionType transactionType,
                         BigDecimal sourceAmount,

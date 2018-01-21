@@ -9,16 +9,17 @@ import java.util.Collection;
  * @author red
  * @since 0.0.1
  */
-public class RegexMessageMatcher {
+public class RegexBankMatcher implements BankMatcher {
 
     private final Collection<MessagePattern> candidates;
 
-    public RegexMessageMatcher(Collection<MessagePattern> candidates) {
+    public RegexBankMatcher(Collection<MessagePattern> candidates) {
         this.candidates = candidates;
     }
 
 
-    public MessagePattern getBestMatch(Sms sms) {
+    @Override
+    public String getBestMatch(Sms sms) {
         return null;
     }
 }
