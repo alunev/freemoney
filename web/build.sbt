@@ -13,6 +13,9 @@ libraryDependencies ++= Seq(
   javaJpa
 )
 
+// https://mvnrepository.com/artifact/org.projectlombok/lombok
+libraryDependencies += "org.projectlombok" % "lombok" % "1.16.20"
+
 libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.1"
 libraryDependencies += "be.objectify" %% "deadbolt-java" % "2.5.0"
 libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.1-P25-B3"
