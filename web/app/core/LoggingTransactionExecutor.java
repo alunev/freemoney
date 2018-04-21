@@ -1,14 +1,17 @@
 package core;
 
 import model.Transaction;
+import play.Logger;
 
 /**
  * @author red
  * @since 0.0.1
  */
-public class SimpleTransactionExecutor implements TransactionExecutor {
+public class LoggingTransactionExecutor implements TransactionExecutor {
+
+
     @Override
     public void execute(Transaction transaction) {
-        throw new RuntimeException();
+        Logger.info("Executed: " + transaction);
     }
 }

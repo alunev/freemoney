@@ -286,4 +286,22 @@ public class Transaction {
     public int hashCode() {
         return Objects.hash(_id);
     }
+
+    @Override
+    public String toString() {
+        return com.google.common.base.Objects.toStringHelper(this)
+                .add("_id", _id)
+                .add("ownerId", ownerId)
+                .add("transactionType", transactionType)
+                .add("categoryId", categoryId)
+                .add("sourceId", sourceId)
+                .add("destId", destId)
+                .add("sourceAmount", sourceAmount)
+                .add("destAmount", destAmount)
+                .add("addedTime", addedTime)
+                .add("category", category)
+                .add("sourceAccount", sourceAccount)
+                .add("destAccount", destAccount)
+                .toString();
+    }
 }

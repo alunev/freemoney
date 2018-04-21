@@ -3,7 +3,10 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.ConfigFactory;
 import common.TestOverridesWebModule;
+import core.TransactionExecutor;
+import core.TransactionGenerator;
 import dao.SmsDao;
+import dao.TransactionDao;
 import model.Sms;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,6 +17,7 @@ import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
+import uk.co.panaxiom.playjongo.PlayJongo;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -41,8 +45,10 @@ public class RestApiControllerTest extends WithApplication {
 
         return new GuiceApplicationBuilder()
                 .overrides(new TestOverridesWebModule())
-                .loadConfig(new Configuration(ConfigFactory.load("application.test.conf")))
+                .loadConfig(new Configuration(ConfigFactory.load("application.test.no.mongo.conf")))
                 .overrides(bind(SmsDao.class).toInstance(smsDao))
+                .overrides(bind(TransactionGenerator.class).toInstance(mock(TransactionGenerator.class)))
+                .overrides(bind(TransactionDao.class).toInstance(mock(TransactionDao.class)))
                 .build();
     }
 

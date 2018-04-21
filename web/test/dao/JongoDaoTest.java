@@ -35,8 +35,6 @@ public class JongoDaoTest extends WithApplication {
 
     @Before
     public void setUp() throws Exception {
-        Configuration conf = app.configuration();
-
         MongodStarter starter = MongodStarter.getDefaultInstance();
 
         IMongodConfig mongodConfig = new MongodConfigBuilder()
@@ -44,9 +42,7 @@ public class JongoDaoTest extends WithApplication {
                 .net(new Net("127.0.0.1", 28017, Network.localhostIsIPv6()))
                 .build();
 
-        MongodExecutable mongodExecutable = null;
-        mongodExecutable = starter.prepare(mongodConfig);
-        mongod = mongodExecutable.start();
+        mongod = starter.prepare(mongodConfig).start();
 
         log.info("Started MongodProcess " + mongod.getProcessId() + " " + mongod.getConfig().toString());
     }

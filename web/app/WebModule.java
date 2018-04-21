@@ -7,6 +7,12 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import com.feth.play.module.pa.Resolver;
 import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
+import core.LoggingTransactionExecutor;
+import core.ParsingTransactionGenerator;
+import core.TransactionExecutor;
+import core.TransactionGenerator;
+import core.message.parser.AccountMatcher;
+import core.message.parser.RegexAccountMatcher;
 import dao.UserDao;
 import services.ApplicationTimer;
 import uk.co.panaxiom.playjongo.PlayJongo;
@@ -44,5 +50,9 @@ public class WebModule extends AbstractModule {
         bind(DeadboltHandler.class).to(FmPlayAuthDeadboltHandler.class);
         bind(FmPlayAuthHandlerCache.class).asEagerSingleton();
         bind(FmPlayAuthCustomDeadboltHook.class).asEagerSingleton();
+
+        bind(TransactionExecutor.class).to(LoggingTransactionExecutor.class);
+        bind(AccountMatcher.class).to(RegexAccountMatcher.class);
+        bind(TransactionGenerator.class).to(ParsingTransactionGenerator.class);
     }
 }

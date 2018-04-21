@@ -56,8 +56,9 @@ public class RestApiController extends Controller {
         return CompletableFuture.supplyAsync(() -> smsDao.save(sms))
                 .thenApplyAsync(s -> transactionGenerator.generate(s, user))
                 .thenApplyAsync(transactions -> transactionDao.saveAll(transactions))
-                .thenAcceptAsync(transactions -> transactions.forEach(transaction -> transactionExecutor.execute(
-                        transaction)))
+                .thenAcceptAsync(transactions -> transactions.forEach(
+                        transaction -> transactionExecutor.execute(transaction)
+                ))
                 .thenApplyAsync(aVoid -> ok());
     }
 }
