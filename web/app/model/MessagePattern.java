@@ -46,6 +46,10 @@ public class MessagePattern {
         this.createdTs = createdTs;
     }
 
+    public String getId() {
+        return _id;
+    }
+
     public String getOwnerId() {
         return ownerId;
     }

@@ -8,6 +8,7 @@ import core.TransactionGenerator;
 import dao.SmsDao;
 import dao.TransactionDao;
 import model.Sms;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.Application;
@@ -52,6 +53,7 @@ public class RestApiControllerTest extends WithApplication {
                 .build();
     }
 
+    @Ignore
     @Test
     public void savesSmsFine() throws Exception {
         Sms sms = Sms.createSms(

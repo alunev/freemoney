@@ -1,6 +1,8 @@
 package dao;
 
+import common.DateUtils;
 import model.Account;
+import model.MessagePattern;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -52,6 +54,15 @@ public class ObjectsFactory {
                 Currency.getInstance("RUB"),
                 BigDecimal.valueOf(50.0),
                 "from XXXX"
+        );
+    }
+
+    public static MessagePattern createMessagePattern() {
+        return new MessagePattern(
+                "01",
+                "Покупка\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB. OKEY. Доступно (\\d+\\.\\d+) RUB",
+                "bank1",
+                DateUtils.now()
         );
     }
 }

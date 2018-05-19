@@ -35,8 +35,11 @@ public class MessagePatternDao {
         return Sets.newHashSet(mongoCursor.iterator());
     }
 
+    public void save(MessagePattern pattern) {
+        patterns().save(pattern);
+    }
+
     private org.jongo.MongoCollection patterns() {
         return playJongo.getCollection("patterns");
     }
-
 }

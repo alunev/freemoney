@@ -15,10 +15,10 @@ import org.assertj.core.util.Lists;
 
 import javax.inject.Inject;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static model.TransactionType.EXPENSE;
 
 /**
  * @author red
@@ -41,13 +41,17 @@ public class ParsingTransactionGenerator implements TransactionGenerator {
     @Override
     public Collection<Transaction> generate(Sms sms, User user) {
         Set<MessagePattern> userPatterns = messagePatternDao.findByOwnerId(user.getId());
-        String bankName = new RegexBankMatcher(userPatterns).getBestMatch(sms);
+        Optional<String> bankName = new RegexBankMatcher(userPatterns).getBestMatch(sms);
+
+        if (!bankName.isPresent()) {
+            return Collections.emptyList();
+        }
 
         Set<MessagePattern> bankPatterns = userPatterns.stream()
-                .filter(messagePattern -> messagePattern.getBankName().equals(bankName))
+                .filter(messagePattern -> messagePattern.getBankName().equals(bankName.get()))
                 .collect(Collectors.toSet());
 
-        MessageParser parser = parserSelector.getParserForBank(bankName);
+        MessageParser parser = parserSelector.getParserForBank(bankName.get());
         ParseResult result = parser.parse(sms, bankPatterns);
 
         Transaction.TransactionBuilder builder = Transaction.builder();

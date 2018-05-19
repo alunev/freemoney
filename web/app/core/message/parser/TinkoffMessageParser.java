@@ -25,7 +25,7 @@ public class TinkoffMessageParser implements MessageParser {
     @Override
     public ParseResult parse(Sms sms, Collection<MessagePattern> patterns) {
         Pattern pattern = patterns.stream()
-                .map(p -> p.getRegex())
+                .map(MessagePattern::getRegex)
                 .filter(regex -> Pattern.matches(regex, sms.getText()))
                 .findFirst()
                 .map(Pattern::compile)
