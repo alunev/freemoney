@@ -2,6 +2,7 @@ package core.message;
 
 import com.google.common.collect.Lists;
 import common.DateUtils;
+import dao.ObjectsFactory;
 import model.MessagePattern;
 import model.Sms;
 import org.junit.Test;
@@ -19,12 +20,7 @@ public class RegexBankMatcherTest {
 
     @Test
     public void canMatchBank() {
-        Sms sms = new Sms("01",
-                "android-01",
-                "12345",
-                "Покупка. Карта *2222. 3344.5 RUB. OKEY. Доступно 12345.92 RUB",
-                DateUtils.now()
-        );
+        Sms sms = ObjectsFactory.sampleTfSms();
 
         RegexBankMatcher bankMatcher = new RegexBankMatcher(Lists.newArrayList(
                 new MessagePattern(
@@ -52,4 +48,5 @@ public class RegexBankMatcherTest {
         assertThat(bestMatch).isPresent();
         assertThat(bestMatch.get()).isEqualTo("bank1");
     }
+
 }

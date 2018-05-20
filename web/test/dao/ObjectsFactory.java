@@ -1,8 +1,11 @@
 package dao;
 
 import common.DateUtils;
+import core.message.parser.ParseResult;
 import model.Account;
 import model.MessagePattern;
+import model.Sms;
+import model.TransactionType;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -35,6 +38,18 @@ public class ObjectsFactory {
         );
     }
 
+    public static Account createDummyAccountWithIdOwnerId(String id, String ownerId) {
+        return Account.createAccount(
+                id,
+                ownerId,
+                "1111",
+                "test RUB account",
+                Currency.getInstance("RUB"),
+                BigDecimal.valueOf(50.0),
+                "from XXXX"
+        );
+    }
+
     public static Account createDummyAccountWithOwnerId(String ownerId) {
         return Account.createAccount(
                 ownerId,
@@ -59,9 +74,28 @@ public class ObjectsFactory {
 
     public static MessagePattern createMessagePattern() {
         return new MessagePattern(
-                "01",
+                "user01",
                 "Покупка\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB. OKEY. Доступно (\\d+\\.\\d+) RUB",
                 "bank1",
+                DateUtils.now()
+        );
+    }
+
+    public static ParseResult createParseResult() {
+        return ParseResult.builder()
+                .transactionType(TransactionType.EXPENSE)
+                .sourceString("Карта *2222")
+                .destString(null)
+                .amount(BigDecimal.TEN)
+                .currency(Currency.getInstance("RUB"))
+                .build();
+    }
+
+    public static Sms sampleTfSms() {
+        return new Sms("01",
+                "android-01",
+                "12345",
+                "Покупка. Карта *2222. 3344.5 RUB. OKEY. Доступно 12345.92 RUB",
                 DateUtils.now()
         );
     }
