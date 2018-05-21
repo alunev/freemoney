@@ -2,7 +2,8 @@ package core;
 
 import core.message.ParserSelector;
 import core.message.RegexBankMatcher;
-import core.message.parser.AccountMatcher;
+import core.message.matcher.AccountMatcher;
+import core.message.matcher.CategoryMatcher;
 import core.message.parser.MessageParser;
 import core.message.parser.ParseResult;
 import dao.MessagePatternDao;
@@ -28,14 +29,17 @@ public class ParsingTransactionGenerator implements TransactionGenerator {
     private final MessagePatternDao messagePatternDao;
     private final ParserSelector parserSelector;
     private final AccountMatcher accountMatcher;
+    private final CategoryMatcher categoryMatcher;
 
     @Inject
     public ParsingTransactionGenerator(MessagePatternDao messagePatternDao,
                                        ParserSelector parserSelector,
-                                       AccountMatcher accountMatcher) {
+                                       AccountMatcher accountMatcher,
+                                       CategoryMatcher categoryMatcher) {
         this.messagePatternDao = messagePatternDao;
         this.parserSelector = parserSelector;
         this.accountMatcher = accountMatcher;
+        this.categoryMatcher = categoryMatcher;
     }
 
     @Override
@@ -59,6 +63,7 @@ public class ParsingTransactionGenerator implements TransactionGenerator {
         builder.transactionType(result.getTransactionType());
         builder.sourceAmount(result.getAmount());
         builder.destAmount(result.getAmount());
+        builder.categoryId(categoryMatcher.getBestMatch(result.getPayeeString()).getId());
 
         switch (result.getTransactionType()) {
             case EXPENSE:

@@ -28,6 +28,10 @@ public class TransactionCategoryDao {
         return categories().findOne("{_id: #}", new ObjectId(categoryId)).as(TransactionCategory.class);
     }
 
+    public TransactionCategory findByName(String name) {
+        return categories().findOne("{name: #}", name).as(TransactionCategory.class);
+    }
+
     public Set<TransactionCategory> findAll() {
         MongoCursor<TransactionCategory> mongoCursor = categories().find().as(TransactionCategory.class);
 

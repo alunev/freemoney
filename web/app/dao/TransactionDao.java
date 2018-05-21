@@ -45,6 +45,8 @@ public class TransactionDao {
     }
 
     public void save(Transaction transaction) {
+        this.updateIds(transaction);
+
         transactions().save(transaction);
     }
 
@@ -66,6 +68,14 @@ public class TransactionDao {
         transaction.setCategory(categoryDao.findById(transaction.getCategoryId()));
         transaction.setSourceAccount(accountDao.findById(transaction.getSourceId()));
         transaction.setDestAccount(accountDao.findById(transaction.getDestId()));
+
+        return transaction;
+    }
+
+    private Transaction updateIds(Transaction transaction) {
+        transaction.setCategoryId(transaction.getCategory().getId());
+        transaction.setSourceId(transaction.getSourceAccount().getId());
+        transaction.setDestId(transaction.getDestAccount().getId());
 
         return transaction;
     }

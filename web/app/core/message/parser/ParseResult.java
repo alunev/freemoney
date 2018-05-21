@@ -1,6 +1,7 @@
 package core.message.parser;
 
 import lombok.Builder;
+import lombok.Getter;
 import model.TransactionType;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.Currency;
  * @since 0.0.1
  */
 
+@Getter
 @Builder
 public class ParseResult {
     private TransactionType transactionType;
@@ -23,23 +25,5 @@ public class ParseResult {
 
     private Currency currency;
 
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public String getSourceString() {
-        return sourceString;
-    }
-
-    public String getDestString() {
-        return destString;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
+    private String payeeString;
 }

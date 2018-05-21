@@ -10,6 +10,12 @@ import java.util.Objects;
 
 public class TransactionCategory {
 
+    public static final TransactionCategory UNDEFINED = new TransactionCategory(
+            "5b0329bfbe9c4b0296f96379",
+            "UNDEFINED",
+            "Undefined category"
+    );
+
     @MongoObjectId
     private String _id;
 

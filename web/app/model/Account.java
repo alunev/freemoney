@@ -13,7 +13,7 @@ import java.util.Currency;
 
 public class Account {
 
-    public static final Account INCOME_ACCOUNT = new Account("507f191e810c19729de860ea",
+    public static final Account INCOME_ACCOUNT = new Account("5b0329bdbe9c4b0296f96371",
                                                              RedisNull.NULL,
                                                              RedisNull.NULL,
                                                              RedisNull.NULL,
@@ -22,7 +22,7 @@ public class Account {
                                                              RedisNull.NULL
     );
 
-    public static final Account EXPENSE_ACCOUNT = createAccount("507f191e810c19729de860ea",
+    public static final Account EXPENSE_ACCOUNT = createAccount("5b0329bfbe9c4b0296f96372",
                                                                 RedisNull.NULL,
                                                                 RedisNull.NULL,
                                                                 RedisNull.NULL,
