@@ -12,6 +12,8 @@ import core.ParsingTransactionGenerator;
 import core.TransactionExecutor;
 import core.TransactionGenerator;
 import core.message.matcher.AccountMatcher;
+import core.message.matcher.AlwaysUndefinedCategoryMatcher;
+import core.message.matcher.CategoryMatcher;
 import core.message.matcher.RegexAccountMatcher;
 import dao.UserDao;
 import services.ApplicationTimer;
@@ -54,5 +56,7 @@ public class WebModule extends AbstractModule {
         bind(TransactionExecutor.class).to(LoggingTransactionExecutor.class);
         bind(AccountMatcher.class).to(RegexAccountMatcher.class);
         bind(TransactionGenerator.class).to(ParsingTransactionGenerator.class);
+
+        bind(CategoryMatcher.class).to(AlwaysUndefinedCategoryMatcher.class);
     }
 }

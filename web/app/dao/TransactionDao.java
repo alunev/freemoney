@@ -45,8 +45,6 @@ public class TransactionDao {
     }
 
     public void save(Transaction transaction) {
-        this.updateIds(transaction);
-
         transactions().save(transaction);
     }
 
@@ -72,13 +70,6 @@ public class TransactionDao {
         return transaction;
     }
 
-    private Transaction updateIds(Transaction transaction) {
-        transaction.setCategoryId(transaction.getCategory().getId());
-        transaction.setSourceId(transaction.getSourceAccount().getId());
-        transaction.setDestId(transaction.getDestAccount().getId());
-
-        return transaction;
-    }
 
     private org.jongo.MongoCollection transactions() {
         return playJongo.getCollection("transactions");
