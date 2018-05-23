@@ -19,6 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -50,8 +51,10 @@ public class ParsingTransactionGeneratorTest {
 
         when(messagePatternDao.findByOwnerId("user01")).thenReturn(Collections.singleton(ObjectsFactory.createMessagePattern()));
         when(parserSelector.getParserForBank("bank1")).thenReturn(messageParser);
-        when(messageParser.parse(any(), any())).thenReturn(ObjectsFactory.createParseResult());
-        when(accountMatcher.getBestMatch(any())).thenReturn(ObjectsFactory.createDummyAccountWithIdOwnerId("1111", "user01"));
+        when(messageParser.parse(any(), any())).thenReturn(Optional.ofNullable(ObjectsFactory.createParseResult()));
+        when(accountMatcher.getBestMatch("user01", any())).thenReturn(
+                Optional.of(ObjectsFactory.createDummyAccountWithIdOwnerId("1111", "user01"))
+        );
         when(categoryMatcher.getBestMatch(any())).thenReturn(TransactionCategory.UNDEFINED);
 
 

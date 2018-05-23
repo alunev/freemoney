@@ -31,6 +31,15 @@ public class Account {
                                                                 RedisNull.NULL
     );
 
+    public static final Account UNDEFINED_ACCOUNT = createAccount("5b0329bfbe9c4b0296f96373",
+            RedisNull.NULL,
+            RedisNull.NULL,
+            RedisNull.NULL,
+            Currency.getInstance("USD"),
+            BigDecimal.ZERO,
+            RedisNull.NULL
+    );
+
     @MongoObjectId
     private String _id;
 

@@ -6,6 +6,8 @@ import model.MessagePattern;
 import model.Sms;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static model.TransactionType.EXPENSE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -31,8 +33,9 @@ public class TinkoffMessageParserTest {
 
 
         TinkoffMessageParser parser = new TinkoffMessageParser();
-        ParseResult result = parser.parse(sms, Lists.newArrayList(pattern));
+        Optional<ParseResult> result = parser.parse(sms, Lists.newArrayList(pattern));
 
-        assertThat(result.getTransactionType()).isEqualTo(EXPENSE);
+        assertThat(result).isPresent();
+        assertThat(result.get().getTransactionType()).isEqualTo(EXPENSE);
     }
 }

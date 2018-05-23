@@ -4,6 +4,7 @@ import model.MessagePattern;
 import model.Sms;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author red
@@ -11,9 +12,9 @@ import java.util.Collection;
  */
 public class RegexMessageParser implements MessageParser {
 
-    public ParseResult parse(Sms sms, Collection<MessagePattern> patterns) {
+    public Optional<ParseResult> parse(Sms sms, Collection<MessagePattern> patterns) {
 
-        return ParseResult.builder().build();
+        return Optional.ofNullable(ParseResult.builder().build());
     }
 
 }

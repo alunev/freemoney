@@ -24,19 +24,19 @@ public class RegexBankMatcherTest {
 
         RegexBankMatcher bankMatcher = new RegexBankMatcher(Lists.newArrayList(
                 new MessagePattern(
-                        "01",
+                        "user01",
                         "Покупка\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB. OKEY. Доступно (\\d+\\.\\d+) RUB",
                         "bank1",
                         DateUtils.now()
                 ),
                 new MessagePattern(
-                        "01",
+                        "user01",
                         "Покупка\\. LENTA. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB.",
                         "bank2",
                         DateUtils.now()
                 ),
                 new MessagePattern(
-                        "01",
+                        "user01",
                         "xxxxxxxxxxxxxxxxx",
                         "bank3",
                         DateUtils.now()

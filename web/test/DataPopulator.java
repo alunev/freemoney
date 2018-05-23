@@ -72,8 +72,7 @@ public class DataPopulator extends WithApplication {
 
     @Test
     public void populateUserWithSingleAccoutAndSomeTransactions() {
-        TransactionCategory foodCat = TransactionCategory.createTransactionCategory("Food",
-                "all kinds of food");
+        TransactionCategory foodCat = TransactionCategory.createTransactionCategory("Food", "all kinds of food");
         TransactionCategory flatCat = TransactionCategory.createTransactionCategory("Flat", "commodities");
         TransactionCategory transportCat = TransactionCategory.createTransactionCategory("Transaport", "tickets etc.");
 

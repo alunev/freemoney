@@ -45,10 +45,38 @@ public class ParsingTransactionGenerator implements TransactionGenerator {
     @Override
     public List<Transaction> generate(Sms sms, User user) {
         Set<MessagePattern> userPatterns = messagePatternDao.findByOwnerId(user.getId());
+
+        return parseMessage(sms, userPatterns)
+                .map(result -> {
+                    Transaction.TransactionBuilder builder = Transaction.builder();
+                    builder.ownerId(user.getId());
+                    builder.transactionType(result.getTransactionType());
+                    builder.sourceAmount(result.getAmount());
+                    builder.destAmount(result.getAmount());
+                    builder.categoryId(categoryMatcher.getBestMatch(result.getPayeeString()).getId());
+
+                    switch (result.getTransactionType()) {
+                        case EXPENSE:
+                            Account sourceAccount = accountMatcher.getBestMatch(user.getId(), result.getSourceString())
+                                    .orElse(Account.UNDEFINED_ACCOUNT);
+
+                            builder.sourceId(sourceAccount.getId());
+                            builder.destId(Account.EXPENSE_ACCOUNT.getId());
+                            break;
+                    }
+
+                    return builder.build();
+                })
+                .map(Lists::newArrayList)
+                .map(list -> (List<Transaction>) list)
+                .orElse(Collections.emptyList());
+    }
+
+    private Optional<ParseResult> parseMessage(Sms sms, Set<MessagePattern> userPatterns) {
         Optional<String> bankName = new RegexBankMatcher(userPatterns).getBestMatch(sms);
 
         if (!bankName.isPresent()) {
-            return Collections.emptyList();
+            return Optional.empty();
         }
 
         Set<MessagePattern> bankPatterns = userPatterns.stream()
@@ -56,23 +84,7 @@ public class ParsingTransactionGenerator implements TransactionGenerator {
                 .collect(Collectors.toSet());
 
         MessageParser parser = parserSelector.getParserForBank(bankName.get());
-        ParseResult result = parser.parse(sms, bankPatterns);
 
-        Transaction.TransactionBuilder builder = Transaction.builder();
-        builder.ownerId(user.getId());
-        builder.transactionType(result.getTransactionType());
-        builder.sourceAmount(result.getAmount());
-        builder.destAmount(result.getAmount());
-        builder.categoryId(categoryMatcher.getBestMatch(result.getPayeeString()).getId());
-
-        switch (result.getTransactionType()) {
-            case EXPENSE:
-                Account sourceAccount = accountMatcher.getBestMatch(result.getSourceString());
-                builder.sourceId(sourceAccount.getId());
-                builder.destId(Account.EXPENSE_ACCOUNT.getId());
-            break;
-        }
-
-        return Lists.newArrayList(builder.build());
+        return parser.parse(sms, bankPatterns);
     }
 }

@@ -7,6 +7,7 @@ import model.TransactionType;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Currency;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,7 @@ public class TinkoffMessageParser implements MessageParser {
     private Matcher matcher;
 
     @Override
-    public ParseResult parse(Sms sms, Collection<MessagePattern> patterns) {
+    public Optional<ParseResult> parse(Sms sms, Collection<MessagePattern> patterns) {
         Pattern pattern = patterns.stream()
                 .map(MessagePattern::getRegex)
                 .filter(regex -> Pattern.matches(regex, sms.getText()))
@@ -32,7 +33,10 @@ public class TinkoffMessageParser implements MessageParser {
                 .orElseThrow(() -> new RuntimeException("Failed to match sms text: " + sms));
 
         matcher = pattern.matcher(sms.getText());
-        matcher.matches();
+
+        if (!matcher.matches()) {
+            return Optional.empty();
+        }
 
         ParseResult.ParseResultBuilder builder = ParseResult.builder();
         builder.transactionType(stringToType(matcher.group(1)));
@@ -40,7 +44,7 @@ public class TinkoffMessageParser implements MessageParser {
         builder.amount(new BigDecimal(matcher.group(3)));
         builder.currency(stringToCurrency(matcher.group(4)));
 
-        return builder.build();
+        return Optional.ofNullable(builder.build());
     }
 
     private Currency stringToCurrency(String s) {

@@ -92,7 +92,7 @@ public class ObjectsFactory {
     }
 
     public static Sms sampleTfSms() {
-        return new Sms("01",
+        return new Sms("user01",
                 "android-01",
                 "12345",
                 "Покупка. Карта *2222. 3344.5 RUB. OKEY. Доступно 12345.92 RUB",

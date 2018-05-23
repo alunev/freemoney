@@ -2,11 +2,9 @@ package core.message.parser;
 
 import model.MessagePattern;
 import model.Sms;
-import model.TransactionType;
 
-import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Currency;
+import java.util.Optional;
 
 /**
  * @author red
@@ -14,6 +12,6 @@ import java.util.Currency;
  */
 public interface MessageParser {
 
-    ParseResult parse(Sms sms, Collection<MessagePattern> patterns);
+    Optional<ParseResult> parse(Sms sms, Collection<MessagePattern> patterns);
 
 }
