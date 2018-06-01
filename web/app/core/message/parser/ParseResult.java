@@ -2,6 +2,7 @@ package core.message.parser;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import model.TransactionType;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.Currency;
 
 @Getter
 @Builder
+@ToString
 public class ParseResult {
     private TransactionType transactionType;
 

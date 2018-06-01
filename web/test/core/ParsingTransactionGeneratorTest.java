@@ -52,8 +52,8 @@ public class ParsingTransactionGeneratorTest {
         when(messagePatternDao.findByOwnerId("user01")).thenReturn(Collections.singleton(ObjectsFactory.createMessagePattern()));
         when(parserSelector.getParserForBank("bank1")).thenReturn(messageParser);
         when(messageParser.parse(any(), any())).thenReturn(Optional.ofNullable(ObjectsFactory.createParseResult()));
-        when(accountMatcher.getBestMatch("user01", any())).thenReturn(
-                Optional.of(ObjectsFactory.createDummyAccountWithIdOwnerId("1111", "user01"))
+        when(accountMatcher.getBestMatch("user01", "Карта *2222")).thenReturn(
+                Optional.of(ObjectsFactory.createDummyAccountWithIdOwnerId("2222", "user01"))
         );
         when(categoryMatcher.getBestMatch(any())).thenReturn(TransactionCategory.UNDEFINED);
 
@@ -70,7 +70,7 @@ public class ParsingTransactionGeneratorTest {
         assertThat(transactions.get(0).getTransactionType()).isEqualTo(TransactionType.EXPENSE);
         assertThat(transactions.get(0).getSourceAmount()).isEqualTo(BigDecimal.TEN);
         assertThat(transactions.get(0).getDestAmount()).isEqualTo(BigDecimal.TEN);
-        assertThat(transactions.get(0).getSourceId()).isEqualTo("1111");
+        assertThat(transactions.get(0).getSourceId()).isEqualTo("2222");
         assertThat(transactions.get(0).getDestId()).isEqualTo(Account.EXPENSE_ACCOUNT.getId());
         assertThat(transactions.get(0).getCategoryId()).isEqualTo(TransactionCategory.UNDEFINED.getId());
     }

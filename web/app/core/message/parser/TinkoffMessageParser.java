@@ -3,6 +3,7 @@ package core.message.parser;
 import model.MessagePattern;
 import model.Sms;
 import model.TransactionType;
+import play.Logger;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -21,22 +22,15 @@ import static play.Logger.info;
  */
 public class TinkoffMessageParser implements MessageParser {
 
-    private Matcher matcher;
-
     @Override
     public Optional<ParseResult> parse(Sms sms, Collection<MessagePattern> patterns) {
-        Pattern pattern = patterns.stream()
+        Matcher matcher = patterns.stream()
                 .map(MessagePattern::getRegex)
-                .filter(regex -> Pattern.matches(regex, sms.getText()))
-                .findFirst()
                 .map(Pattern::compile)
+                .map(p -> p.matcher(sms.getText()))
+                .filter(Matcher::matches)
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("Failed to match sms text: " + sms));
-
-        matcher = pattern.matcher(sms.getText());
-
-        if (!matcher.matches()) {
-            return Optional.empty();
-        }
 
         ParseResult.ParseResultBuilder builder = ParseResult.builder();
         builder.transactionType(stringToType(matcher.group(1)));
@@ -44,7 +38,11 @@ public class TinkoffMessageParser implements MessageParser {
         builder.amount(new BigDecimal(matcher.group(3)));
         builder.currency(stringToCurrency(matcher.group(4)));
 
-        return Optional.ofNullable(builder.build());
+        ParseResult result = builder.build();
+
+        Logger.debug("Result: {}", result);
+
+        return Optional.ofNullable(result);
     }
 
     private Currency stringToCurrency(String s) {

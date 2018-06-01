@@ -20,8 +20,6 @@ import play.inject.guice.GuiceApplicationBuilder;
 import play.test.WithApplication;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 /**
  * @author red
@@ -36,6 +34,9 @@ public class DataPopulator extends WithApplication {
     private TransactionCategoryDao transactionCategoryDao;
     private TransactionDao transactionDao;
     private MessagePatternDao patternDao;
+
+    private String owner = "";
+    private String authId = "";
 
     @Override
     protected Application provideApplication() {
@@ -54,17 +55,10 @@ public class DataPopulator extends WithApplication {
     }
 
 
-    @Test
-    public void fillBasicData() {
-        populatePatterns();
-        populateUserWithSingleAccoutAndSomeTransactions();
-    }
-
-    @Test
-    public void populatePatterns() {
+    public void populatePatterns(String ownerId) {
         patternDao.save(new MessagePattern(
-                "01",
-                "Покупка\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB. OKEY. Доступно (\\d+\\.\\d+) RUB",
+                ownerId,
+                "Покупка\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB. (.*). Доступно (\\d+\\.\\d+) RUB",
                 "Tinkoff",
                 DateUtils.now()
         ));
@@ -80,9 +74,11 @@ public class DataPopulator extends WithApplication {
         transactionCategoryDao.save(flatCat);
         transactionCategoryDao.save(transportCat);
 
-        User user = User.createEmptyUser("", "user@some_email");
+        User user = User.createEmptyUser(authId, owner);
 
         userDao.save(user);
+
+        populatePatterns(user.getId());
 
         Account account = ObjectsFactory.createDummyAccountWithOwnerId(user.getId());
         accountDao.save(account);

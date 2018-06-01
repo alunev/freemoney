@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import java.time.LocalDateTime;
@@ -118,4 +119,15 @@ public class Sms {
                 Objects.equals(createdTs, sms.createdTs);
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("_id", _id)
+                .add("ownerId", ownerId)
+                .add("deviceId", deviceId)
+                .add("sender", sender)
+                .add("text", text)
+                .add("createdTs", createdTs)
+                .toString();
+    }
 }

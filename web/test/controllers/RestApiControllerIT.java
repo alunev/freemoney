@@ -46,10 +46,10 @@ public class RestApiControllerIT extends WithApplication {
     @Test
     public void sendSomeSmses() throws Exception {
         Sms sms = Sms.createSms(
-                "some_email",
+                "",
                 "android-1",
                 "",
-                "CASH 45.12 CAFE",
+                "Покупка Карта *2222. 42.42 RUB. OKEY DOSTAVKA. Доступно 1325.50 RUB",
                 ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
 
         JsonNode jsonNode = Json.toJson(sms);
