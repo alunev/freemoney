@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import java.time.LocalDateTime;
@@ -36,10 +37,7 @@ public class MessagePattern {
         this.createdTs = createdTs;
     }
 
-    public MessagePattern(@JsonProperty("ownerId") String ownerId,
-                          @JsonProperty("regex") String regex,
-                          @JsonProperty("bankName") String bankName,
-                          @JsonProperty("createdTs") LocalDateTime createdTs) {
+    public MessagePattern(String ownerId, String regex, String bankName, LocalDateTime createdTs) {
         this.ownerId = ownerId;
         this.regex = regex;
         this.bankName = bankName;
@@ -64,5 +62,16 @@ public class MessagePattern {
 
     public LocalDateTime getCreatedTs() {
         return createdTs;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("_id", _id)
+                .add("ownerId", ownerId)
+                .add("regex", regex)
+                .add("bankName", bankName)
+                .add("createdTs", createdTs)
+                .toString();
     }
 }

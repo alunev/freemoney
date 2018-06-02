@@ -25,7 +25,7 @@ public class RegexBankMatcherTest {
         RegexBankMatcher bankMatcher = new RegexBankMatcher(Lists.newArrayList(
                 new MessagePattern(
                         "user01",
-                        "Покупка\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB. (.*). Доступно (\\d+\\.\\d+) RUB",
+                        "(.*)\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) (.*). OKEY. Доступно (\\d+\\.\\d+) RUB",
                         "bank1",
                         DateUtils.now()
                 ),

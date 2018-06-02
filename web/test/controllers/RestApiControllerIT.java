@@ -49,7 +49,7 @@ public class RestApiControllerIT extends WithApplication {
                 "",
                 "android-1",
                 "",
-                "Покупка Карта *2222. 42.42 RUB. OKEY DOSTAVKA. Доступно 1325.50 RUB",
+                "Покупка. Карта *2222. 3344.5 RUB. OKEY. Доступно 12345.92 RUB",
                 ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
 
         JsonNode jsonNode = Json.toJson(sms);

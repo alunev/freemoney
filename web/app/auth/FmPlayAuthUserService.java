@@ -24,16 +24,11 @@ public class FmPlayAuthUserService extends AbstractUserService {
 
 	@Override
 	public String save(final AuthUser authUser) {
-        GoogleAuthUser googleAuthUser = AuthUserConverter.toGoogleAuthUser(authUser);
-        if (googleAuthUser == null) {
-            return null;
-        }
-
-        String authUserId = googleAuthUser.getId();
+        String authUserId = authUser.getId();
 
         User user = userDao.findByAuthId(authUserId);
         if (user == null) {
-            user = User.createEmptyUser(googleAuthUser.getId(), googleAuthUser.getEmail());
+            user = User.createEmptyUser(authUser.getId(), AuthUserAccessor.getEmailOf(authUser));
 			userDao.save(user);
         }
 

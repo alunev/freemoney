@@ -1,5 +1,6 @@
 package dao;
 
+import com.google.common.collect.Sets;
 import common.DateUtils;
 import model.Account;
 import model.MessagePattern;
@@ -43,6 +44,6 @@ public class MessagePatternDaoTest extends JongoDaoTest {
 
         patternDao.save(pattern);
 
-        assertThat(patternDao.findByOwnerId("01")).isEqualTo(pattern);
+        assertThat(patternDao.findByOwnerId("user01").stream().findFirst().get().getId()).isEqualTo(pattern.getId());
     }
 }

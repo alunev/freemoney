@@ -1,5 +1,6 @@
 import auth.FmPlayAuthResolver;
 import auth.FmPlayAuthUserService;
+import auth.basic.AlwaysValidBasicAuthProvider;
 import auth.deadbolt.FmPlayAuthCustomDeadboltHook;
 import auth.deadbolt.FmPlayAuthDeadboltHandler;
 import auth.deadbolt.FmPlayAuthHandlerCache;
@@ -46,12 +47,14 @@ public class WebModule extends AbstractModule {
         bind(UserDao.class).asEagerSingleton();
 
         bind(Resolver.class).to(FmPlayAuthResolver.class);
-        bind(FmPlayAuthUserService.class).asEagerSingleton();
-        bind(GoogleAuthProvider.class).asEagerSingleton();
-
         bind(DeadboltHandler.class).to(FmPlayAuthDeadboltHandler.class);
+
+        bind(FmPlayAuthUserService.class).asEagerSingleton();
         bind(FmPlayAuthHandlerCache.class).asEagerSingleton();
         bind(FmPlayAuthCustomDeadboltHook.class).asEagerSingleton();
+
+        bind(GoogleAuthProvider.class).asEagerSingleton();
+        bind(AlwaysValidBasicAuthProvider.class).asEagerSingleton();
 
         bind(TransactionExecutor.class).to(LoggingTransactionExecutor.class);
         bind(AccountMatcher.class).to(RegexAccountMatcher.class);

@@ -6,6 +6,7 @@ import core.TransactionExecutor;
 import core.TransactionGenerator;
 import dao.SmsDao;
 import dao.TransactionDao;
+import dao.UserDao;
 import model.Sms;
 import model.User;
 import play.libs.Json;
@@ -29,23 +30,30 @@ public class RestApiController extends Controller {
     private TransactionGenerator transactionGenerator;
     private TransactionExecutor transactionExecutor;
     private UserService userService;
+    private UserDao userDao;
 
     @Inject
     public RestApiController(SmsDao smsDao,
                              TransactionDao transactionDao,
                              ParsingTransactionGenerator transactionGenerator,
                              TransactionExecutor transactionExecutor,
-                             UserService userService) {
+                             UserService userService, UserDao userDao) {
         this.smsDao = smsDao;
         this.transactionDao = transactionDao;
         this.transactionGenerator = transactionGenerator;
         this.transactionExecutor = transactionExecutor;
         this.userService = userService;
+        this.userDao = userDao;
     }
 
     public CompletionStage<Result> processSms() {
-        User user = userService.getUser(session());
         Sms sms = Json.fromJson(request().body().asJson(), Sms.class);
+
+        User user = userDao.findById(sms.getOwnerId());
+
+        if (user == null) {
+            return CompletableFuture.supplyAsync(() -> internalServerError("No user found with ID " + sms.getOwnerId()));
+        }
 
         // push message to persistent queue and then async:
         //  - saving to mongo (for history and traceability)

@@ -1,5 +1,6 @@
 package core;
 
+import common.DateUtils;
 import core.message.ParserSelector;
 import core.message.RegexBankMatcher;
 import core.message.matcher.AccountMatcher;
@@ -16,6 +17,7 @@ import org.assertj.core.util.Lists;
 import play.Logger;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +61,7 @@ public class ParsingTransactionGenerator implements TransactionGenerator {
                     builder.sourceAmount(result.getAmount());
                     builder.destAmount(result.getAmount());
                     builder.categoryId(categoryMatcher.getBestMatch(result.getPayeeString()).getId());
+                    builder.addedTime(DateUtils.now());
 
                     switch (result.getTransactionType()) {
                         case EXPENSE:

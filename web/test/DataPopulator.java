@@ -58,7 +58,7 @@ public class DataPopulator extends WithApplication {
     public void populatePatterns(String ownerId) {
         patternDao.save(new MessagePattern(
                 ownerId,
-                "Покупка\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) RUB. (.*). Доступно (\\d+\\.\\d+) RUB",
+                "(.*)\\. Карта \\*(\\d{4}). (\\d+\\.\\d+) (.*). OKEY. Доступно (\\d+\\.\\d+) RUB",
                 "Tinkoff",
                 DateUtils.now()
         ));
@@ -70,6 +70,7 @@ public class DataPopulator extends WithApplication {
         TransactionCategory flatCat = TransactionCategory.createTransactionCategory("Flat", "commodities");
         TransactionCategory transportCat = TransactionCategory.createTransactionCategory("Transaport", "tickets etc.");
 
+        transactionCategoryDao.save(TransactionCategory.UNDEFINED);
         transactionCategoryDao.save(foodCat);
         transactionCategoryDao.save(flatCat);
         transactionCategoryDao.save(transportCat);
@@ -82,6 +83,10 @@ public class DataPopulator extends WithApplication {
 
         Account account = ObjectsFactory.createDummyAccountWithOwnerId(user.getId());
         accountDao.save(account);
+
+        accountDao.save(Account.EXPENSE_ACCOUNT);
+        accountDao.save(Account.INCOME_ACCOUNT);
+        accountDao.save(Account.UNDEFINED_ACCOUNT);
 
         user.addAccount(account);
 
