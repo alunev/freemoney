@@ -1,5 +1,7 @@
 @import com.feth.play.module.pa.views.html._
 
+@this(main: views.html.main)
+
 @(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: model.User, failedMessage: String)
 
 @main("Login to Freemoney", playAuth, user) {

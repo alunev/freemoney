@@ -32,7 +32,7 @@ public class FmPlayAuthDeadboltHandler extends AbstractDeadboltHandler {
 	}
 
 	@Override
-	public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context) {
+	public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, Optional<String> content) {
 		if (this.auth.isLoggedIn(context.session())) {
 			// user is logged in
 			return CompletableFuture.completedFuture(Optional.empty());

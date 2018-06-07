@@ -13,8 +13,6 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserService;
-import views.html.edit_transaction;
-import views.html.transactions;
 
 import java.util.Map;
 import java.util.UUID;
@@ -40,10 +38,20 @@ public class TransactionsController extends Controller {
 
     private final FormFactory formFactory;
 
+    private final views.html.transactions transactions;
+
+    private final views.html.edit_transaction edit_transaction;
+
     @Inject
-    public TransactionsController(PlayAuthenticate auth, UserService userService, TransactionDao transactionDao,
-                                  TransactionCategoryDao transactionCategoryDao, UserDao userDao, AccountDao accountDao,
-                                  FormFactory formFactory) {
+    public TransactionsController(PlayAuthenticate auth,
+                                  UserService userService,
+                                  TransactionDao transactionDao,
+                                  TransactionCategoryDao transactionCategoryDao,
+                                  UserDao userDao,
+                                  AccountDao accountDao,
+                                  FormFactory formFactory,
+                                  views.html.transactions transactions,
+                                  views.html.edit_transaction edit_transaction) {
         this.auth = auth;
         this.userService = userService;
         this.transactionDao = transactionDao;
@@ -51,6 +59,8 @@ public class TransactionsController extends Controller {
         this.userDao = userDao;
         this.accountDao = accountDao;
         this.formFactory = formFactory;
+        this.transactions = transactions;
+        this.edit_transaction = edit_transaction;
     }
 
     public Result transactions() {

@@ -46,7 +46,7 @@ public class RestApiControllerIT extends WithApplication {
     @Test
     public void sendSomeSmses() throws Exception {
         Sms sms = Sms.createSms(
-                "",
+                "5b1315ca6d0a223a2ba749db",
                 "android-1",
                 "",
                 "Покупка. Карта *2222. 3344.5 RUB. OKEY. Доступно 12345.92 RUB",

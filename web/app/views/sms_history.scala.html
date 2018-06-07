@@ -1,0 +1,43 @@
+@import model.Sms
+
+@this(main: views.html.main)
+
+@(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: model.User, smses: Set[Sms])
+
+@main("Sms", playAuth, user) {
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">
+            Sms
+        </h1>
+
+        <h2 class="sub-header">All</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Direction</th>
+                        <th>Currency</th>
+                        <th>Amount</th>
+                        <th>SMS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(sms <- smses) {
+                        <tr>
+                            <td>@sms.getId</td>
+                            <td>@sms.getDeviceId</td>
+                            <td>@sms.getSender</td>
+                            <td>@sms.getText</td>
+                            <td>@sms.getCreatedTs</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+

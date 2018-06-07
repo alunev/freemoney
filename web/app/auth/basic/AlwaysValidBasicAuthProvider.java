@@ -22,7 +22,6 @@ import com.feth.play.module.pa.user.AuthUser;
 import play.inject.ApplicationLifecycle;
 import play.mvc.Http.Context;
 import play.twirl.api.Content;
-import views.html.login;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -33,9 +32,14 @@ import javax.inject.Singleton;
 @Singleton
 public class AlwaysValidBasicAuthProvider extends BasicAuthProvider {
 
+    private final views.html.login login;
+
     @Inject
-    public AlwaysValidBasicAuthProvider(final PlayAuthenticate auth, final ApplicationLifecycle lifecycle) {
+    public AlwaysValidBasicAuthProvider(final PlayAuthenticate auth,
+                                        final ApplicationLifecycle lifecycle,
+                                        views.html.login login) {
         super(auth, lifecycle);
+        this.login = login;
     }
 
     @Override

@@ -3,6 +3,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import lombok.Builder;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
@@ -289,7 +290,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return com.google.common.base.Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("_id", _id)
                 .add("ownerId", ownerId)
                 .add("transactionType", transactionType)

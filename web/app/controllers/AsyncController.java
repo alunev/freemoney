@@ -14,18 +14,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-/**
- * This controller contains an action that demonstrates how to write
- * simple asynchronous code in a controller. It uses a timer to
- * asynchronously delay sending a response for 1 second.
- *
- * @param actorSystem We need the {@link ActorSystem}'s
- * {@link Scheduler} to run code after a delay.
- * @param exec We need a Java {@link Executor} to apply the result
- * of the {@link CompletableFuture} and a Scala
- * {@link ExecutionContext} so we can use the Akka {@link Scheduler}.
- * An {@link ExecutionContextExecutor} implements both interfaces.
- */
 @Singleton
 public class AsyncController extends Controller {
 

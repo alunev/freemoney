@@ -12,8 +12,6 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserService;
-import views.html.accounts;
-import views.html.edit_account;
 
 public class AccountsController extends Controller {
 
@@ -24,16 +22,28 @@ public class AccountsController extends Controller {
     private final FormFactory formFactory;
 
     private final AccountDao accountDao;
+
     private final UserDao userDao;
 
+    private final views.html.accounts accounts;
+
+    private final views.html.edit_account edit_account;
+
     @Inject
-    public AccountsController(PlayAuthenticate auth, UserService userService, FormFactory formFactory,
-                              AccountDao accountDao, UserDao userDao) {
+    public AccountsController(PlayAuthenticate auth,
+                              UserService userService,
+                              FormFactory formFactory,
+                              AccountDao accountDao,
+                              UserDao userDao,
+                              views.html.accounts accounts,
+                              views.html.edit_account edit_account) {
         this.auth = auth;
         this.userService = userService;
         this.formFactory = formFactory;
         this.accountDao = accountDao;
         this.userDao = userDao;
+        this.accounts = accounts;
+        this.edit_account = edit_account;
     }
 
     public Result accounts() {

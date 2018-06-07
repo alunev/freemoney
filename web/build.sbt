@@ -4,7 +4,7 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.12"
 
 libraryDependencies ++= Seq(
   javaJdbc,
@@ -13,12 +13,15 @@ libraryDependencies ++= Seq(
   javaJpa
 )
 
+libraryDependencies += guice
+libraryDependencies += openId
+
 // https://mvnrepository.com/artifact/org.projectlombok/lombok
 libraryDependencies += "org.projectlombok" % "lombok" % "1.16.20"
 
-libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.1"
-libraryDependencies += "be.objectify" %% "deadbolt-java" % "2.5.0"
-libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.1-P25-B3"
+libraryDependencies += "com.feth" %% "play-authenticate" % "0.8.3"
+libraryDependencies += "be.objectify" %% "deadbolt-java" % "2.6.4"
+libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.2-P26-B3"
 
 libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.3"
 
