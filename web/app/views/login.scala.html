@@ -1,4 +1,6 @@
-@(failedMessage: String, user: model.User)
+@import model.User
+
+@(failedMessage: String, user: Optional[User])
 
 @main("Login to Freemoney", user) {
 

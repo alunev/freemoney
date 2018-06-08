@@ -3,8 +3,7 @@
 
 @import play.data.Form
 
-
-@(user: User, form: Form[Account])
+@(user: Optional[User], form: Form[Account])
 
 @implicitFieldConstructor = @{
     b3.horizontal.fieldConstructor("col-md-2", "col-md-10")

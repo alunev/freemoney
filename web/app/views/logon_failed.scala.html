@@ -1,7 +1,7 @@
 
-@(user: model.User, errorMessage: String)
+@(errorMessage: String)
 
-@main("Filed to Login!!!", user) {
+@main("Filed to Login!!!", Optional.empty()) {
     <div class="error">Problem on login!</div>
     <div class="error">@errorMessage</div>
 }

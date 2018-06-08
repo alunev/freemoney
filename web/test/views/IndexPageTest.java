@@ -13,9 +13,10 @@ import play.mvc.Http;
 import play.test.WithApplication;
 import play.twirl.api.Content;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +55,7 @@ public class IndexPageTest extends WithApplication {
         when(context.request()).thenReturn(mock(Http.Request.class));
         when(context._requestHeader()).thenReturn(mock(RequestHeader.class));
 
-        Content html = views.html.index.render(User.GUEST);
+        Content html = views.html.index.render(Optional.empty());
 
         assertEquals("text/html", html.contentType());
         assertTrue(html.body().contains("Login with google"));
@@ -66,7 +67,7 @@ public class IndexPageTest extends WithApplication {
         when(context._requestHeader()).thenReturn(requestHeader);
 
         Content html = views.html.index.render(
-                User.createEmptyUser("user_some_auth_id", "user@some_email")
+                java.util.Optional.ofNullable(User.createEmptyUser("user_some_auth_id", "user@some_email"))
         );
 
         assertEquals("text/html", html.contentType());

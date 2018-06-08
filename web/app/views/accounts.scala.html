@@ -1,4 +1,6 @@
-@(user: model.User)
+@import model.User
+
+@(user: Optional[User])
 
 @main("Accounts", user) {
     <h1 class="page-header">
@@ -22,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-            @for(account <- user.getAccounts) {
+            @for(account <- user.get().getAccounts) {
                 <tr>
                     <td>@account.getId</td>
                     <td>@account.getNumber</td>

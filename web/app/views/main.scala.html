@@ -1,6 +1,6 @@
 @import model.User
 
-@(title: String, user: User)(content: Html)
+@(title: String, user: Optional[User])(content: Html)
 
 
 <!DOCTYPE html>
@@ -73,8 +73,12 @@
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @if(user != null) {
-                            <li><a href=""> Hello, @user.getEmail !!! </a></li>
+                        @if(user.isPresent) {
+                            <li><a href=""> Hello, @user.get().getEmail !!! </a></li>
+                            <li><a href="/logout?url=/">Logout</a></li>
+                        }
+                        @if(!user.isPresent) {
+                            <li><a href=@routes.AuthController.loginGoogle>Login with google</a></li>
                         }
                     </ul>
 

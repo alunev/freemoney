@@ -9,10 +9,8 @@ import views.html.index;
 import views.html.login;
 import views.html.logon_failed;
 
-/**
- * This controller contains an action to handle HTTP requests
- * to the application's home page.
- */
+import java.util.Optional;
+
 public class HomeController extends Controller {
 
     private final UserService userService;
@@ -23,7 +21,7 @@ public class HomeController extends Controller {
     }
 
     public Result oAuthDenied(String provider, String errorMessage) {
-        return ok(logon_failed.render(User.GUEST, errorMessage));
+        return ok(logon_failed.render(errorMessage));
     }
 
     /**
@@ -33,9 +31,9 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        User user = userService.getUser(session());
+        Optional<User> user = userService.getUser();
 
-        if (user != null) {
+        if (user.isPresent()) {
             return ok(index.render(user));
         } else {
             return ok(login.render("", user));

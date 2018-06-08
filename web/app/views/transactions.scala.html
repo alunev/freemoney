@@ -1,12 +1,13 @@
 
+@import model.User
 @import model.TransactionType
 
-@(user: model.User)
+@(user: Optional[User])
 
 @main("Transactions", user) {
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
-        @for(account <- user.getAccounts) {
+        @for(account <- user.get().getAccounts) {
             <li><a href="#">@account.getTitle</a></li>
         }
         </ul>
@@ -36,7 +37,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(tx <- user.getTransactions) {
+                    @for(tx <- user.get().getTransactions) {
                         <tr>
                             <td>@tx.getId</td>
                             <td>@tx.getAddedTime</td>

@@ -33,3 +33,4 @@ libraryDependencies += "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.
 libraryDependencies += "org.pac4j" %% "play-pac4j" % "6.0.0"
 libraryDependencies += "org.pac4j" % "pac4j-oauth" % "3.0.0"
 
+libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.3.0"

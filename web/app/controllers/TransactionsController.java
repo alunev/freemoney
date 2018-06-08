@@ -19,7 +19,9 @@ import services.UserService;
 import views.html.edit_transaction;
 import views.html.transactions;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -54,7 +56,7 @@ public class TransactionsController extends Controller {
     }
 
     public Result transactions() {
-        return ok(transactions.render(userService.getUser(session())));
+        return ok(transactions.render(userService.getUser()));
     }
 
 
@@ -74,11 +76,12 @@ public class TransactionsController extends Controller {
                 Collectors.toMap(TransactionCategory::getId, TransactionCategory::getName)
         );
 
-        User user = userService.getUser(session());
+        Optional<User> user = userService.getUser();
 
-        Map<String, String> accountsMap = accountDao.findByOwnerId(user.getId()).stream().collect(
-                Collectors.toMap(Account::getId, Account::getTitle)
-        );
+        Map<String, String> accountsMap = user
+                .map(u -> accountDao.findByOwnerId(u.getId()).stream())
+                .map(accountStream -> accountStream.collect(Collectors.toMap(Account::getId, Account::getTitle)))
+                .orElse(Collections.emptyMap());
 
         return ok(edit_transaction.render(user, form, catMap, accountsMap));
     }
@@ -95,10 +98,13 @@ public class TransactionsController extends Controller {
                 tx.setDestAccount(Account.INCOME_ACCOUNT);
             }
 
-            User user = userService.getUser(session());
-            user.addTransaction(tx);
+            Optional<User> user = userService.getUser();
 
-            userDao.save(user);
+            user.ifPresent(u -> {
+                u.addTransaction(tx);
+                userDao.save(u);
+            });
+
         } else {
             transactionDao.save(tx);
         }

@@ -10,12 +10,10 @@ import org.pac4j.play.CallbackController;
 import org.pac4j.play.LogoutController;
 import org.pac4j.play.deadbolt2.Pac4jRoleHandler;
 import org.pac4j.play.http.DefaultHttpActionAdapter;
-import org.pac4j.play.scala.Pac4jScalaTemplateHelper;
 import org.pac4j.play.store.PlayCacheSessionStore;
 import org.pac4j.play.store.PlaySessionStore;
 import play.Configuration;
 import play.Environment;
-import play.cache.SyncCacheApi;
 
 public class SecurityModule extends AbstractModule {
 

@@ -14,6 +14,8 @@ import services.UserService;
 import views.html.accounts;
 import views.html.edit_account;
 
+import java.util.Optional;
+
 public class AccountsController extends Controller {
 
     private final UserService userService;
@@ -33,7 +35,7 @@ public class AccountsController extends Controller {
     }
 
     public Result accounts() {
-        return ok(accounts.render(userService.getUser(session())));
+        return ok(accounts.render(userService.getUser()));
     }
 
     public Result showAddForm() {
@@ -48,22 +50,23 @@ public class AccountsController extends Controller {
             form = form.fill(account);
         }
 
-        return ok(edit_account.render(userService.getUser(session()), form));
+        return ok(edit_account.render(userService.getUser(), form));
     }
 
     public Result saveAccountForm() {
         Account account = formFactory.form(Account.class).bindFromRequest().get();
-        User user = userService.getUser(session());
+        Optional<User> user = userService.getUser();
 
         if (Strings.isNullOrEmpty(account.getId())) {
             accountDao.save(account);
 
-            user.addAccount(account);
-            userDao.save(user);
+            user.ifPresent(u -> {
+                u.addAccount(account);
+                userDao.save(u);
+            });
         } else {
             accountDao.save(account);
         }
-
 
         flash("success", "Saved successfully");
 
