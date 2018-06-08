@@ -1,7 +1,5 @@
 package views;
 
-import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.user.AuthUser;
 import com.typesafe.config.ConfigFactory;
 import common.TestOverridesWebModule;
 import model.User;
@@ -56,7 +54,7 @@ public class IndexPageTest extends WithApplication {
         when(context.request()).thenReturn(mock(Http.Request.class));
         when(context._requestHeader()).thenReturn(mock(RequestHeader.class));
 
-        Content html = views.html.index.render(mock(PlayAuthenticate.class), User.GUEST);
+        Content html = views.html.index.render(User.GUEST);
 
         assertEquals("text/html", html.contentType());
         assertTrue(html.body().contains("Login with google"));
@@ -67,14 +65,7 @@ public class IndexPageTest extends WithApplication {
         RequestHeader requestHeader = mock(RequestHeader.class);
         when(context._requestHeader()).thenReturn(requestHeader);
 
-        AuthUser authUser = mock(AuthUser.class);
-        when(authUser.getId()).thenReturn("user@some_email");
-
-        PlayAuthenticate playAuth = mock(PlayAuthenticate.class);
-        when(playAuth.getUser(any(Http.Context.class))).thenReturn(authUser);
-
         Content html = views.html.index.render(
-                playAuth,
                 User.createEmptyUser("user_some_auth_id", "user@some_email")
         );
 

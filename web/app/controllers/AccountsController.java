@@ -1,6 +1,5 @@
 package controllers;
 
-import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import dao.AccountDao;
@@ -17,8 +16,6 @@ import views.html.edit_account;
 
 public class AccountsController extends Controller {
 
-    private final PlayAuthenticate auth;
-
     private final UserService userService;
 
     private final FormFactory formFactory;
@@ -27,9 +24,8 @@ public class AccountsController extends Controller {
     private final UserDao userDao;
 
     @Inject
-    public AccountsController(PlayAuthenticate auth, UserService userService, FormFactory formFactory,
+    public AccountsController(UserService userService, FormFactory formFactory,
                               AccountDao accountDao, UserDao userDao) {
-        this.auth = auth;
         this.userService = userService;
         this.formFactory = formFactory;
         this.accountDao = accountDao;
@@ -37,7 +33,7 @@ public class AccountsController extends Controller {
     }
 
     public Result accounts() {
-        return ok(accounts.render(auth, userService.getUser(session())));
+        return ok(accounts.render(userService.getUser(session())));
     }
 
     public Result showAddForm() {
@@ -52,7 +48,7 @@ public class AccountsController extends Controller {
             form = form.fill(account);
         }
 
-        return ok(edit_account.render(auth, userService.getUser(session()), form));
+        return ok(edit_account.render(userService.getUser(session()), form));
     }
 
     public Result saveAccountForm() {

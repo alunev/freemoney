@@ -1,13 +1,16 @@
 package controllers;
 
-import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import dao.AccountDao;
 import dao.TransactionCategoryDao;
 import dao.TransactionDao;
 import dao.UserDao;
-import model.*;
+import model.Account;
+import model.Transaction;
+import model.TransactionCategory;
+import model.TransactionType;
+import model.User;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -26,8 +29,6 @@ import java.util.stream.Collectors;
  */
 public class TransactionsController extends Controller {
 
-    private final PlayAuthenticate auth;
-
     private final UserService userService;
 
     private final TransactionDao transactionDao;
@@ -41,10 +42,9 @@ public class TransactionsController extends Controller {
     private final FormFactory formFactory;
 
     @Inject
-    public TransactionsController(PlayAuthenticate auth, UserService userService, TransactionDao transactionDao,
+    public TransactionsController(UserService userService, TransactionDao transactionDao,
                                   TransactionCategoryDao transactionCategoryDao, UserDao userDao, AccountDao accountDao,
                                   FormFactory formFactory) {
-        this.auth = auth;
         this.userService = userService;
         this.transactionDao = transactionDao;
         this.transactionCategoryDao = transactionCategoryDao;
@@ -54,7 +54,7 @@ public class TransactionsController extends Controller {
     }
 
     public Result transactions() {
-        return ok(transactions.render(auth, userService.getUser(session())));
+        return ok(transactions.render(userService.getUser(session())));
     }
 
 
@@ -80,7 +80,7 @@ public class TransactionsController extends Controller {
                 Collectors.toMap(Account::getId, Account::getTitle)
         );
 
-        return ok(edit_transaction.render(auth, user, form, catMap, accountsMap));
+        return ok(edit_transaction.render(user, form, catMap, accountsMap));
     }
 
     public Result saveTransactionForm() {

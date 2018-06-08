@@ -1,9 +1,6 @@
 package model;
 
 
-import be.objectify.deadbolt.java.models.Permission;
-import be.objectify.deadbolt.java.models.Role;
-import be.objectify.deadbolt.java.models.Subject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,11 +9,10 @@ import com.google.common.collect.Sets;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class User implements Subject {
+public class User {
 
     public static final User GUEST = User.createEmptyUser("5a4ec3a6b7bae729a6d9a18a", "", "guest@guest.com");
 
@@ -184,21 +180,6 @@ public class User implements Subject {
     @Override
     public int hashCode() {
         return Objects.hash(_id);
-    }
-
-    @Override
-    public List<? extends Role> getRoles() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<? extends Permission> getPermissions() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public String getIdentifier() {
-        return authId;
     }
 
     @Override
