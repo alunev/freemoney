@@ -1,12 +1,5 @@
 package common;
 
-import auth.FmPlayAuthResolver;
-import auth.FmPlayAuthUserService;
-import auth.deadbolt.FmPlayAuthDeadboltHandler;
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.models.Subject;
-import com.feth.play.module.pa.Resolver;
-import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
 import core.LoggingTransactionExecutor;
 import core.TransactionExecutor;
@@ -31,23 +24,13 @@ import static org.mockito.Mockito.when;
 public class TestOverridesWebModule extends AbstractModule {
     @Override
     protected void configure() {
-        FmPlayAuthResolver authResolver = mock(FmPlayAuthResolver.class);
         UserDao userDao = mock(UserDao.class);
         User testUser = User.createEmptyUser("user_some_auth_id", "user@some_email");
-        FmPlayAuthDeadboltHandler deadboltHandler = mock(FmPlayAuthDeadboltHandler.class);
 
-        when(authResolver.auth(anyString())).thenReturn(new Call("GET", "google_url", "fragment"));
         when(userDao.findByAuthId(anyString())).thenReturn(testUser);
-        when(deadboltHandler.getSubject(any(Http.Context.class))).thenReturn(
-                CompletableFuture.completedFuture(Optional.ofNullable((Subject) testUser))
-        );
 
-        bind(GoogleAuthProvider.class).asEagerSingleton();
         bind(JPAApi.class).toInstance(mock(JPAApi.class));
         bind(UserDao.class).toInstance(userDao);
-        bind(Resolver.class).toInstance(authResolver);
-        bind(FmPlayAuthUserService.class).toInstance(mock(FmPlayAuthUserService.class));
-        bind(DeadboltHandler.class).toInstance(deadboltHandler);
         bind(TransactionExecutor.class).to(LoggingTransactionExecutor.class);
         bind(AccountMatcher.class).toInstance(mock(AccountMatcher.class));
 

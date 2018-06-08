@@ -3,15 +3,13 @@
 
 @import play.data.Form
 
-@import views.html.b3
-
-@(playAuth: com.feth.play.module.pa.PlayAuthenticate, user: User, form: Form[Account])
+@(user: Optional[User], form: Form[Account])
 
 @implicitFieldConstructor = @{
     b3.horizontal.fieldConstructor("col-md-2", "col-md-10")
 }
 
-@main("Accounts", playAuth, user) {
+@main("Accounts", user) {
 
     @if(flash.containsKey("success")) {
 
@@ -23,7 +21,7 @@
     }
 
     @b3.form(action = routes.AccountsController.saveAccountForm()) {
-        @b3.hidden("id", form("id").value())
+        @b3.hidden("id", form("id").getValue)
         @b3.text(form("number"), '_label -> "Number")
         @b3.text(form("title"), '_label -> "Title")
         @b3.select(form("currency"), options = Seq("RUB" -> "RUB", "USD" -> "USD", "EUR" -> "EUR"), '_label -> "Currency")

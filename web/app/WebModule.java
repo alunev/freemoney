@@ -1,12 +1,3 @@
-import auth.FmPlayAuthResolver;
-import auth.FmPlayAuthUserService;
-import auth.basic.AlwaysValidBasicAuthProvider;
-import auth.deadbolt.FmPlayAuthCustomDeadboltHook;
-import auth.deadbolt.FmPlayAuthDeadboltHandler;
-import auth.deadbolt.FmPlayAuthHandlerCache;
-import be.objectify.deadbolt.java.DeadboltHandler;
-import com.feth.play.module.pa.Resolver;
-import com.feth.play.module.pa.providers.oauth2.google.GoogleAuthProvider;
 import com.google.inject.AbstractModule;
 import core.LoggingTransactionExecutor;
 import core.ParsingTransactionGenerator;
@@ -46,15 +37,6 @@ public class WebModule extends AbstractModule {
 
         bind(UserDao.class).asEagerSingleton();
 
-        bind(Resolver.class).to(FmPlayAuthResolver.class);
-        bind(DeadboltHandler.class).to(FmPlayAuthDeadboltHandler.class);
-
-        bind(FmPlayAuthUserService.class).asEagerSingleton();
-        bind(FmPlayAuthHandlerCache.class).asEagerSingleton();
-        bind(FmPlayAuthCustomDeadboltHook.class).asEagerSingleton();
-
-        bind(GoogleAuthProvider.class).asEagerSingleton();
-        bind(AlwaysValidBasicAuthProvider.class).asEagerSingleton();
 
         bind(TransactionExecutor.class).to(LoggingTransactionExecutor.class);
         bind(AccountMatcher.class).to(RegexAccountMatcher.class);

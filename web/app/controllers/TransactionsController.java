@@ -1,13 +1,16 @@
 package controllers;
 
-import com.feth.play.module.pa.PlayAuthenticate;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import dao.AccountDao;
 import dao.TransactionCategoryDao;
 import dao.TransactionDao;
 import dao.UserDao;
-import model.*;
+import model.Account;
+import model.Transaction;
+import model.TransactionCategory;
+import model.TransactionType;
+import model.User;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -16,7 +19,9 @@ import services.UserService;
 import views.html.edit_transaction;
 import views.html.transactions;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,8 +30,6 @@ import java.util.stream.Collectors;
  * to the application's home page.
  */
 public class TransactionsController extends Controller {
-
-    private final PlayAuthenticate auth;
 
     private final UserService userService;
 
@@ -41,10 +44,9 @@ public class TransactionsController extends Controller {
     private final FormFactory formFactory;
 
     @Inject
-    public TransactionsController(PlayAuthenticate auth, UserService userService, TransactionDao transactionDao,
+    public TransactionsController(UserService userService, TransactionDao transactionDao,
                                   TransactionCategoryDao transactionCategoryDao, UserDao userDao, AccountDao accountDao,
                                   FormFactory formFactory) {
-        this.auth = auth;
         this.userService = userService;
         this.transactionDao = transactionDao;
         this.transactionCategoryDao = transactionCategoryDao;
@@ -54,7 +56,7 @@ public class TransactionsController extends Controller {
     }
 
     public Result transactions() {
-        return ok(transactions.render(auth, userService.getUser(session())));
+        return ok(transactions.render(userService.getUser()));
     }
 
 
@@ -74,13 +76,14 @@ public class TransactionsController extends Controller {
                 Collectors.toMap(TransactionCategory::getId, TransactionCategory::getName)
         );
 
-        User user = userService.getUser(session());
+        Optional<User> user = userService.getUser();
 
-        Map<String, String> accountsMap = accountDao.findByOwnerId(user.getId()).stream().collect(
-                Collectors.toMap(Account::getId, Account::getTitle)
-        );
+        Map<String, String> accountsMap = user
+                .map(u -> accountDao.findByOwnerId(u.getId()).stream())
+                .map(accountStream -> accountStream.collect(Collectors.toMap(Account::getId, Account::getTitle)))
+                .orElse(Collections.emptyMap());
 
-        return ok(edit_transaction.render(auth, user, form, catMap, accountsMap));
+        return ok(edit_transaction.render(user, form, catMap, accountsMap));
     }
 
     public Result saveTransactionForm() {
@@ -95,10 +98,13 @@ public class TransactionsController extends Controller {
                 tx.setDestAccount(Account.INCOME_ACCOUNT);
             }
 
-            User user = userService.getUser(session());
-            user.addTransaction(tx);
+            Optional<User> user = userService.getUser();
 
-            userDao.save(user);
+            user.ifPresent(u -> {
+                u.addTransaction(tx);
+                userDao.save(u);
+            });
+
         } else {
             transactionDao.save(tx);
         }

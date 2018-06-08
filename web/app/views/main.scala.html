@@ -1,18 +1,7 @@
-@*
-* This template is called from the `index` template. This template
-* handles the rendering of the page header and body tags. It takes
-* two arguments, a `String` for the title of the page and an `Html`
-* object to insert into the body of the page.
-*@
-@import com.feth.play.module.pa.PlayAuthenticate
 @import model.User
 
-@import be.objectify.deadbolt.java.views.html._
-@import be.objectify.deadbolt.java.utils.TemplateUtils._
+@(title: String, user: Optional[User])(content: Html)
 
-@(title: String, playAuth: PlayAuthenticate, user: User)(content: Html)
-
-@import com.feth.play.module.pa.views.html._
 
 <!DOCTYPE html>
 
@@ -77,24 +66,19 @@
                     <ul class="nav navbar-nav">
                         @menu_item(routes.HomeController.index().url, "Home")
 
-                        @subjectPresent() {
                             @menu_item(routes.AccountsController.accounts.url, "Accounts")
                             @menu_item(routes.TransactionsController.transactions.url, "Transactions")
-                        }
 
                         <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @currentAuth(playAuth) { auth =>
-                            @if(auth != null) {
-                                <li><a href=""> Hello, @user.getEmail !!! </a></li>
-                                <li><a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout">Log out</a></li>
-                            } else {
-                                @forProviders(playAuth) { p =>
-                                    <li> <a href="@p.getUrl()">Login with @p.getKey()</a> </li>
-                                }
-                            }
+                        @if(user.isPresent) {
+                            <li><a href=""> Hello, @user.get().getEmail !!! </a></li>
+                            <li><a href="/logout?url=/">Logout</a></li>
+                        }
+                        @if(!user.isPresent) {
+                            <li><a href=@routes.AuthController.loginGoogle>Login with google</a></li>
                         }
                     </ul>
 
