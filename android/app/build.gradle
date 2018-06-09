@@ -35,6 +35,8 @@ dependencies {
     compile 'com.google.guava:guava:25.1-android'
     compile 'com.fasterxml.jackson.core:jackson-core:2.9.5'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.4.0'
 
     testCompile 'junit:junit:4.12'
 
