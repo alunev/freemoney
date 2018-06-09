@@ -22,7 +22,7 @@ public class RegexMessageParserTest {
                 "android-01",
                 "12345",
                 "Покупка. Карта *2222. 3344.5 RUB. OKEY. Доступно 12345.92 RUB",
-                DateUtils.now());
+                DateUtils.nowTs());
 
         MessagePattern pattern = new MessagePattern(
                 "01",

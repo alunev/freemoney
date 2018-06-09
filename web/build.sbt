@@ -27,8 +27,12 @@ libraryDependencies += "org.hamcrest" % "hamcrest-all" % "1.3"
 libraryDependencies += "org.assertj" % "assertj-core" % "3.8.0"
 
 libraryDependencies += "org.mongodb" % "mongo-java-driver" % "3.4.2"
-libraryDependencies += "uk.co.panaxiom" %% "play-jongo" % "2.1.0-jongo1.3"
 libraryDependencies += "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.0.0"
+
+libraryDependencies += "uk.co.panaxiom" %% "play-jongo" % "2.1.0-jongo1.3"
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.7.9" force()
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-annotations" % "2.7.9" force()
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.7.9" force()
 
 libraryDependencies += "org.pac4j" %% "play-pac4j" % "6.0.0"
 libraryDependencies += "org.pac4j" % "pac4j-oauth" % "3.0.0"

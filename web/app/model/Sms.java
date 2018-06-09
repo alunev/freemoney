@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -25,7 +24,7 @@ public class Sms {
 
     private String text;
 
-    private LocalDateTime createdTs;
+    private long createdTs;
 
     @JsonCreator
     private Sms(@JsonProperty("id") String id,
@@ -33,7 +32,7 @@ public class Sms {
                 @JsonProperty("deviceId") String deviceId,
                 @JsonProperty("sender") String sender,
                 @JsonProperty("text") String text,
-                @JsonProperty("createdTs") LocalDateTime createdTs) {
+                @JsonProperty("createdTs") long createdTs) {
         this._id = id;
         this.ownerId = ownerId;
         this.deviceId = deviceId;
@@ -42,7 +41,7 @@ public class Sms {
         this.createdTs = createdTs;
     }
 
-    public Sms(String ownerId, String deviceId, String sender, String text, LocalDateTime createdTs) {
+    public Sms(String ownerId, String deviceId, String sender, String text, long createdTs) {
         this.ownerId = ownerId;
         this.deviceId = deviceId;
         this.sender = sender;
@@ -55,7 +54,7 @@ public class Sms {
                                 String deviceId,
                                 String sender,
                                 String text,
-                                LocalDateTime createdTs) {
+                                long createdTs) {
         return new Sms(id, ownerId, deviceId, sender, text, createdTs);
     }
 
@@ -63,7 +62,7 @@ public class Sms {
                                 String deviceId,
                                 String sender,
                                 String text,
-                                LocalDateTime createdTs) {
+                                long createdTs) {
         return new Sms(ownerId, deviceId, sender, text, createdTs);
     }
 
@@ -87,7 +86,7 @@ public class Sms {
         return text;
     }
 
-    public LocalDateTime getCreatedTs() {
+    public long getCreatedTs() {
         return createdTs;
     }
 

@@ -2,6 +2,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.ConfigFactory;
+import common.DateUtils;
 import model.Sms;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class RestApiControllerIT extends WithApplication {
                 "android-1",
                 "",
                 "Покупка. Карта *2222. 3344.5 RUB. OKEY. Доступно 12345.92 RUB",
-                ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
+                DateUtils.nowTs());
 
         JsonNode jsonNode = Json.toJson(sms);
 

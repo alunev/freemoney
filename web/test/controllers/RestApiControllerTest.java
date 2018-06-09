@@ -2,8 +2,8 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.ConfigFactory;
+import common.DateUtils;
 import common.TestOverridesWebModule;
-import core.TransactionExecutor;
 import core.TransactionGenerator;
 import dao.SmsDao;
 import dao.TransactionDao;
@@ -18,10 +18,6 @@ import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
-import uk.co.panaxiom.playjongo.PlayJongo;
-
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -61,7 +57,7 @@ public class RestApiControllerTest extends WithApplication {
                 "android-1",
                 "",
                 "CASH 45.12 CAFE",
-                ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
+                DateUtils.nowTs());
 
         JsonNode jsonNode = Json.toJson(sms);
 
