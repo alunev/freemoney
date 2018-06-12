@@ -9,6 +9,7 @@ import com.google.common.collect.Sets;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,6 +24,8 @@ public class User {
 
     private final String email;
 
+    private final List<AppInstance> appInstances;
+
     @JsonIgnore
     private final Set<Account> accounts;
 
@@ -32,22 +35,26 @@ public class User {
     @JsonCreator
     public User(@JsonProperty("_id") String _id,
                 @JsonProperty("authId") String authId,
-                @JsonProperty("email")String email,
+                @JsonProperty("email") String email,
+                @JsonProperty("appInstances") List<AppInstance> appInstances,
                 @JsonProperty("accounts") Set<Account> accounts,
                 @JsonProperty("transactions") Set<Transaction> transactions) {
         this._id = _id;
         this.authId = authId;
         this.email = email;
+        this.appInstances = appInstances;
         this.accounts = accounts;
         this.transactions = transactions;
     }
 
     public User(String authId,
                 String email,
+                List<AppInstance> appInstances,
                 Set<Account> accounts,
                 Set<Transaction> transactions) {
         this.authId = authId;
         this.email = email;
+        this.appInstances = appInstances;
         this.accounts = accounts;
         this.transactions = transactions;
     }
@@ -118,6 +125,10 @@ public class User {
         return email;
     }
 
+    public List<AppInstance> getAppInstances() {
+        return appInstances;
+    }
+
     public Set<Account> getAccounts() {
         return accounts == null ? Collections.emptySet() : Sets.newHashSet(accounts);
     }
@@ -126,9 +137,17 @@ public class User {
         return transactions == null ? Collections.emptySet() : Sets.newHashSet(transactions);
     }
 
+    public void addAppInstance(AppInstance appInstance) {
+        if (appInstances.contains(appInstance)) {
+            throw new IllegalArgumentException("Duplicate appInstance: " + appInstance);
+        }
+
+        this.appInstances.add(appInstance);
+    }
+
     public void addAccount(Account account) {
         if (accounts.contains(account)) {
-            throw new IllegalArgumentException("Duplicate account _id: " + account);
+            throw new IllegalArgumentException("Duplicate account: " + account);
         }
 
         this.accounts.add(account);
@@ -140,7 +159,7 @@ public class User {
 
     public void addTransaction(Transaction transaction) {
         if (transactions.contains(transaction)) {
-            throw new IllegalArgumentException("Duplicate transaction _id: " + transaction);
+            throw new IllegalArgumentException("Duplicate transaction: " + transaction);
         }
 
         this.transactions.add(transaction);
@@ -200,5 +219,4 @@ public class User {
     public static UserBuilder builder(User user) {
         return new UserBuilder(user);
     }
-
 }

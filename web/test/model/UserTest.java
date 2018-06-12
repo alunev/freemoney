@@ -1,14 +1,20 @@
 package model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import common.DateUtils;
 import dao.ObjectsFactory;
 import org.junit.Test;
+import play.libs.Json;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertThat;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.from;
+
 
 /**
  * @author red
@@ -24,7 +30,7 @@ public class UserTest {
                 ObjectsFactory.createDummyAccount()
         ));
 
-        assertThat("found account ?", user.getAccounts(), contains(acc2));
+        assertThat(user.getAccounts()).contains(acc2);
     }
 
     @Test
@@ -36,11 +42,11 @@ public class UserTest {
                 ObjectsFactory.createDummyAccount()
         ));
 
-        assertThat("found account ?", user.getAccounts(), hasItem(acc2));
+        assertThat(user.getAccounts()).contains(acc2);
 
         user.removeAccount(acc2);
 
-        assertThat("found account ?", user.getAccounts(), not(hasItem(acc2)));
+        assertThat(user.getAccounts()).doesNotContain(acc2);
 
     }
 
@@ -54,7 +60,7 @@ public class UserTest {
         user.addAccount(acc1);
         user.addAccount(acc1);
 
-        assertThat(user.getAccounts(), hasSize(1));
+        assertThat(user.getAccounts()).hasSize(1);
     }
 
     @Test
@@ -70,10 +76,58 @@ public class UserTest {
         Account replacement = ObjectsFactory.createDummyAccountWithId("1234");
 
         user.removeAccount(acc2);
-        assertThat("found account ?", user.getAccounts(), not(hasItem(acc2)));
+        assertThat(user.getAccounts()).doesNotContain(acc2);
 
         user.addAccount(replacement);
-        assertThat("found account ?", user.getAccounts(), hasItem(replacement));
+        assertThat(user.getAccounts()).contains(replacement);
     }
 
+    @Test
+    public void createJson() {
+        Account acc1 = ObjectsFactory.createDummyAccountWithId("1");
+        Account acc2 = ObjectsFactory.createDummyAccountWithId("1");
+
+        User user = new UserBuilder().withEmail("id1@mail.com")
+                .withAccounts(Sets.newHashSet(
+                        acc1,
+                        acc2
+                ))
+                .withTransactions(Set.of(
+                        new Transaction(
+                                "1",
+                                "test_owner",
+                                TransactionType.EXPENSE,
+                                BigDecimal.ONE,
+                                BigDecimal.ZERO,
+                                acc1.getId(),
+                                Account.EXPENSE_ACCOUNT.getId(),
+                                TransactionCategory.UNDEFINED.getId(),
+                                DateUtils.now()
+                        ),
+                        new Transaction(
+                                "2",
+                                "test_owner",
+                                TransactionType.EXPENSE,
+                                BigDecimal.ONE,
+                                BigDecimal.ZERO,
+                                acc1.getId(),
+                                Account.EXPENSE_ACCOUNT.getId(),
+                                TransactionCategory.UNDEFINED.getId(),
+                                DateUtils.now()
+                        )))
+                .withAppInstances(Lists.newArrayList(
+                        new AppInstance("abcd", ZonedDateTime.now()),
+                        new AppInstance("1234", ZonedDateTime.now())
+                ))
+                .build();
+
+        JsonNode json = Json.toJson(user);
+
+        assertThat(json).isNotNull();
+
+        User fromJson = Json.fromJson(json, User.class);
+
+        assertThat(fromJson).isNotNull();
+        assertThat(user).isEqualTo(fromJson);
+    }
 }

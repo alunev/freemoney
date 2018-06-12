@@ -3,12 +3,14 @@ package model;
 import com.google.common.collect.Sets;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class UserBuilder {
     private String id;
     private String authId;
     private String email;
+    private List<AppInstance> instances;
     private Set<Account> accounts = Collections.emptySet();
     private Set<Transaction> transactions = Collections.emptySet();
 
@@ -39,6 +41,11 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder withAppInstances(List<AppInstance> instances) {
+        this.instances = instances;
+        return this;
+    }
+
     public UserBuilder withAccounts(Set<Account> accounts) {
         this.accounts = Sets.newHashSet(accounts);
         return this;
@@ -50,6 +57,6 @@ public class UserBuilder {
     }
 
     public User build() {
-        return new User(id, authId, email, accounts, transactions);
+        return new User(id, authId, email, instances, accounts, transactions);
     }
 }

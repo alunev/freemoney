@@ -45,7 +45,7 @@ public class Transaction {
     }
 
     @JsonCreator
-    public Transaction(@JsonProperty("_id") String _id,
+    public Transaction(@JsonProperty("id") String id,
                        @JsonProperty("ownerId") String ownerId,
                        @JsonProperty("transactionType") TransactionType transactionType,
                        @JsonProperty("sourceAmount") BigDecimal sourceAmount,
@@ -54,7 +54,7 @@ public class Transaction {
                        @JsonProperty("destId") String destId,
                        @JsonProperty("categoryId") String categoryId,
                        @JsonProperty("addedTime") LocalDateTime addedTime) {
-        checkNotNull(_id);
+        checkNotNull(id);
         checkNotNull(ownerId);
         checkNotNull(transactionType);
         checkNotNull(sourceId);
@@ -62,7 +62,7 @@ public class Transaction {
         checkNotNull(categoryId);
         checkNotNull(addedTime);
 
-        this._id = _id;
+        this._id = id;
         this.ownerId = ownerId;
         this.transactionType = transactionType;
         this.sourceId = sourceId;
@@ -271,7 +271,6 @@ public class Transaction {
     }
 
     public void setCategory(TransactionCategory category) {
-        this.categoryId = category.getId();
         this.category = category;
     }
 

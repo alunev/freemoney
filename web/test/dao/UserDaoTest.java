@@ -4,13 +4,16 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import common.DateUtils;
 import model.Account;
+import model.AppInstance;
 import model.Transaction;
 import model.TransactionCategory;
 import model.User;
+import model.UserBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -196,6 +199,29 @@ public class UserDaoTest extends JongoDaoTest {
         User foundUser = userDao.findById(andy.getId());
 
         assertThat("account 1 present", foundUser.getAccounts(), hasSize(2));
+    }
+
+    @Test
+    public void canAddAppInstance() throws Exception {
+        User user = new UserBuilder().withEmail("user@some_email")
+                .withAppInstances(Lists.newArrayList(
+                        new AppInstance("abcd", ZonedDateTime.now()),
+                        new AppInstance("1234", ZonedDateTime.now())
+                ))
+                .withAccounts(Collections.emptySet())
+                .withTransactions(Collections.emptySet())
+                .build();
+
+        userDao.save(user);
+
+        user = userDao.findById(user.getId());
+        user.addAppInstance(new AppInstance("0000", ZonedDateTime.now()));
+
+        userDao.save(user);
+
+        User foundUser = userDao.findById(user.getId());
+
+        assertThat(foundUser.getAppInstances(), hasSize(3));
     }
 
     @Test
