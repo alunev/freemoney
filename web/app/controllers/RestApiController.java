@@ -14,6 +14,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserService;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -68,5 +70,20 @@ public class RestApiController extends Controller {
                         transaction -> transactionExecutor.execute(transaction)
                 ))
                 .thenApplyAsync(aVoid -> ok());
+    }
+
+    public CompletionStage<Result> getLastSync(String instanceId) {
+        Optional<User> user = userService.getUser();
+
+        return CompletableFuture.supplyAsync(() ->
+                user.map(
+                        user1 -> user1.getAppInstances().stream()
+                                .filter(appInstance -> Objects.equals(appInstance.getInstanceId(), instanceId))
+                                .findFirst()
+                                .map(appInstance -> appInstance.getLastSync().toInstant().toEpochMilli())
+                                .map(millis -> ok("" + millis))
+                                .orElse(badRequest("No matching device found"))
+                )
+                        .orElseGet(() -> unauthorized("Login first")));
     }
 }

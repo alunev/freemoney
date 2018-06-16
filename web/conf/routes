@@ -17,6 +17,8 @@ POST        /transactions/save                    controllers.TransactionsContro
 
 # REST methods for calling from Android
 POST        /sms/process                          controllers.RestApiController.processSms
+GET         /user/:instanceId/lastSync            controllers.RestApiController.getLastSync(instanceId : String)
+
 
 # An example controller showing how to write asynchronous code
 GET         /message                              controllers.AsyncController.message
