@@ -4,27 +4,18 @@ import android.util.Log;
 
 import org.alunev.freemoney.model.Sms;
 
-import java.io.IOException;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class SmsUploader {
 
     public static final String TAG = "SmsUploader";
 
-    private final FreeMoneyService service;
+    private final FreeMoneyRestService service;
 
     public SmsUploader() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:9000")
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build();
-
-        service = retrofit.create(FreeMoneyService.class);
+        service = new FreeMoneyServiceFactory().createService();
     }
 
     public void upload(Sms sms) {

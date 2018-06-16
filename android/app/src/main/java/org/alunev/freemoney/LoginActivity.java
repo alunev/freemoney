@@ -108,6 +108,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        scheduleSmsUpload();
     }
 
     private void populateAutoComplete() {
@@ -361,6 +363,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void scheduleSmsUpload() {
+        Context context = getApplicationContext();
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+
+        Bundle myExtrasBundle = new Bundle();
+        myExtrasBundle.putString("some_key", "some_value");
+
+        Job myJob = dispatcher.newJobBuilder()
+                // the JobService that will be called
+                .setService(SmsUploadJobService.class)
+                // uniquely identifies the job
+                .setTag("org.alunev.freemoney.service.SmsUploadJobService")
+                // one-off job
+                .setRecurring(true)
+                // don't persist past a device reboot
+                .setLifetime(Lifetime.FOREVER)
+                // start between 0 and 60 seconds from now
+                .setTrigger(Trigger.executionWindow(1, 10))
+                // don't overwrite an existing job with the same tag
+                .setReplaceCurrent(false)
+                // retry with exponential backoff
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                // constraints that need to be satisfied for the job to run
+                .setConstraints()
+                .setExtras(myExtrasBundle)
+                .build();
+
+        dispatcher.mustSchedule(myJob);
     }
 }
 

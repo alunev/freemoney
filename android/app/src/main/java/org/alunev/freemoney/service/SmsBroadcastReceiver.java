@@ -1,12 +1,18 @@
 package org.alunev.freemoney.service;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.provider.Telephony;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsMessage;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.iid.InstanceID;
 
 import org.alunev.freemoney.client.SmsUploader;
 import org.alunev.freemoney.model.Sms;
@@ -35,7 +41,13 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
                     continue;
                 }
 
-                Sms sms = Sms.createSms("5b1315ca6d0a223a2ba749db", "", smsMessage.getOriginatingAddress(), smsMessage.getMessageBody(), smsMessage.getTimestampMillis());
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+
+                String deviceId = InstanceID.getInstance(context).getId();
+
+                Sms sms = Sms.createSms("", deviceId, smsMessage.getOriginatingAddress(), smsMessage.getMessageBody(), smsMessage.getTimestampMillis());
 
                 smsUploader.upload(sms);
             }
