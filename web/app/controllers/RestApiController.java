@@ -1,11 +1,6 @@
 package controllers;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import auth.GoogleSignIn;
 import com.google.inject.Inject;
 import core.ParsingTransactionGenerator;
 import core.TransactionExecutor;
@@ -15,9 +10,7 @@ import dao.TransactionDao;
 import dao.UserDao;
 import model.Sms;
 import model.User;
-import org.pac4j.core.engine.CallbackLogic;
-import org.pac4j.core.engine.DefaultCallbackLogic;
-import org.pac4j.play.PlayWebContext;
+import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -25,13 +18,10 @@ import services.UserService;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
-import static com.github.scribejava.core.model.OAuthConstants.CLIENT_ID;
 
 /**
  * @author red
@@ -39,29 +29,51 @@ import static com.github.scribejava.core.model.OAuthConstants.CLIENT_ID;
  */
 public class RestApiController extends Controller {
 
-    private SmsDao smsDao;
-
-    private TransactionDao transactionDao;
-
-    private TransactionGenerator transactionGenerator;
-    private TransactionExecutor transactionExecutor;
-    private UserService userService;
-    private UserDao userDao;
-
-    private CallbackLogic<Result, PlayWebContext> callbackLogic = new DefaultCallbackLogic<>();
+    private final SmsDao smsDao;
+    private final TransactionDao transactionDao;
+    private final TransactionGenerator transactionGenerator;
+    private final TransactionExecutor transactionExecutor;
+    private final UserService userService;
+    private final UserDao userDao;
+    private final GoogleSignIn googleSignIn;
 
     @Inject
     public RestApiController(SmsDao smsDao,
                              TransactionDao transactionDao,
                              ParsingTransactionGenerator transactionGenerator,
                              TransactionExecutor transactionExecutor,
-                             UserService userService, UserDao userDao) {
+                             UserService userService, UserDao userDao, GoogleSignIn googleSignIn) {
         this.smsDao = smsDao;
         this.transactionDao = transactionDao;
         this.transactionGenerator = transactionGenerator;
         this.transactionExecutor = transactionExecutor;
         this.userService = userService;
         this.userDao = userDao;
+        this.googleSignIn = googleSignIn;
+    }
+
+    public CompletionStage<Result> tokenSignIn() {
+        Logger.info("Login attempt");
+
+        Optional<String> idTokenString = Optional.ofNullable(request().body().asJson().asText());
+        Optional<User> user;
+
+        if (!idTokenString.isPresent()) {
+            return CompletableFuture.completedStage(badRequest("No idtoken found"));
+        }
+
+        try {
+            user = googleSignIn.processSignInToken(idTokenString.get());
+        } catch (GeneralSecurityException | IOException e) {
+            return CompletableFuture.completedStage(internalServerError("Failed to login", e.toString()));
+        }
+
+        if (user.isPresent()) {
+            session("userId", user.get().getAuthId());
+            return CompletableFuture.completedStage(ok());
+        } else {
+            return CompletableFuture.completedStage(unauthorized("Failed to login"));
+        }
     }
 
     public CompletionStage<Result> processSms() {

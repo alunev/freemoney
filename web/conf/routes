@@ -16,16 +16,13 @@ GET         /transactions/delete/:txId            controllers.TransactionsContro
 POST        /transactions/save                    controllers.TransactionsController.saveTransactionForm()
 
 # REST methods for calling from Android
-POST        /sms/process                          controllers.RestApiController.processSms
-GET         /user/:instanceId/lastSync            controllers.RestApiController.getLastSync(instanceId : String)
-
-
-# An example controller showing how to write asynchronous code
-GET         /message                              controllers.AsyncController.message
+POST        /api/tokensignin                          controllers.RestApiController.tokenSignIn
+POST        /api/sms/process                          controllers.RestApiController.processSms
+GET         /api/user/:instanceId/lastSync            controllers.RestApiController.getLastSync(instanceId : String)
 
 
 ################# Authentication ###############
-POST        /tokensignin                          controllers.AuthController.tokensignin()
+POST        /tokensignin                          controllers.AuthController.tokenSignIn()
 GET         /signout                              controllers.AuthController.signOut()
 
 # Map static resources from the /public folder to the /assets URL path
