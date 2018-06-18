@@ -27,7 +27,7 @@ public class TestOverridesWebModule extends AbstractModule {
         UserDao userDao = mock(UserDao.class);
         User testUser = User.createEmptyUser("user_some_auth_id", "user@some_email");
 
-        when(userDao.findByAuthId(anyString())).thenReturn(testUser);
+        when(userDao.findByAuthId(anyString())).thenReturn(Optional.of(testUser));
 
         bind(JPAApi.class).toInstance(mock(JPAApi.class));
         bind(UserDao.class).toInstance(userDao);

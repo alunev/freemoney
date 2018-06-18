@@ -14,6 +14,7 @@
 
         <meta name="description" content="">
         <meta name="author" content="">
+        <meta name="google-signin-client_id" content="480300792990-lkcjo70lunv8n61plpsl6as7uojm0v6l.apps.googleusercontent.com">
 
         <link rel="icon" href="../../favicon.ico">
 
@@ -39,14 +40,52 @@
         <script src='@routes.Assets.versioned("bower_components/bootstrap/dist/js/bootstrap.js")'></script>
         <script src='@routes.Assets.versioned("bower_components/typeahead.js/dist/typeahead.bundle.js")'></script>
 
-        <!-- custom style and js here -->
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie/src/js.cookie.min.js"></script>
+
+            <!-- custom style and js here -->
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
 
 
         <script type="text/javascript">
                 $(document).ready(function () {
 
-                })
+                });
+
+                function onSignIn(googleUser) {
+                    var id_token = googleUser.getAuthResponse().id_token;
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/tokensignin');
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.onload = function () {
+                        console.log('Signed in as: ' + xhr.responseText);
+                        location.reload();
+                    };
+
+                    xhr.send('idtoken=' + id_token);
+                }
+
+                function signOut() {
+                    gapi.load('auth2', function () {
+                        gapi.auth2.init({
+                            client_id: '480300792990-lkcjo70lunv8n61plpsl6as7uojm0v6l.apps.googleusercontent.com'
+                        }).then(function () {
+                            var auth2 = gapi.auth2.getAuthInstance();
+
+                            auth2.signOut().then(function () {
+                                var xhr = new XMLHttpRequest();
+                                xhr.open('GET', '/signout');
+                                xhr.onload = function () {
+                                    console.log('User signed out.');
+                                    location.reload();
+                                };
+
+                                xhr.send();
+                            });
+                        });
+                    });
+                }
         </script>
     </head>
 
@@ -73,12 +112,12 @@
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        @if(!user.isPresent) {
+                            <li><div class="g-signin2" data-onsuccess="onSignIn"></div></li>
+                        }
                         @if(user.isPresent) {
                             <li><a href=""> Hello, @user.get().getEmail !!! </a></li>
-                            <li><a href="/logout?url=/">Logout</a></li>
-                        }
-                        @if(!user.isPresent) {
-                            <li><a href=@routes.AuthController.loginGoogle>Login with google</a></li>
+                            <li><a href="#" onclick="signOut();">Sign out</a></li>
                         }
                     </ul>
 

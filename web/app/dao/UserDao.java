@@ -9,6 +9,7 @@ import model.User;
 import org.bson.types.ObjectId;
 import uk.co.panaxiom.playjongo.PlayJongo;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,14 +39,9 @@ public class UserDao {
         return resolveReferences(user);
     }
 
-    public User findByAuthId(String authId) {
-        User user = users().findOne("{authId: #}", authId).as(User.class);
-
-        if (user == null) {
-            return null;
-        }
-
-        return resolveReferences(user);
+    public Optional<User> findByAuthId(String authId) {
+        return Optional.ofNullable(users().findOne("{authId: #}", authId).as(User.class))
+                .map(this::resolveReferences);
     }
 
     public String save(User user) {

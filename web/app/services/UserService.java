@@ -8,10 +8,10 @@ import org.pac4j.play.PlayWebContext;
 import org.pac4j.play.store.PlaySessionStore;
 import play.Logger;
 import play.mvc.Controller;
+import play.mvc.Http;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,32 +31,19 @@ public class UserService {
         this.playSessionStore = playSessionStore;
     }
 
-    public Optional<User> getUser() {
-        List<Google2Profile> profiles = getProfiles();
-
-        log.debug("Profiles: " + profiles);
-
-        Optional<User> existingUser = profiles.stream()
-                .map(google2Profile -> userDao.findByAuthId(google2Profile.getId()))
-                .filter(Objects::nonNull)
-                .findFirst();
-
-        return existingUser.or(
-                () -> profiles.stream()
-                        .findFirst()
-                        .map(google2Profile -> {
-                            User user = User.createEmptyUser(google2Profile.getId(), google2Profile.getEmail());
-                            userDao.save(user);
-
-                            return user;
-                        })
-        );
+    public Optional<User> getUser(Http.Session session) {
+        return userDao.findByAuthId(session.get("userId"));
     }
 
-    private List<Google2Profile> getProfiles() {
-        final PlayWebContext context = new PlayWebContext(Controller.ctx(), playSessionStore);
-        final ProfileManager<Google2Profile> profileManager = new ProfileManager<>(context);
+    public Optional<User> getOrCreateUser(String userId, String email) {
+        Optional<User> existingUser = userDao.findByAuthId(userId);
 
-        return profileManager.getAll(true);
+        return existingUser.or(
+                () -> {
+                    User user = User.createEmptyUser(userId, email);
+                    userDao.save(user);
+
+                    return Optional.ofNullable(user);
+                });
     }
 }

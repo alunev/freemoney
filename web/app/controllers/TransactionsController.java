@@ -56,7 +56,7 @@ public class TransactionsController extends Controller {
     }
 
     public Result transactions() {
-        return ok(transactions.render(userService.getUser()));
+        return ok(transactions.render(userService.getUser(session())));
     }
 
 
@@ -76,7 +76,7 @@ public class TransactionsController extends Controller {
                 Collectors.toMap(TransactionCategory::getId, TransactionCategory::getName)
         );
 
-        Optional<User> user = userService.getUser();
+        Optional<User> user = userService.getUser(session());
 
         Map<String, String> accountsMap = user
                 .map(u -> accountDao.findByOwnerId(u.getId()).stream())
@@ -98,7 +98,7 @@ public class TransactionsController extends Controller {
                 tx.setDestAccount(Account.INCOME_ACCOUNT);
             }
 
-            Optional<User> user = userService.getUser();
+            Optional<User> user = userService.getUser(session());
 
             user.ifPresent(u -> {
                 u.addTransaction(tx);

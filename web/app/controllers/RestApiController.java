@@ -1,5 +1,11 @@
 package controllers;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.inject.Inject;
 import core.ParsingTransactionGenerator;
 import core.TransactionExecutor;
@@ -9,15 +15,23 @@ import dao.TransactionDao;
 import dao.UserDao;
 import model.Sms;
 import model.User;
+import org.pac4j.core.engine.CallbackLogic;
+import org.pac4j.core.engine.DefaultCallbackLogic;
+import org.pac4j.play.PlayWebContext;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserService;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import static com.github.scribejava.core.model.OAuthConstants.CLIENT_ID;
 
 /**
  * @author red
@@ -33,6 +47,8 @@ public class RestApiController extends Controller {
     private TransactionExecutor transactionExecutor;
     private UserService userService;
     private UserDao userDao;
+
+    private CallbackLogic<Result, PlayWebContext> callbackLogic = new DefaultCallbackLogic<>();
 
     @Inject
     public RestApiController(SmsDao smsDao,
@@ -73,7 +89,7 @@ public class RestApiController extends Controller {
     }
 
     public CompletionStage<Result> getLastSync(String instanceId) {
-        Optional<User> user = userService.getUser();
+        Optional<User> user = userService.getUser(session());
 
         return CompletableFuture.supplyAsync(() ->
                 user.map(

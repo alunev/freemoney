@@ -35,7 +35,7 @@ public class AccountsController extends Controller {
     }
 
     public Result accounts() {
-        return ok(accounts.render(userService.getUser()));
+        return ok(accounts.render(userService.getUser(session())));
     }
 
     public Result showAddForm() {
@@ -50,12 +50,12 @@ public class AccountsController extends Controller {
             form = form.fill(account);
         }
 
-        return ok(edit_account.render(userService.getUser(), form));
+        return ok(edit_account.render(userService.getUser(session()), form));
     }
 
     public Result saveAccountForm() {
         Account account = formFactory.form(Account.class).bindFromRequest().get();
-        Optional<User> user = userService.getUser();
+        Optional<User> user = userService.getUser(session());
 
         if (Strings.isNullOrEmpty(account.getId())) {
             accountDao.save(account);
