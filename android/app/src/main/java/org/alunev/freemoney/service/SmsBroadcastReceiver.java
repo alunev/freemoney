@@ -8,12 +8,12 @@ import android.content.pm.PackageManager;
 import android.provider.Telephony;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsMessage;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.iid.InstanceID;
 
+import org.alunev.freemoney.client.RestServiceFactory;
 import org.alunev.freemoney.client.SmsUploader;
 import org.alunev.freemoney.model.Sms;
 
@@ -23,15 +23,17 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 
     private final static String SENDER_TO_LISTEN = "Tinkoff";
 
-    private final SmsUploader smsUploader;
-
     public SmsBroadcastReceiver() {
-        smsUploader = new SmsUploader();
+
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Got sms", Toast.LENGTH_LONG).show();
+
+        SmsUploader smsUploader = new SmsUploader(
+                new RestServiceFactory(context).createService()
+        );
 
         if (Objects.equals(intent.getAction(), Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) {
             for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {

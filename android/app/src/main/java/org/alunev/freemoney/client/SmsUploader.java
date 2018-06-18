@@ -12,10 +12,10 @@ public class SmsUploader {
 
     public static final String TAG = "SmsUploader";
 
-    private final FreeMoneyRestService service;
+    private final RestService service;
 
-    public SmsUploader() {
-        service = new FreeMoneyServiceFactory().createService();
+    public SmsUploader(RestService service) {
+        this.service = service;
     }
 
     public void upload(Sms sms) {

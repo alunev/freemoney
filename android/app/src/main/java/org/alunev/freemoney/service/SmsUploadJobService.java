@@ -1,14 +1,13 @@
 package org.alunev.freemoney.service;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.google.android.gms.iid.InstanceID;
 
-import org.alunev.freemoney.client.FreeMoneyRestService;
-import org.alunev.freemoney.client.FreeMoneyServiceFactory;
+import org.alunev.freemoney.client.RestService;
+import org.alunev.freemoney.client.RestServiceFactory;
 import org.alunev.freemoney.client.SmsUploader;
 import org.alunev.freemoney.device.SmsReader;
 import org.alunev.freemoney.model.Sms;
@@ -24,19 +23,18 @@ public class SmsUploadJobService extends JobService {
 
     private static final String TAG = "SmsUploadJobService";
 
-    private final FreeMoneyRestService restService;
-    private final SmsUploader smsUploader;
+    private SmsUploader smsUploader;
 
     public SmsUploadJobService() {
-        restService = new FreeMoneyServiceFactory().createService();
-        smsUploader = new SmsUploader();
+
     }
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        // Do some work here
+        RestService restService = new RestServiceFactory(getApplicationContext()).createService();
+        smsUploader = new SmsUploader(restService);
 
-        Call<Long> call = restService.getLastSync(InstanceID.getInstance(getBaseContext()).getId());
+        Call<Long> call = restService.getLastSync(InstanceID.getInstance(getApplicationContext()).getId());
 
         call.enqueue(new Callback<Long>() {
             @Override
