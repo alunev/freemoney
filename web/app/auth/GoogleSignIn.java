@@ -45,12 +45,12 @@ public class GoogleSignIn {
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
 
-            String userId = payload.getSubject();
+            String authId = payload.getSubject();
             String email = payload.getEmail();
 
-            Optional<User> user = userService.getOrCreateUser(userId, email);
+            Optional<User> user = userService.getOrCreateUser(authId, email);
 
-            Logger.info(userId + " logged in");
+            Logger.info("authId = {} logged in", authId);
 
             return user;
         } else {
