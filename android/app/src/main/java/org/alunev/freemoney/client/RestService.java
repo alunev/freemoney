@@ -10,11 +10,11 @@ import retrofit2.http.Path;
 
 public interface RestService {
     @POST("api/sms/process")
-    Call<Sms> processSms(@Body Sms sms);
+    Call<Void> processSms(@Body Sms sms);
 
     @GET("api/user/{instanceId}/lastSync")
     Call<Long> getLastSync(@Path("instanceId") String instanceId);
 
     @POST("api/tokensignin")
-    Call<Void> tokenSignIn(@Body String tokenId);
+    Call<String> tokenSignIn(@Body String tokenId);
 }

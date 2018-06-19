@@ -5,7 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -48,6 +51,7 @@ import com.google.android.gms.tasks.Task;
 
 import org.alunev.freemoney.client.RestService;
 import org.alunev.freemoney.client.RestServiceFactory;
+import org.alunev.freemoney.prefs.Preferences;
 import org.alunev.freemoney.service.SmsUploadJobService;
 
 import java.util.ArrayList;
@@ -93,6 +97,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private GoogleSignInClient signInClient;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +136,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         restService = new RestServiceFactory(getApplicationContext()).createService();
 
-//        scheduleSmsUpload();
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        scheduleSmsUpload();
 
         initGooggleSignIn();
     }
@@ -483,14 +490,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
 
-            restService.tokenSignIn(idToken).enqueue(new Callback<Void>() {
+            preferences.edit()
+                    .putString(Preferences.USER_AUTH_ID, account.getId())
+                    .apply();
+
+            restService.tokenSignIn(idToken).enqueue(new Callback<String>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    Log.i(TAG, "Logged in to backend");
+                public void onResponse(Call<String> call, Response<String> response) {
+                    String userId = response.body();
+
+                    Log.i(TAG, "Logged in to backend userId = " + userId);
+
+                    preferences.edit()
+                            .putString(Preferences.USER_ID, userId)
+                            .apply();
                 }
 
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
+                public void onFailure(Call<String> call, Throwable t) {
                     Log.e(TAG, "Failed to log in to backend", t);
                 }
             });

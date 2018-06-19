@@ -62,8 +62,10 @@ public class SmsUploadJobService extends JobService {
 
         int i = 0;
         while (i < smsList.size() && smsList.get(i).getCreatedTs() > timestamp) {
-            smsUploader.upload(smsList.get(i));
+            smsUploader.upload(smsList.get(i++));
         }
+
+        Log.i(TAG, "Uploaded " + i + " sms");
     }
 
     @Override

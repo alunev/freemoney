@@ -21,14 +21,14 @@ public class SmsUploader {
     public void upload(Sms sms) {
         Log.i(TAG, "uploading: " + sms);
 
-        service.processSms(sms).enqueue(new Callback<Sms>() {
+        service.processSms(sms).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Sms> call, Response<Sms> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 Log.i(TAG, "Got response: " + response);
             }
 
             @Override
-            public void onFailure(Call<Sms> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Log.e(TAG, "Error uploading: ", t);
             }
         });
