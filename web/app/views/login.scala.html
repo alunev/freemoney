@@ -1,8 +1,8 @@
 @import model.User
 
-@(failedMessage: String, user: Optional[User])
+@(failedMessage: String, user: Optional[User], config: com.typesafe.config.Config)
 
-@main("Login to Freemoney", user) {
+@main("Login to Freemoney", user, config: com.typesafe.config.Config) {
 
     <h2>@failedMessage</h2>
 

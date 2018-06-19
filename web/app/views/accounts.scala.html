@@ -1,8 +1,8 @@
 @import model.User
 
-@(user: Optional[User])
+@(user: Optional[User], config: com.typesafe.config.Config)
 
-@main("Accounts", user) {
+@main("Accounts", user, config) {
     <h1 class="page-header">
         Accounts
         <small>

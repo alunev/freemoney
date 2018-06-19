@@ -1,6 +1,6 @@
 @import model.User
 
-@(title: String, user: Optional[User])(content: Html)
+@(title: String, user: Optional[User], config: com.typesafe.config.Config)(content: Html)
 
 
 <!DOCTYPE html>
@@ -14,7 +14,7 @@
 
         <meta name="description" content="">
         <meta name="author" content="">
-        <meta name="google-signin-client_id" content="480300792990-lkcjo70lunv8n61plpsl6as7uojm0v6l.apps.googleusercontent.com">
+        <meta name="google-signin-client_id" content="@config.getString("google.clientId")">
 
         <link rel="icon" href="../../favicon.ico">
 
@@ -69,7 +69,7 @@
                 function signOut() {
                     gapi.load('auth2', function () {
                         gapi.auth2.init({
-                            client_id: '480300792990-lkcjo70lunv8n61plpsl6as7uojm0v6l.apps.googleusercontent.com'
+                            client_id: '@config.getString("google.clientId")'
                         }).then(function () {
                             var auth2 = gapi.auth2.getAuthInstance();
 
@@ -117,8 +117,8 @@
                         }
                         @if(user.isPresent) {
                             <li><a href=""> Hello, @user.get().getEmail !!! </a></li>
-                            <li><a href="#" onclick="signOut();">Sign out</a></li>
                         }
+                        <li><a href="#" onclick="signOut();">Sign out</a></li>
                     </ul>
 
                 </div><!--/.nav-collapse -->

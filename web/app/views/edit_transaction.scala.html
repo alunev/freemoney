@@ -1,13 +1,13 @@
 @import model.{Transaction, User}
 @import play.data.Form
 
-@(user: Optional[User], form: Form[Transaction], catMap: Map[String, String], accountsMap: Map[String, String])
+@(user: Optional[User], form: Form[Transaction], catMap: Map[String, String], accountsMap: Map[String, String], config: com.typesafe.config.Config)
 
 @implicitFieldConstructor = @{
     b3.horizontal.fieldConstructor("col-md-2", "col-md-10")
 }
 
-@main("Transactions", user) {
+@main("Transactions", user, config) {
 
     @if(flash.containsKey("success")) {
         <div class="well">

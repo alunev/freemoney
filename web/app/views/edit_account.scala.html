@@ -3,13 +3,13 @@
 
 @import play.data.Form
 
-@(user: Optional[User], form: Form[Account])
+@(user: Optional[User], form: Form[Account], config: com.typesafe.config.Config)
 
 @implicitFieldConstructor = @{
     b3.horizontal.fieldConstructor("col-md-2", "col-md-10")
 }
 
-@main("Accounts", user) {
+@main("Accounts", user, config) {
 
     @if(flash.containsKey("success")) {
 

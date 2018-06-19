@@ -2,6 +2,7 @@ package controllers;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.typesafe.config.Config;
 import dao.AccountDao;
 import dao.TransactionCategoryDao;
 import dao.TransactionDao;
@@ -43,20 +44,23 @@ public class TransactionsController extends Controller {
 
     private final FormFactory formFactory;
 
+    private final Config config;
+
     @Inject
     public TransactionsController(UserService userService, TransactionDao transactionDao,
                                   TransactionCategoryDao transactionCategoryDao, UserDao userDao, AccountDao accountDao,
-                                  FormFactory formFactory) {
+                                  FormFactory formFactory, Config config) {
         this.userService = userService;
         this.transactionDao = transactionDao;
         this.transactionCategoryDao = transactionCategoryDao;
         this.userDao = userDao;
         this.accountDao = accountDao;
         this.formFactory = formFactory;
+        this.config = config;
     }
 
     public Result transactions() {
-        return ok(transactions.render(userService.getUser(session())));
+        return ok(transactions.render(userService.getUser(session()), config));
     }
 
 
@@ -83,7 +87,7 @@ public class TransactionsController extends Controller {
                 .map(accountStream -> accountStream.collect(Collectors.toMap(Account::getId, Account::getTitle)))
                 .orElse(Collections.emptyMap());
 
-        return ok(edit_transaction.render(user, form, catMap, accountsMap));
+        return ok(edit_transaction.render(user, form, catMap, accountsMap, config));
     }
 
     public Result saveTransactionForm() {

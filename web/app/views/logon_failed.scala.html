@@ -1,7 +1,7 @@
 
-@(errorMessage: String)
+@(errorMessage: String, config: com.typesafe.config.Config)
 
-@main("Filed to Login!!!", Optional.empty()) {
+@main("Filed to Login!!!", Optional.empty(), config) {
     <div class="error">Problem on login!</div>
     <div class="error">@errorMessage</div>
 }

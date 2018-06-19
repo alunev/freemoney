@@ -54,7 +54,7 @@ public class GoogleSignIn {
 
             return user;
         } else {
-            System.out.println("Invalid ID token.");
+            Logger.info("Invalid ID token.");
             return Optional.empty();
         }
     }

@@ -2,9 +2,9 @@
 @import model.User
 @import model.TransactionType
 
-@(user: Optional[User])
+@(user: Optional[User], config: com.typesafe.config.Config)
 
-@main("Transactions", user) {
+@main("Transactions", user, config) {
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
         @for(account <- user.get().getAccounts) {

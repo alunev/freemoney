@@ -2,6 +2,7 @@ package controllers;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.typesafe.config.Config;
 import dao.AccountDao;
 import dao.UserDao;
 import model.Account;
@@ -23,19 +24,23 @@ public class AccountsController extends Controller {
     private final FormFactory formFactory;
 
     private final AccountDao accountDao;
+
     private final UserDao userDao;
+
+    private final Config config;
 
     @Inject
     public AccountsController(UserService userService, FormFactory formFactory,
-                              AccountDao accountDao, UserDao userDao) {
+                              AccountDao accountDao, UserDao userDao, Config config) {
         this.userService = userService;
         this.formFactory = formFactory;
         this.accountDao = accountDao;
         this.userDao = userDao;
+        this.config = config;
     }
 
     public Result accounts() {
-        return ok(accounts.render(userService.getUser(session())));
+        return ok(accounts.render(userService.getUser(session()), config));
     }
 
     public Result showAddForm() {
@@ -50,7 +55,7 @@ public class AccountsController extends Controller {
             form = form.fill(account);
         }
 
-        return ok(edit_account.render(userService.getUser(session()), form));
+        return ok(edit_account.render(userService.getUser(session()), form, config));
     }
 
     public Result saveAccountForm() {
