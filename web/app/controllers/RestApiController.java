@@ -2,6 +2,8 @@ package controllers;
 
 import auth.GoogleSignIn;
 import com.google.inject.Inject;
+import common.DateUtils;
+import common.SessionParams;
 import core.ParsingTransactionGenerator;
 import core.TransactionExecutor;
 import core.TransactionGenerator;
@@ -18,6 +20,7 @@ import services.UserService;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -69,11 +72,22 @@ public class RestApiController extends Controller {
         }
 
         if (user.isPresent()) {
-            session("userId", user.get().getAuthId());
-            return CompletableFuture.completedStage(ok());
+            session(SessionParams.USER_AUTH_ID, user.get().getAuthId());
+            return CompletableFuture.completedStage(ok(Json.toJson(user.get().get_id())));
         } else {
             return CompletableFuture.completedStage(unauthorized("Failed to login"));
         }
+    }
+
+    public CompletionStage<Result> currentUser() {
+        return CompletableFuture.supplyAsync(() -> userService.getUser(session()))
+                .thenApplyAsync(user -> {
+                    if (user.isPresent()) {
+                        return ok(Json.toJson(user));
+                    } else {
+                        return notFound();
+                    }
+                });
     }
 
     public CompletionStage<Result> processSms() {
@@ -93,9 +107,9 @@ public class RestApiController extends Controller {
 
         return CompletableFuture.supplyAsync(() -> smsDao.save(sms))
                 .thenApplyAsync(s -> transactionGenerator.generate(s, user))
-                .thenApplyAsync(transactions -> transactionDao.saveAll(transactions))
+                .thenApplyAsync(transactionDao::saveAll)
                 .thenAcceptAsync(transactions -> transactions.forEach(
-                        transaction -> transactionExecutor.execute(transaction)
+                        transactionExecutor::execute
                 ))
                 .thenApplyAsync(aVoid -> ok());
     }
@@ -105,12 +119,13 @@ public class RestApiController extends Controller {
 
         return CompletableFuture.supplyAsync(() ->
                 user.map(
-                        user1 -> user1.getAppInstances().stream()
+                        user1 -> Optional.ofNullable(user1.getAppInstances()).stream()
+                                .flatMap(Collection::stream)
                                 .filter(appInstance -> Objects.equals(appInstance.getInstanceId(), instanceId))
                                 .findFirst()
                                 .map(appInstance -> appInstance.getLastSync().toInstant().toEpochMilli())
-                                .map(millis -> ok("" + millis))
-                                .orElse(badRequest("No matching device found"))
+                                .map(millis -> ok(String.valueOf(millis)))
+                                .orElse(ok(String.valueOf(DateUtils.startOfTime())))
                 )
                         .orElseGet(() -> unauthorized("Login first")));
     }

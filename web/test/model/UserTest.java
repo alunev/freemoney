@@ -13,7 +13,6 @@ import java.time.ZonedDateTime;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.from;
 
 
 /**
@@ -85,7 +84,7 @@ public class UserTest {
     @Test
     public void createJson() {
         Account acc1 = ObjectsFactory.createDummyAccountWithId("1");
-        Account acc2 = ObjectsFactory.createDummyAccountWithId("1");
+        Account acc2 = ObjectsFactory.createDummyAccountWithId("2");
 
         User user = new UserBuilder().withEmail("id1@mail.com")
                 .withAccounts(Sets.newHashSet(
@@ -99,9 +98,9 @@ public class UserTest {
                                 TransactionType.EXPENSE,
                                 BigDecimal.ONE,
                                 BigDecimal.ZERO,
-                                acc1.getId(),
-                                Account.EXPENSE_ACCOUNT.getId(),
-                                TransactionCategory.UNDEFINED.getId(),
+                                acc1.get_id(),
+                                Account.EXPENSE_ACCOUNT.get_id(),
+                                TransactionCategory.UNDEFINED.get_id(),
                                 DateUtils.now()
                         ),
                         new Transaction(
@@ -110,9 +109,9 @@ public class UserTest {
                                 TransactionType.EXPENSE,
                                 BigDecimal.ONE,
                                 BigDecimal.ZERO,
-                                acc1.getId(),
-                                Account.EXPENSE_ACCOUNT.getId(),
-                                TransactionCategory.UNDEFINED.getId(),
+                                acc1.get_id(),
+                                Account.EXPENSE_ACCOUNT.get_id(),
+                                TransactionCategory.UNDEFINED.get_id(),
                                 DateUtils.now()
                         )))
                 .withAppInstances(Lists.newArrayList(

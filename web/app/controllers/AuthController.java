@@ -3,6 +3,7 @@ package controllers;
 import auth.GoogleSignIn;
 import com.google.inject.Inject;
 import com.typesafe.config.Config;
+import common.SessionParams;
 import model.User;
 import play.Logger;
 import play.mvc.Controller;
@@ -51,7 +52,7 @@ public class AuthController extends Controller {
         }
 
         if (user.isPresent()) {
-            session("userId", user.get().getAuthId());
+            session(SessionParams.USER_AUTH_ID, user.get().getAuthId());
             return ok();
         } else {
             return unauthorized("Failed to login");

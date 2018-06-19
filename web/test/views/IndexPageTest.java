@@ -1,5 +1,6 @@
 package views;
 
+import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import common.TestOverridesWebModule;
 import model.User;
@@ -55,7 +56,7 @@ public class IndexPageTest extends WithApplication {
         when(context.request()).thenReturn(mock(Http.Request.class));
         when(context._requestHeader()).thenReturn(mock(RequestHeader.class));
 
-        Content html = views.html.index.render(Optional.empty());
+        Content html = views.html.index.render(Optional.empty(), mock(Config.class));
 
         assertEquals("text/html", html.contentType());
         assertTrue(html.body().contains("Login with google"));
@@ -67,7 +68,8 @@ public class IndexPageTest extends WithApplication {
         when(context._requestHeader()).thenReturn(requestHeader);
 
         Content html = views.html.index.render(
-                java.util.Optional.ofNullable(User.createEmptyUser("user_some_auth_id", "user@some_email"))
+                java.util.Optional.ofNullable(User.createEmptyUser("user_some_auth_id", "user@some_email")),
+                mock(Config.class)
         );
 
         assertEquals("text/html", html.contentType());

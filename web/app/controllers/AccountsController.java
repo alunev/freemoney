@@ -62,7 +62,7 @@ public class AccountsController extends Controller {
         Account account = formFactory.form(Account.class).bindFromRequest().get();
         Optional<User> user = userService.getUser(session());
 
-        if (Strings.isNullOrEmpty(account.getId())) {
+        if (Strings.isNullOrEmpty(account.get_id())) {
             accountDao.save(account);
 
             user.ifPresent(u -> {
@@ -75,7 +75,7 @@ public class AccountsController extends Controller {
 
         flash("success", "Saved successfully");
 
-        return redirect(controllers.routes.AccountsController.showEditForm(account.getId()));
+        return redirect(controllers.routes.AccountsController.showEditForm(account.get_id()));
     }
 
     public Result deleteAccount(String accountId) {

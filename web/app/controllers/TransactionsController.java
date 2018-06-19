@@ -77,14 +77,14 @@ public class TransactionsController extends Controller {
         }
 
         Map<String, String> catMap = transactionCategoryDao.findAll().stream().collect(
-                Collectors.toMap(TransactionCategory::getId, TransactionCategory::getName)
+                Collectors.toMap(TransactionCategory::get_id, TransactionCategory::getName)
         );
 
         Optional<User> user = userService.getUser(session());
 
         Map<String, String> accountsMap = user
-                .map(u -> accountDao.findByOwnerId(u.getId()).stream())
-                .map(accountStream -> accountStream.collect(Collectors.toMap(Account::getId, Account::getTitle)))
+                .map(u -> accountDao.findByOwnerId(u.get_id()).stream())
+                .map(accountStream -> accountStream.collect(Collectors.toMap(Account::get_id, Account::getTitle)))
                 .orElse(Collections.emptyMap());
 
         return ok(edit_transaction.render(user, form, catMap, accountsMap, config));
@@ -93,8 +93,8 @@ public class TransactionsController extends Controller {
     public Result saveTransactionForm() {
         Transaction tx = formFactory.form(Transaction.class).bindFromRequest().get();
 
-        if (Strings.isNullOrEmpty(tx.getId())) {
-            tx.setId(UUID.nameUUIDFromBytes(tx.toString().getBytes()).toString());
+        if (Strings.isNullOrEmpty(tx.get_id())) {
+            tx.set_id(UUID.nameUUIDFromBytes(tx.toString().getBytes()).toString());
 
             if (tx.getTransactionType() == TransactionType.EXPENSE) {
                 tx.setDestAccount(Account.EXPENSE_ACCOUNT);
@@ -115,7 +115,7 @@ public class TransactionsController extends Controller {
 
         flash("success", "Saved successfully");
 
-        return redirect(controllers.routes.TransactionsController.showEditForm(tx.getId()));
+        return redirect(controllers.routes.TransactionsController.showEditForm(tx.get_id()));
     }
 
     public Result deleteTransaction(String txId) {

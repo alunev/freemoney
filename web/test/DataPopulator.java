@@ -79,9 +79,9 @@ public class DataPopulator extends WithApplication {
 
         userDao.save(user);
 
-        populatePatterns(user.getId());
+        populatePatterns(user.get_id());
 
-        Account account = ObjectsFactory.createDummyAccountWithOwnerId(user.getId());
+        Account account = ObjectsFactory.createDummyAccountWithOwnerId(user.get_id());
         accountDao.save(account);
 
         accountDao.save(Account.EXPENSE_ACCOUNT);
@@ -91,16 +91,16 @@ public class DataPopulator extends WithApplication {
         user.addAccount(account);
 
         transactionDao.save(Transaction.createExpense(
-                user.getId(), BigDecimal.valueOf(0.5), account, transactionCategoryDao.findById(foodCat.getId()), DateUtils
+                user.get_id(), BigDecimal.valueOf(0.5), account, transactionCategoryDao.findById(foodCat.get_id()), DateUtils
                         .now()));
         transactionDao.save(Transaction.createExpense(
-                user.getId(), BigDecimal.valueOf(23.5), account, transactionCategoryDao.findById(foodCat.getId()), DateUtils.now()));
+                user.get_id(), BigDecimal.valueOf(23.5), account, transactionCategoryDao.findById(foodCat.get_id()), DateUtils.now()));
         transactionDao.save(Transaction.createExpense(
-                user.getId(), BigDecimal.valueOf(645.5), account, transactionCategoryDao.findById(foodCat.getId()), DateUtils.now()));
+                user.get_id(), BigDecimal.valueOf(645.5), account, transactionCategoryDao.findById(foodCat.get_id()), DateUtils.now()));
         transactionDao.save(Transaction.createExpense(
-                user.getId(), BigDecimal.valueOf(6.5), account, transactionCategoryDao.findById(flatCat.getId()), DateUtils.now()));
+                user.get_id(), BigDecimal.valueOf(6.5), account, transactionCategoryDao.findById(flatCat.get_id()), DateUtils.now()));
         transactionDao.save(Transaction.createExpense(
-                user.getId(), BigDecimal.valueOf(644.35), account, transactionCategoryDao.findById(transportCat.getId()), DateUtils.now()));
+                user.get_id(), BigDecimal.valueOf(644.35), account, transactionCategoryDao.findById(transportCat.get_id()), DateUtils.now()));
 
     }
 }

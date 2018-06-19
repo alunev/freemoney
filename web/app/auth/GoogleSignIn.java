@@ -50,7 +50,7 @@ public class GoogleSignIn {
 
             Optional<User> user = userService.getOrCreateUser(userId, email);
 
-            Logger.info(email + " logged in");
+            Logger.info(userId + " logged in");
 
             return user;
         } else {

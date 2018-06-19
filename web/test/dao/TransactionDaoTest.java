@@ -9,8 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Currency;
 import java.util.Set;
 
@@ -76,12 +74,12 @@ public class TransactionDaoTest extends JongoDaoTest {
         );
         transactionDao.save(transaction);
 
-        Transaction tx = transactionDao.findById(transaction.getId());
+        Transaction tx = transactionDao.findById(transaction.get_id());
 
         assertThat("found tx", tx, is(not(nullValue())));
         assertThat("tx type", tx.getTransactionType(), is(TransactionType.TRANSFER));
-        assertThat("tx src", tx.getSourceId(), is(srcAcc.getId()));
-        assertThat("tx dest", tx.getDestId(), is(destAcc.getId()));
+        assertThat("tx src", tx.getSourceId(), is(srcAcc.get_id()));
+        assertThat("tx dest", tx.getDestId(), is(destAcc.get_id()));
         assertThat("tx category", tx.getCategory(), is(category));
     }
 
@@ -133,8 +131,8 @@ public class TransactionDaoTest extends JongoDaoTest {
         txList.forEach(tx -> {
             assertThat("found tx", tx, is(not(nullValue())));
             assertThat("tx type", tx.getTransactionType(), is(TransactionType.TRANSFER));
-            assertThat("tx src", tx.getSourceId(), is(srcAcc.getId()));
-            assertThat("tx dest", tx.getDestId(), is(destAcc.getId()));
+            assertThat("tx src", tx.getSourceId(), is(srcAcc.get_id()));
+            assertThat("tx dest", tx.getDestId(), is(destAcc.get_id()));
             assertThat("tx category", tx.getCategory(), is(category));
         });
 
@@ -185,19 +183,19 @@ public class TransactionDaoTest extends JongoDaoTest {
         );
         transactionDao.save(expense);
 
-        Transaction tx1 = transactionDao.findById(transfer.getId());
+        Transaction tx1 = transactionDao.findById(transfer.get_id());
         assertThat("found tx1", tx1, is(not(nullValue())));
         assertThat("tx1 type", tx1.getTransactionType(), is(TransactionType.TRANSFER));
 
-        Transaction tx2 = transactionDao.findById(expense.getId());
+        Transaction tx2 = transactionDao.findById(expense.get_id());
         assertThat("found tx2", tx2, is(not(nullValue())));
         assertThat("tx2 type", tx2.getTransactionType(), is(TransactionType.EXPENSE));
 
         transactionDao.delete(tx1);
 
-        assertThat("found tx1", transactionDao.findById(transfer.getId()), is(nullValue()));
-        assertThat("found src account", accountDao.findById(srcAcc.getId()), is(notNullValue()));
-        assertThat("found dest account", accountDao.findById(destAcc.getId()), is(notNullValue()));
+        assertThat("found tx1", transactionDao.findById(transfer.get_id()), is(nullValue()));
+        assertThat("found src account", accountDao.findById(srcAcc.get_id()), is(notNullValue()));
+        assertThat("found dest account", accountDao.findById(destAcc.get_id()), is(notNullValue()));
     }
 
 }

@@ -28,7 +28,7 @@ public class TransactionCategoryDaoTest extends JongoDaoTest {
 
         categoryDao.save(category);
 
-        assertThat(category.getId()).isNotBlank();
+        assertThat(category.get_id()).isNotBlank();
     }
 
     @Test
@@ -36,7 +36,7 @@ public class TransactionCategoryDaoTest extends JongoDaoTest {
         TransactionCategory category = TransactionCategory.createTransactionCategory("cat 1", "cat 1 desc");
 
         categoryDao.save(category);
-        TransactionCategory foundCategory = categoryDao.findById(category.getId());
+        TransactionCategory foundCategory = categoryDao.findById(category.get_id());
 
         assertThat(foundCategory.identicalTo(category)).isTrue();
     }

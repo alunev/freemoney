@@ -1,5 +1,6 @@
 package services;
 
+import common.SessionParams;
 import dao.UserDao;
 import model.User;
 import org.pac4j.core.profile.ProfileManager;
@@ -32,7 +33,7 @@ public class UserService {
     }
 
     public Optional<User> getUser(Http.Session session) {
-        return userDao.findByAuthId(session.get("userId"));
+        return userDao.findByAuthId(session.get(SessionParams.USER_AUTH_ID));
     }
 
     public Optional<User> getOrCreateUser(String userId, String email) {

@@ -113,7 +113,7 @@ public class User {
                                 .build();
     }
 
-    public String getId() {
+    public String get_id() {
         return _id;
     }
 

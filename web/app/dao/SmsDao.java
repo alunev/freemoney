@@ -25,7 +25,7 @@ public class SmsDao {
     }
 
     public void delete(Sms sms) {
-        smses().remove(new ObjectId(sms.getId()));
+        smses().remove(new ObjectId(sms.get_id()));
     }
 
     private org.jongo.MongoCollection smses() {

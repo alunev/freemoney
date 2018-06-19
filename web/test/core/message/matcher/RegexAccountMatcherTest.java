@@ -43,6 +43,6 @@ public class RegexAccountMatcherTest {
         Optional<Account> bestMatch = new RegexAccountMatcher(accountDao).getBestMatch("user01", "2222");
 
         assertThat(bestMatch).isPresent();
-        assertThat(bestMatch.get().getId()).isEqualTo("account01");
+        assertThat(bestMatch.get().get_id()).isEqualTo("account01");
     }
 }

@@ -45,7 +45,7 @@ public class Transaction {
     }
 
     @JsonCreator
-    public Transaction(@JsonProperty("id") String id,
+    public Transaction(@JsonProperty("_id") String _id,
                        @JsonProperty("ownerId") String ownerId,
                        @JsonProperty("transactionType") TransactionType transactionType,
                        @JsonProperty("sourceAmount") BigDecimal sourceAmount,
@@ -54,7 +54,7 @@ public class Transaction {
                        @JsonProperty("destId") String destId,
                        @JsonProperty("categoryId") String categoryId,
                        @JsonProperty("addedTime") LocalDateTime addedTime) {
-        checkNotNull(id);
+        checkNotNull(_id);
         checkNotNull(ownerId);
         checkNotNull(transactionType);
         checkNotNull(sourceId);
@@ -62,7 +62,7 @@ public class Transaction {
         checkNotNull(categoryId);
         checkNotNull(addedTime);
 
-        this._id = id;
+        this._id = _id;
         this.ownerId = ownerId;
         this.transactionType = transactionType;
         this.sourceId = sourceId;
@@ -110,9 +110,9 @@ public class Transaction {
                 TransactionType.TRANSFER,
                 sourceAmount,
                 destAmount,
-                sourceAccount.getId(),
-                destAccount.getId(),
-                category.getId(),
+                sourceAccount.get_id(),
+                destAccount.get_id(),
+                category.get_id(),
                 addedTime);
     }
 
@@ -130,9 +130,9 @@ public class Transaction {
                 TransactionType.TRANSFER,
                 sourceAmount,
                 destAmount,
-                sourceAccount.getId(),
-                destAccount.getId(),
-                category.getId(),
+                sourceAccount.get_id(),
+                destAccount.get_id(),
+                category.get_id(),
                 addedTime
         );
     }
@@ -147,9 +147,9 @@ public class Transaction {
                 TransactionType.EXPENSE,
                 amount,
                 BigDecimal.ZERO,
-                account.getId(),
-                Account.EXPENSE_ACCOUNT.getId(),
-                category.getId(),
+                account.get_id(),
+                Account.EXPENSE_ACCOUNT.get_id(),
+                category.get_id(),
                 addedTime
         );
     }
@@ -164,9 +164,9 @@ public class Transaction {
                 TransactionType.INCOME,
                 amount,
                 BigDecimal.ZERO,
-                account.getId(),
-                Account.INCOME_ACCOUNT.getId(),
-                category.getId(),
+                account.get_id(),
+                Account.INCOME_ACCOUNT.get_id(),
+                category.get_id(),
                 addedTime);
     }
 
@@ -174,8 +174,12 @@ public class Transaction {
         throw new RuntimeException("copyWithOwnerId()");
     }
 
-    public String getId() {
+    public String get_id() {
         return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public TransactionType getTransactionType() {
@@ -186,9 +190,6 @@ public class Transaction {
         this.transactionType = transactionType;
     }
 
-    public void setId(String id) {
-        this._id = id;
-    }
 
     public Account getSourceAccount() {
         return sourceAccount;

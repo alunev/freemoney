@@ -37,24 +37,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(tx <- user.get().getTransactions) {
-                        <tr>
-                            <td>@tx.getId</td>
-                            <td>@tx.getAddedTime</td>
-                            <td>@tx.getTransactionType</td>
-                            <td>@tx.getCategory.getName</td>
-                            @if(tx.getTransactionType == TransactionType.TRANSFER) {
-                            <td>@tx.getSourceAccount.getTitle - @tx.getDestAccount.getTitle</td>
-                            <td>@tx.getSourceAccount.getCurrency -> @tx.getDestAccount.getCurrency</td>
-                            <td>@tx.getSourceAmount -> @tx.getDestAmount</td>
-                            } else {
-                            <td>@tx.getSourceAccount.getTitle</td>
-                            <td>@tx.getSourceAmount</td>
-                            <td>@tx.getSourceAccount.getCurrency</td>
-                            }
-                            <td><a href="@routes.TransactionsController.showEditForm(tx.getId)">Edit</a></td>
-                            <td><a href="@routes.TransactionsController.deleteTransaction(tx.getId)">Delete</a></td>
-                        </tr>
+                    @if(user.isPresent) {
+                        @for(tx <- user.get().getTransactions) {
+                            <tr>
+                                <td>@tx.get_id</td>
+                                <td>@tx.getAddedTime</td>
+                                <td>@tx.getTransactionType</td>
+                                <td>@tx.getCategory.getName</td>
+                                @if(tx.getTransactionType == TransactionType.TRANSFER) {
+                                    <td>@tx.getSourceAccount.getTitle - @tx.getDestAccount.getTitle</td>
+                                    <td>@tx.getSourceAccount.getCurrency -> @tx.getDestAccount.getCurrency</td>
+                                    <td>@tx.getSourceAmount -> @tx.getDestAmount</td>
+                                } else {
+                                    <td>@tx.getSourceAccount.getTitle</td>
+                                    <td>@tx.getSourceAmount</td>
+                                    <td>@tx.getSourceAccount.getCurrency</td>
+                                }
+                                <td><a href="@routes.TransactionsController.showEditForm(tx.get_id)">Edit</a></td>
+                                <td><a href="@routes.TransactionsController.deleteTransaction(tx.get_id)">Delete</a></td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

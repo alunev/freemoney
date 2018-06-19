@@ -45,7 +45,7 @@ public class TransactionCategory {
         return new TransactionCategory(name, description);
     }
 
-    public String getId() {
+    public String get_id() {
         return _id;
     }
 

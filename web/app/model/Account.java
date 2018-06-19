@@ -106,14 +106,14 @@ public class Account {
     }
 
     public static Account createAccount(Account account) {
-        return new Account(account.getId(), account.getOwnerId(), account.getNumber(), account.getTitle(), account.getCurrency(), account.getBalance(), account.getSmsPattern());
+        return new Account(account.get_id(), account.getOwnerId(), account.getNumber(), account.getTitle(), account.getCurrency(), account.getBalance(), account.getSmsPattern());
     }
 
     public static Account copyWithOwnerId(Account a, String ownerId) {
-        return new Account(a.getId(), ownerId, a.getNumber(), a.getTitle(), a.getCurrency(), a.getBalance(), a.getSmsPattern());
+        return new Account(a.get_id(), ownerId, a.getNumber(), a.getTitle(), a.getCurrency(), a.getBalance(), a.getSmsPattern());
     }
 
-    public String getId() {
+    public String get_id() {
         return _id;
     }
 

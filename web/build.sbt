@@ -40,4 +40,5 @@ libraryDependencies += "org.pac4j" % "pac4j-oauth" % "3.0.0"
 libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.3.0"
 
 libraryDependencies += "com.google.api-client" % "google-api-client" % "1.23.0"
+libraryDependencies += "com.google.guava" % "guava" % "25.1-jre"
 

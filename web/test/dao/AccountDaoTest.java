@@ -36,7 +36,7 @@ public class AccountDaoTest extends JongoDaoTest {
         Account account = ObjectsFactory.createDummyAccount();
         accountDao.save(account);
 
-        assertThat(account.getId()).isNotBlank();
+        assertThat(account.get_id()).isNotBlank();
     }
 
     @Test
@@ -48,7 +48,7 @@ public class AccountDaoTest extends JongoDaoTest {
         accountDao.save(ObjectsFactory.createDummyAccount());
         accountDao.save(ObjectsFactory.createDummyAccount());
 
-        assertThat(accountDao.findById(account3.getId())).isEqualTo(account3);
+        assertThat(accountDao.findById(account3.get_id())).isEqualTo(account3);
     }
 
     @Test

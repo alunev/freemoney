@@ -1,5 +1,6 @@
 package dao;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mongodb.WriteResult;
@@ -30,6 +31,10 @@ public class UserDao {
     }
 
     public User findById(String id) {
+        if (Strings.isNullOrEmpty(id)) {
+            throw new RuntimeException("id is empty");
+        }
+
         User user = users().findOne("{_id: #}", new ObjectId(id)).as(User.class);
 
         if (user == null) {
@@ -49,23 +54,23 @@ public class UserDao {
 
         saveAccounts(user);
 
-        return result.isUpdateOfExisting() ? user.getId() : result.getUpsertedId().toString();
+        return result.isUpdateOfExisting() ? user.get_id() : result.getUpsertedId().toString();
     }
 
     private User resolveReferences(User user) {
         return User.builder(user)
-                   .withAccounts(accountDao.findByOwnerId(user.getId()))
-                   .withTransactions(transactionDao.findByOwnerId(user.getId()))
+                   .withAccounts(accountDao.findByOwnerId(user.get_id()))
+                   .withTransactions(transactionDao.findByOwnerId(user.get_id()))
                    .build();
     }
 
     private void saveAccounts(User user) {
         Set<Account> newAccounts = user.getAccounts()
                                        .stream()
-                                       .map(a -> Account.copyWithOwnerId(a, user.getId()))
+                                       .map(a -> Account.copyWithOwnerId(a, user.get_id()))
                                        .collect(Collectors.toSet());
 
-        Set<Account> oldAccounts = accountDao.findByOwnerId(user.getId());
+        Set<Account> oldAccounts = accountDao.findByOwnerId(user.get_id());
 
         // save all new accounts
         accountDao.saveAll(newAccounts);
@@ -78,10 +83,10 @@ public class UserDao {
     private void updateTransactions(User user) {
         Set<Transaction> newTransactions = user.getTransactions()
                                                .stream()
-                                               .map(a -> Transaction.copyWithOwnerId(a, user.getId()))
+                                               .map(a -> Transaction.copyWithOwnerId(a, user.get_id()))
                                                .collect(Collectors.toSet());
 
-        Set<Transaction> oldTransactions = transactionDao.findByOwnerId(user.getId());
+        Set<Transaction> oldTransactions = transactionDao.findByOwnerId(user.get_id());
 
         // save all ne tx
         transactionDao.saveAll(newTransactions);
@@ -92,7 +97,7 @@ public class UserDao {
     }
 
     public void delete(User user) {
-        users().remove(new ObjectId(user.getId()));
+        users().remove(new ObjectId(user.get_id()));
     }
 
     private org.jongo.MongoCollection users() {

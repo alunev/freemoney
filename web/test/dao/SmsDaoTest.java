@@ -5,9 +5,6 @@ import model.Sms;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -31,6 +28,6 @@ public class SmsDaoTest extends JongoDaoTest {
         Sms sms = Sms.createSms("1", "andr001", "", "PAY 444.99", DateUtils.nowTs());
         smsDao.save(sms);
 
-        assertTrue("read same as saved", smsDao.findById(sms.getId()).sameAs(sms));
+        assertTrue("read same as saved", smsDao.findById(sms.get_id()).sameAs(sms));
     }
 }

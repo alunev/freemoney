@@ -44,7 +44,7 @@ public class MessagePattern {
         this.createdTs = createdTs;
     }
 
-    public String getId() {
+    public String get_id() {
         return _id;
     }
 

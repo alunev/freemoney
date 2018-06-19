@@ -110,21 +110,21 @@ public class UserDaoTest extends JongoDaoTest {
         categoryDao.save(category);
 
         Transaction tx1 = Transaction.createExpense(
-                user.getId(),
+                user.get_id(),
                 BigDecimal.valueOf(60.0),
                 acc1,
                 category,
                 DateUtils.now()
         );
         Transaction tx2 = Transaction.createIncome(
-                user.getId(),
+                user.get_id(),
                 BigDecimal.valueOf(90.0),
                 acc1,
                 category,
                 DateUtils.now()
         );
         Transaction tx3 = Transaction.createTransfer(
-                user.getId(),
+                user.get_id(),
                 BigDecimal.valueOf(120.0),
                 BigDecimal.valueOf(2.0),
                 acc1,
@@ -157,9 +157,9 @@ public class UserDaoTest extends JongoDaoTest {
         User andy = User.createUserWithAccounts("andy@some_email", Collections.emptySet());
 
         userDao.save(andy);
-        assertThat("found user", userDao.findById(andy.getId()), is(not(nullValue())));
+        assertThat("found user", userDao.findById(andy.get_id()), is(not(nullValue())));
 
-        String id = andy.getId();
+        String id = andy.get_id();
         userDao.delete(andy);
         assertThat("found user", userDao.findById(id), is(nullValue()));
     }
@@ -179,7 +179,7 @@ public class UserDaoTest extends JongoDaoTest {
         userDao.delete(user);
 
         assertThat("found user", userDao.findById(id), is(nullValue()));
-        assertThat("found account", accountDao.findById(user.getId()), is(nullValue()));
+        assertThat("found account", accountDao.findById(user.get_id()), is(nullValue()));
     }
 
     @Test
@@ -190,13 +190,13 @@ public class UserDaoTest extends JongoDaoTest {
         User andy = User.createUserWithAccounts("andy@some_email", accounts);
         userDao.save(andy);
 
-        andy = userDao.findById(andy.getId());
+        andy = userDao.findById(andy.get_id());
 
         Account acc2 = ObjectsFactory.createDummyAccountWithOwnerId("andy");
         andy.addAccount(acc2);
         userDao.save(andy);
 
-        User foundUser = userDao.findById(andy.getId());
+        User foundUser = userDao.findById(andy.get_id());
 
         assertThat("account 1 present", foundUser.getAccounts(), hasSize(2));
     }
@@ -214,12 +214,12 @@ public class UserDaoTest extends JongoDaoTest {
 
         userDao.save(user);
 
-        user = userDao.findById(user.getId());
+        user = userDao.findById(user.get_id());
         user.addAppInstance(new AppInstance("0000", ZonedDateTime.now()));
 
         userDao.save(user);
 
-        User foundUser = userDao.findById(user.getId());
+        User foundUser = userDao.findById(user.get_id());
 
         assertThat(foundUser.getAppInstances(), hasSize(3));
     }
@@ -232,18 +232,18 @@ public class UserDaoTest extends JongoDaoTest {
         User user = User.createUserWithAccounts("user@some_email", Sets.newHashSet(acc1));
         userDao.save(user);
 
-        user = userDao.findById(user.getId());
+        user = userDao.findById(user.get_id());
 
-        Account modified = Account.createAccount(acc1.getId(), acc1.getOwnerId(), "22", acc1.getTitle(), acc1.getCurrency(), acc1.getBalance(), acc1.getSmsPattern());
+        Account modified = Account.createAccount(acc1.get_id(), acc1.getOwnerId(), "22", acc1.getTitle(), acc1.getCurrency(), acc1.getBalance(), acc1.getSmsPattern());
         user.removeAccount(acc1);
         user.addAccount(modified);
         userDao.save(user);
 
-        User newUser = userDao.findById(user.getId());
+        User newUser = userDao.findById(user.get_id());
 
         assertThat("account was replaced", newUser.getAccounts(), hasSize(1));
         assertThat("account 1 present", newUser.getAccounts(), contains(modified));
-        assertThat("modified name", accountDao.findById(modified.getId()).getNumber(), is("22"));
+        assertThat("modified name", accountDao.findById(modified.get_id()).getNumber(), is("22"));
     }
 
 
@@ -260,12 +260,12 @@ public class UserDaoTest extends JongoDaoTest {
         User andy = User.createUserWithAccounts("andy@some_email", accounts);
         userDao.save(andy);
 
-        andy = userDao.findById(andy.getId());
+        andy = userDao.findById(andy.get_id());
         andy.removeAccount(acc2);
 
         userDao.save(andy);
 
-        User foundUser = userDao.findById(andy.getId());
+        User foundUser = userDao.findById(andy.get_id());
 
         assertThat("user accounts list size", foundUser.getAccounts().size(), is(1));
     }

@@ -40,7 +40,7 @@ public class AccountDao {
     }
 
     public void delete(Account account) {
-        accounts().remove(new ObjectId(account.getId()));
+        accounts().remove(new ObjectId(account.get_id()));
     }
 
     public void deleteAll(Set<Account> accounts) {

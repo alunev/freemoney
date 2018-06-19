@@ -49,7 +49,7 @@ public class TransactionDao {
     }
 
     public void delete(Transaction transaction) {
-        transactions().remove(new ObjectId(transaction.getId()));
+        transactions().remove(new ObjectId(transaction.get_id()));
     }
 
     public Collection<Transaction> saveAll(Collection<Transaction> transactions) {

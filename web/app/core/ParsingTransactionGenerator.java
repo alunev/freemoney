@@ -17,7 +17,6 @@ import org.assertj.core.util.Lists;
 import play.Logger;
 
 import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,26 +49,26 @@ public class ParsingTransactionGenerator implements TransactionGenerator {
         Logger.debug("User: {}", user);
         Logger.debug("Generating for SMS: {}", sms);
 
-        Set<MessagePattern> userPatterns = messagePatternDao.findByOwnerId(user.getId());
+        Set<MessagePattern> userPatterns = messagePatternDao.findByOwnerId(user.get_id());
         Logger.debug("User patterns: {}", userPatterns);
 
         return parseMessage(sms, userPatterns)
                 .map(result -> {
                     Transaction.TransactionBuilder builder = Transaction.builder();
-                    builder.ownerId(user.getId());
+                    builder.ownerId(user.get_id());
                     builder.transactionType(result.getTransactionType());
                     builder.sourceAmount(result.getAmount());
                     builder.destAmount(result.getAmount());
-                    builder.categoryId(categoryMatcher.getBestMatch(result.getPayeeString()).getId());
+                    builder.categoryId(categoryMatcher.getBestMatch(result.getPayeeString()).get_id());
                     builder.addedTime(DateUtils.now());
 
                     switch (result.getTransactionType()) {
                         case EXPENSE:
-                            Account sourceAccount = accountMatcher.getBestMatch(user.getId(), result.getSourceString())
+                            Account sourceAccount = accountMatcher.getBestMatch(user.get_id(), result.getSourceString())
                                     .orElse(Account.UNDEFINED_ACCOUNT);
 
-                            builder.sourceId(sourceAccount.getId());
-                            builder.destId(Account.EXPENSE_ACCOUNT.getId());
+                            builder.sourceId(sourceAccount.get_id());
+                            builder.destId(Account.EXPENSE_ACCOUNT.get_id());
                             break;
                     }
 

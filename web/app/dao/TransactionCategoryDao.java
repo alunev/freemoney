@@ -43,7 +43,7 @@ public class TransactionCategoryDao {
     }
 
     public void delete(TransactionCategory category) {
-        categories().remove(new ObjectId(category.getId()));
+        categories().remove(new ObjectId(category.get_id()));
     }
 
     private org.jongo.MongoCollection categories() {

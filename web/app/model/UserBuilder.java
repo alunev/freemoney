@@ -19,7 +19,7 @@ public class UserBuilder {
     }
 
     public UserBuilder(User user) {
-        this.id = user.getId();
+        this.id = user.get_id();
         this.authId = user.getAuthId();
         this.email = user.getEmail();
         this.accounts = user.getAccounts();

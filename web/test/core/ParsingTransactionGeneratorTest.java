@@ -71,7 +71,7 @@ public class ParsingTransactionGeneratorTest {
         assertThat(transactions.get(0).getSourceAmount()).isEqualTo(BigDecimal.TEN);
         assertThat(transactions.get(0).getDestAmount()).isEqualTo(BigDecimal.TEN);
         assertThat(transactions.get(0).getSourceId()).isEqualTo("2222");
-        assertThat(transactions.get(0).getDestId()).isEqualTo(Account.EXPENSE_ACCOUNT.getId());
-        assertThat(transactions.get(0).getCategoryId()).isEqualTo(TransactionCategory.UNDEFINED.getId());
+        assertThat(transactions.get(0).getDestId()).isEqualTo(Account.EXPENSE_ACCOUNT.get_id());
+        assertThat(transactions.get(0).getCategoryId()).isEqualTo(TransactionCategory.UNDEFINED.get_id());
     }
 }

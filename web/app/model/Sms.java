@@ -66,7 +66,7 @@ public class Sms {
         return new Sms(ownerId, deviceId, sender, text, createdTs);
     }
 
-    public String getId() {
+    public String get_id() {
         return _id;
     }
 

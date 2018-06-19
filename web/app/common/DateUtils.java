@@ -16,4 +16,8 @@ public class DateUtils {
     public static long nowTs() {
         return new Date().getTime();
     }
+
+    public static long startOfTime() {
+        return 0L;
+    }
 }
