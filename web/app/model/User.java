@@ -17,13 +17,8 @@ public class User {
 
     public static final User GUEST = User.createEmptyUser("5a4ec3a6b7bae729a6d9a18a", "", "guest@guest.com");
 
-    @MongoObjectId
-    private String _id;
-
     private final String authId;
-
     private final String email;
-
     private final List<AppInstance> appInstances;
 
     @JsonIgnore
@@ -31,6 +26,9 @@ public class User {
 
     @JsonIgnore
     private final Set<Transaction> transactions;
+
+    @MongoObjectId
+    private String _id;
 
     @JsonCreator
     public User(@JsonProperty("_id") String _id,
@@ -75,42 +73,55 @@ public class User {
 
     public static User createEmptyUser(String authId, String email) {
         return new UserBuilder().withAuthId(authId)
-                                .withEmail(email)
-                                .withAccounts(Collections.emptySet())
-                                .withTransactions(Collections.emptySet())
-                                .build();
+                .withEmail(email)
+                .withAccounts(Collections.emptySet())
+                .withTransactions(Collections.emptySet())
+                .withAppInstances(Collections.emptyList())
+                .build();
     }
 
     public static User createUserWithAccounts(String email, Set<Account> accounts) {
         return new UserBuilder().withEmail(email)
-                                .withAccounts(accounts)
-                                .withTransactions(Collections.emptySet())
-                                .build();
+                .withAccounts(accounts)
+                .withTransactions(Collections.emptySet())
+                .build();
     }
 
     public static User createUserWithAccounts(String authId, String email, Set<Account> accounts) {
         return new UserBuilder().withAuthId(authId)
-                                .withEmail(email)
-                                .withAccounts(accounts)
-                                .withTransactions(Collections.emptySet())
-                                .build();
+                .withEmail(email)
+                .withAccounts(accounts)
+                .withTransactions(Collections.emptySet())
+                .build();
     }
 
     public static User createUser(String authId, String email, Set<Account> accounts, Set<Transaction> transactions) {
         return new UserBuilder().withAuthId(authId)
-                                .withEmail(email)
-                                .withAccounts(accounts)
-                                .withTransactions(Collections.emptySet())
-                                .build();
+                .withEmail(email)
+                .withAccounts(accounts)
+                .withTransactions(Collections.emptySet())
+                .build();
     }
 
-    public static User createUser(String id, String authId, String email, Set<Account> accounts, Set<Transaction> transactions) {
+    public static User createUser(String id,
+                                  String authId,
+                                  String email,
+                                  Set<Account> accounts,
+                                  Set<Transaction> transactions) {
         return new UserBuilder().with_id(id)
-                                .withAuthId(authId)
-                                .withEmail(email)
-                                .withAccounts(accounts)
-                                .withTransactions(Collections.emptySet())
-                                .build();
+                .withAuthId(authId)
+                .withEmail(email)
+                .withAccounts(accounts)
+                .withTransactions(Collections.emptySet())
+                .build();
+    }
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
+    public static UserBuilder builder(User user) {
+        return new UserBuilder(user);
     }
 
     public String get_id() {
@@ -180,16 +191,15 @@ public class User {
         return Objects.equals(_id, user._id);
     }
 
-
     public boolean sameAs(User user) {
         if (this == user) return true;
         if (user == null) return false;
 
         return Objects.equals(_id, user._id) &&
-               Objects.equals(authId, user.authId) &&
-               Objects.equals(email, user.email) &&
-               Objects.equals(accounts, user.accounts) &&
-               Objects.equals(transactions, user.transactions);
+                Objects.equals(authId, user.authId) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(accounts, user.accounts) &&
+                Objects.equals(transactions, user.transactions);
     }
 
     public boolean isGuest() {
@@ -204,19 +214,11 @@ public class User {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("_id", _id)
-                          .add("authId", authId)
-                          .add("email", email)
-                          .add("accounts", accounts)
-                          .add("transactions", transactions)
-                          .toString();
-    }
-
-    public static UserBuilder builder() {
-        return new UserBuilder();
-    }
-
-    public static UserBuilder builder(User user) {
-        return new UserBuilder(user);
+                .add("_id", _id)
+                .add("authId", authId)
+                .add("email", email)
+                .add("accounts", accounts)
+                .add("transactions", transactions)
+                .toString();
     }
 }

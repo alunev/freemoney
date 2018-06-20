@@ -1,7 +1,9 @@
 package common;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 /**
@@ -19,5 +21,13 @@ public class DateUtils {
 
     public static long startOfTime() {
         return 0L;
+    }
+
+    public static ZonedDateTime startOfTimeZdt() {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneId.systemDefault());
+    }
+
+    public static ZonedDateTime millisToZdt(long millis) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
     }
 }

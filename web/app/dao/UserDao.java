@@ -5,11 +5,16 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mongodb.WriteResult;
 import model.Account;
+import model.AppInstance;
 import model.Transaction;
 import model.User;
+import org.assertj.core.util.Lists;
 import org.bson.types.ObjectId;
 import uk.co.panaxiom.playjongo.PlayJongo;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,6 +103,25 @@ public class UserDao {
 
     public void delete(User user) {
         users().remove(new ObjectId(user.get_id()));
+    }
+
+    public User updateInstanceLastSyncTs(User user, String deviceId, ZonedDateTime dateTime) {
+        AppInstance appInstance = new AppInstance(deviceId, dateTime);
+
+        List<AppInstance> userInstances = Optional.ofNullable(user.getAppInstances())
+                .orElse(Lists.emptyList());
+        userInstances = userInstances.stream()
+                .filter(instance -> Objects.equals(instance.getInstanceId(), appInstance.getInstanceId()))
+                .collect(Collectors.toList());
+        userInstances.add(appInstance);
+
+        User updatedUser = User.builder(user)
+                .withAppInstances(userInstances)
+                .build();
+
+        this.save(updatedUser);
+
+        return updatedUser;
     }
 
     private org.jongo.MongoCollection users() {

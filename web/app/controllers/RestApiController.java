@@ -10,8 +10,10 @@ import core.TransactionGenerator;
 import dao.SmsDao;
 import dao.TransactionDao;
 import dao.UserDao;
+import model.AppInstance;
 import model.Sms;
 import model.User;
+import org.assertj.core.util.Lists;
 import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -21,10 +23,12 @@ import services.UserService;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 /**
  * @author red
@@ -106,7 +110,11 @@ public class RestApiController extends Controller {
         //  - (?) push data change to UI
 
         return CompletableFuture.supplyAsync(() -> smsDao.save(sms))
-                .thenApplyAsync(s -> transactionGenerator.generate(s, user))
+                .thenApplyAsync(s -> {
+                    userDao.updateInstanceLastSyncTs(user, sms.getDeviceId(), DateUtils.millisToZdt(sms.getCreatedTs()));
+                    return s;
+                })
+                .thenApplyAsync(s -> transactionGenerator.generate(s, userDao.findById(sms.getOwnerId())))
                 .thenApplyAsync(transactionDao::saveAll)
                 .thenAcceptAsync(transactions -> transactions.forEach(
                         transactionExecutor::execute

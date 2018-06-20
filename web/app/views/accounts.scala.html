@@ -26,14 +26,14 @@
             <tbody>
             @for(account <- user.get().getAccounts) {
                 <tr>
-                    <td>@account.getId</td>
+                    <td>@account.get_id()</td>
                     <td>@account.getNumber</td>
                     <td>@account.getTitle</td>
                     <td>@account.getCurrency</td>
                     <td>@account.getBalance</td>
                     <td>@account.getSmsPattern</td>
-                    <td><a href="@routes.AccountsController.showEditForm(account.getId)">Edit</a></td>
-                    <td><a href="@routes.AccountsController.deleteAccount(account.getId)">Delete</a></td>
+                    <td><a href="@routes.AccountsController.showEditForm(account.get_id())">Edit</a></td>
+                    <td><a href="@routes.AccountsController.deleteAccount(account.get_id())">Delete</a></td>
                 </tr>
             }
             </tbody>
