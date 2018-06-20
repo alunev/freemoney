@@ -68,7 +68,9 @@ public class UserDaoTest extends JongoDaoTest {
     public void saveOverwritesUserById() throws Exception {
         String id = userDao.save(User.createEmptyUser("google-auth-id", "fred_xxx@some_email"));
 
-        User updatedUser = User.createUser(id, "google-auth-id", "fred@some_email", Collections.emptySet(), Collections.emptySet());
+        User updatedUser = User.createUser(id, "google-auth-id", "fred@some_email",
+                org.assertj.core.util.Lists.emptyList(),
+                Collections.emptySet(), Collections.emptySet());
         userDao.save(updatedUser);
 
         User user = userDao.findById(id);
@@ -86,7 +88,10 @@ public class UserDaoTest extends JongoDaoTest {
         }
 
         for (int i = 0; i < 5; i++) {
-            User user = User.createUser(ids.get(i), "google-auth-id", "fred_" + i + "@some_email", Collections.emptySet(), Collections.emptySet());
+            User user = User.createUser(ids.get(i), "google-auth-id", "fred_" + i + "@some_email",
+                    Collections.emptyList(),
+                    Collections.emptySet(),
+                    Collections.emptySet());
             assertTrue("user from db", userDao.findById(ids.get(i)).sameAs(user));
         }
     }

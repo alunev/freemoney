@@ -10,7 +10,7 @@ public class UserBuilder {
     private String id;
     private String authId;
     private String email;
-    private List<AppInstance> instances;
+    private List<AppInstance> appInstances;
     private Set<Account> accounts = Collections.emptySet();
     private Set<Transaction> transactions = Collections.emptySet();
 
@@ -22,6 +22,7 @@ public class UserBuilder {
         this.id = user.get_id();
         this.authId = user.getAuthId();
         this.email = user.getEmail();
+        this.appInstances = user.getAppInstances();
         this.accounts = user.getAccounts();
         this.transactions = user.getTransactions();
     }
@@ -42,7 +43,7 @@ public class UserBuilder {
     }
 
     public UserBuilder withAppInstances(List<AppInstance> instances) {
-        this.instances = instances;
+        this.appInstances = instances;
         return this;
     }
 
@@ -57,6 +58,6 @@ public class UserBuilder {
     }
 
     public User build() {
-        return new User(id, authId, email, instances, accounts, transactions);
+        return new User(id, authId, email, appInstances, accounts, transactions);
     }
 }

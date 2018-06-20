@@ -23,13 +23,10 @@ public class UserService {
 
     private final UserDao userDao;
 
-    private final PlaySessionStore playSessionStore;
-
 
     @Inject
-    public UserService(UserDao userDao, PlaySessionStore playSessionStore) {
+    public UserService(UserDao userDao) {
         this.userDao = userDao;
-        this.playSessionStore = playSessionStore;
     }
 
     public Optional<User> getUser(Http.Session session) {

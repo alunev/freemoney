@@ -106,13 +106,14 @@ public class User {
     public static User createUser(String id,
                                   String authId,
                                   String email,
-                                  Set<Account> accounts,
+                                  List<AppInstance> appInstances, Set<Account> accounts,
                                   Set<Transaction> transactions) {
         return new UserBuilder().with_id(id)
                 .withAuthId(authId)
                 .withEmail(email)
+                .withAppInstances(appInstances)
                 .withAccounts(accounts)
-                .withTransactions(Collections.emptySet())
+                .withTransactions(transactions)
                 .build();
     }
 
@@ -191,6 +192,11 @@ public class User {
         return Objects.equals(_id, user._id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(_id);
+    }
+
     public boolean sameAs(User user) {
         if (this == user) return true;
         if (user == null) return false;
@@ -198,6 +204,7 @@ public class User {
         return Objects.equals(_id, user._id) &&
                 Objects.equals(authId, user.authId) &&
                 Objects.equals(email, user.email) &&
+                Objects.equals(appInstances, user.appInstances) &&
                 Objects.equals(accounts, user.accounts) &&
                 Objects.equals(transactions, user.transactions);
     }
@@ -207,16 +214,12 @@ public class User {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(_id);
-    }
-
-    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("_id", _id)
                 .add("authId", authId)
                 .add("email", email)
+                .add("appInstances", appInstances)
                 .add("accounts", accounts)
                 .add("transactions", transactions)
                 .toString();
