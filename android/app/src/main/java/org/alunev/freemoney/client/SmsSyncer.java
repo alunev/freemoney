@@ -54,7 +54,7 @@ public class SmsSyncer {
     private void syncSince(Long timestamp) {
         SmsReader smsReader = new SmsReader(context);
         List<Sms> smsList = smsReader.readAllSMS();
-        Collections.sort(smsList, (sms1, sms2) -> (int) (sms2.getCreatedTs() - sms1.getCreatedTs()));
+        Collections.sort(smsList, (sms1, sms2) -> (int) (sms1.getCreatedTs() - sms2.getCreatedTs()));
 
         int i = 0;
         while (i < smsList.size() && smsList.get(i).getCreatedTs() > timestamp) {
