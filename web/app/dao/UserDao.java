@@ -111,7 +111,7 @@ public class UserDao {
         List<AppInstance> userInstances = Optional.ofNullable(user.getAppInstances())
                 .orElse(Lists.emptyList());
         userInstances = userInstances.stream()
-                .filter(instance -> Objects.equals(instance.getInstanceId(), appInstance.getInstanceId()))
+                .filter(instance -> !Objects.equals(instance.getInstanceId(), appInstance.getInstanceId()))
                 .collect(Collectors.toList());
         userInstances.add(appInstance);
 

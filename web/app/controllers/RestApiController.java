@@ -98,16 +98,9 @@ public class RestApiController extends Controller {
         Sms sms = Json.fromJson(request().body().asJson(), Sms.class);
 
         User user = userDao.findById(sms.getOwnerId());
-
         if (user == null) {
             return CompletableFuture.supplyAsync(() -> internalServerError("No user found with ID " + sms.getOwnerId()));
         }
-
-        // push message to persistent queue and then async:
-        //  - saving to mongo (for history and traceability)
-        //  - generating of transactions based on sms data
-        //  - execute transactions on our side: update account balances accordingly
-        //  - (?) push data change to UI
 
         return CompletableFuture.supplyAsync(() -> smsDao.save(sms))
                 .thenApplyAsync(s -> {
