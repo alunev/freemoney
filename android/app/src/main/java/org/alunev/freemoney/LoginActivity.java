@@ -30,12 +30,16 @@ import com.google.android.gms.tasks.Task;
 
 import org.alunev.freemoney.client.RestService;
 import org.alunev.freemoney.client.RestServiceFactory;
+import org.alunev.freemoney.client.SmsSyncer;
 import org.alunev.freemoney.device.SmsReader;
 import org.alunev.freemoney.model.Sms;
 import org.alunev.freemoney.prefs.Preferences;
 import org.alunev.freemoney.service.SmsUploadJobService;
 import org.alunev.freemoney.views.smslist.SmsListFragment;
 import org.alunev.freemoney.views.smslist.SmsListRecyclerAdapter;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,10 +59,17 @@ public class LoginActivity extends AppCompatActivity implements SmsListFragment.
     private GoogleSignInClient signInClient;
     private SharedPreferences preferences;
 
+    private ExecutorService smsSyncExecutor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        findViewById(R.id.sign_in_button).setOnClickListener(this::onClick);
+        findViewById(R.id.sign_out_button).setOnClickListener(this::onClick);
+        findViewById(R.id.run_sms_sync).setOnClickListener(this::onClick);
+
 
         mProgressView = findViewById(R.id.login_progress);
 
@@ -66,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements SmsListFragment.
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-//        scheduleSmsUpload();
+        scheduleSmsUpload();
 
         initGooggleSignIn();
     }
@@ -86,27 +97,31 @@ public class LoginActivity extends AppCompatActivity implements SmsListFragment.
         TextView currentUser = (TextView) findViewById(R.id.currentUser);
         View signInButton = findViewById(R.id.sign_in_button);
         View signOutButton = findViewById(R.id.sign_out_button);
+        View runSyncButton = findViewById(R.id.run_sms_sync);
         RecyclerView smsList = (RecyclerView) findViewById(R.id.sms_list_fragment);
 
-        if (account == null) {
-            Log.i(TAG, "no logged in");
-            currentUser.setText("");
-            currentUser.setVisibility(View.GONE);
-            signOutButton.setVisibility(View.GONE);
-            smsList.setAdapter(new SmsListRecyclerAdapter(new SmsReader(getApplicationContext()).readAllSMS(), this));
-            smsList.getAdapter().notifyDataSetChanged();
-
-            signInButton.setVisibility(View.VISIBLE);
-        } else {
-            Log.i(TAG, "already logged in: " + account.getDisplayName());
-            currentUser.setText("Logged in as:" + account.getDisplayName());
+        if (account != null) {
+            Log.i(TAG, "Logged in: " + account.getDisplayName());
+            currentUser.setText("Logged in as: " + account.getDisplayName());
             currentUser.setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.VISIBLE);
+            runSyncButton.setVisibility(View.VISIBLE);
 
             smsList.setAdapter(new SmsListRecyclerAdapter(new SmsReader(getApplicationContext()).readAllSMS(), this));
             smsList.getAdapter().notifyDataSetChanged();
 
             signInButton.setVisibility(View.GONE);
+        } else {
+            Log.i(TAG, "Logged out");
+            currentUser.setText("");
+            currentUser.setVisibility(View.GONE);
+            signOutButton.setVisibility(View.GONE);
+            runSyncButton.setVisibility(View.GONE);
+
+            smsList.setAdapter(new SmsListRecyclerAdapter(new SmsReader(getApplicationContext()).readAllSMS(), this));
+            smsList.getAdapter().notifyDataSetChanged();
+
+            signInButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -167,11 +182,10 @@ public class LoginActivity extends AppCompatActivity implements SmsListFragment.
     }
 
     private void initGooggleSignIn() {
-        findViewById(R.id.sign_in_button).setOnClickListener(this::onClick);
-        findViewById(R.id.sign_out_button).setOnClickListener(this::onClick);
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
+                .requestEmail()
+                .requestProfile()
                 .build();
 
 
@@ -257,8 +271,17 @@ public class LoginActivity extends AppCompatActivity implements SmsListFragment.
             case R.id.sign_out_button:
                 signOut();
                 break;
+            case R.id.run_sms_sync:
+                runSmsSync();
+                break;
             // ...
         }
+    }
+
+    private void runSmsSync() {
+        smsSyncExecutor.submit(() -> {
+            new SmsSyncer(getApplicationContext()).runSync();
+        });
     }
 
     @Override

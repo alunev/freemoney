@@ -8,6 +8,7 @@ import com.google.android.gms.iid.InstanceID;
 
 import org.alunev.freemoney.client.RestService;
 import org.alunev.freemoney.client.RestServiceFactory;
+import org.alunev.freemoney.client.SmsSyncer;
 import org.alunev.freemoney.client.SmsUploader;
 import org.alunev.freemoney.device.SmsReader;
 import org.alunev.freemoney.model.Sms;
@@ -31,41 +32,7 @@ public class SmsUploadJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        RestService restService = new RestServiceFactory(getApplicationContext()).createService();
-        smsUploader = new SmsUploader(restService);
-
-        Call<Long> call = restService.getLastSync(InstanceID.getInstance(getApplicationContext()).getId());
-
-        call.enqueue(new Callback<Long>() {
-            @Override
-            public void onResponse(Call<Long> call, Response<Long> response) {
-                if (response.isSuccessful()) {
-                    syncSince(response.body());
-                } else {
-                    Log.e(TAG, "Failed to getLastSync: " + response.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Long> call, Throwable t) {
-                Log.e(TAG, "Failed to getLastSync", t);
-            }
-        });
-
-        return false; // Answers the question: "Is there still work going on?"
-    }
-
-    private void syncSince(Long timestamp) {
-        SmsReader smsReader = new SmsReader(getApplicationContext());
-        List<Sms> smsList = smsReader.readAllSMS();
-        Collections.sort(smsList, (sms1, sms2) -> (int) (sms2.getCreatedTs() - sms1.getCreatedTs()));
-
-        int i = 0;
-        while (i < smsList.size() && smsList.get(i).getCreatedTs() > timestamp) {
-            smsUploader.upload(smsList.get(i++));
-        }
-
-        Log.i(TAG, "Uploaded " + i + " sms");
+        return new SmsSyncer(getApplicationContext()).runSync(); // Answers the question: "Is there still work going on?"
     }
 
     @Override
