@@ -24,6 +24,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support:support-v4:27.1.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -45,4 +46,5 @@ dependencies {
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }

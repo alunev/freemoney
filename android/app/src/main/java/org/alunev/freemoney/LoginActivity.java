@@ -9,8 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -26,13 +26,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import org.alunev.freemoney.client.RestService;
 import org.alunev.freemoney.client.RestServiceFactory;
+import org.alunev.freemoney.device.SmsReader;
+import org.alunev.freemoney.model.Sms;
 import org.alunev.freemoney.prefs.Preferences;
 import org.alunev.freemoney.service.SmsUploadJobService;
+import org.alunev.freemoney.views.smslist.SmsListFragment;
+import org.alunev.freemoney.views.smslist.SmsListRecyclerAdapter;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,7 +44,7 @@ import retrofit2.Response;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements SmsListFragment.OnListFragmentInteractionListener {
     private static final String TAG = "LoginActivity";
 
     private static final int RC_SIGN_IN = 1234;
@@ -73,12 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         signInClient.silentSignIn()
-                .addOnCompleteListener(this, new OnCompleteListener<GoogleSignInAccount>() {
-                    @Override
-                    public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                        handleSignInResult(task);
-                    }
-                });
+                .addOnCompleteListener(this, task -> handleSignInResult(task));
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
@@ -88,12 +86,15 @@ public class LoginActivity extends AppCompatActivity {
         TextView currentUser = (TextView) findViewById(R.id.currentUser);
         View signInButton = findViewById(R.id.sign_in_button);
         View signOutButton = findViewById(R.id.sign_out_button);
+        RecyclerView smsList = (RecyclerView) findViewById(R.id.sms_list_fragment);
 
         if (account == null) {
             Log.i(TAG, "no logged in");
             currentUser.setText("");
             currentUser.setVisibility(View.GONE);
             signOutButton.setVisibility(View.GONE);
+            smsList.setAdapter(new SmsListRecyclerAdapter(new SmsReader(getApplicationContext()).readAllSMS(), this));
+            smsList.getAdapter().notifyDataSetChanged();
 
             signInButton.setVisibility(View.VISIBLE);
         } else {
@@ -101,6 +102,9 @@ public class LoginActivity extends AppCompatActivity {
             currentUser.setText("Logged in as:" + account.getDisplayName());
             currentUser.setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.VISIBLE);
+
+            smsList.setAdapter(new SmsListRecyclerAdapter(new SmsReader(getApplicationContext()).readAllSMS(), this));
+            smsList.getAdapter().notifyDataSetChanged();
 
             signInButton.setVisibility(View.GONE);
         }
@@ -182,6 +186,14 @@ public class LoginActivity extends AppCompatActivity {
     private void signOut() {
         signInClient.signOut()
                 .addOnCompleteListener(this, task -> {
+                    preferences.edit()
+                            .remove(Preferences.USER_AUTH_ID)
+                            .apply();
+
+                    preferences.edit()
+                            .remove(Preferences.USER_ID)
+                            .apply();
+
                     updateUI(null);
                 });
     }
@@ -218,6 +230,10 @@ public class LoginActivity extends AppCompatActivity {
                     preferences.edit()
                             .putString(Preferences.USER_ID, userId)
                             .apply();
+
+
+                    // Signed in successfully, show authenticated UI.
+                    updateUI(account);
                 }
 
                 @Override
@@ -225,9 +241,6 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e(TAG, "Failed to log in to backend", t);
                 }
             });
-
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -246,6 +259,11 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             // ...
         }
+    }
+
+    @Override
+    public void onListFragmentInteraction(Sms item) {
+        Log.i(TAG, "from fragment: " + item);
     }
 }
 

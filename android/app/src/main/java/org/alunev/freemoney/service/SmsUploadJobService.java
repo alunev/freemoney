@@ -57,7 +57,7 @@ public class SmsUploadJobService extends JobService {
 
     private void syncSince(Long timestamp) {
         SmsReader smsReader = new SmsReader(getApplicationContext());
-        List<Sms> smsList = smsReader.getSMS();
+        List<Sms> smsList = smsReader.readAllSMS();
         Collections.sort(smsList, (sms1, sms2) -> (int) (sms2.getCreatedTs() - sms1.getCreatedTs()));
 
         int i = 0;

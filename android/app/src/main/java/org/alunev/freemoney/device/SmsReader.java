@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.util.Log;
@@ -34,7 +33,7 @@ public class SmsReader {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public List<Sms> getSMS() {
+    public List<Sms> readAllSMS() {
         String userId = preferences.getString(Preferences.USER_ID, "");
 
         if (Strings.isNullOrEmpty(userId)) {
