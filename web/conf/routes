@@ -18,6 +18,7 @@ POST        /transactions/save                    controllers.TransactionsContro
 # REST methods for calling from Android
 POST        /api/tokensignin                          controllers.RestApiController.tokenSignIn
 POST        /api/sms/process                          controllers.RestApiController.processSms
+POST        /api/sms/process/bulk                     controllers.RestApiController.processSmsBulk
 GET         /api/user/:instanceId/lastSync            controllers.RestApiController.getLastSync(instanceId : String)
 
 

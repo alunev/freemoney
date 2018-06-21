@@ -10,10 +10,9 @@ import core.TransactionGenerator;
 import dao.SmsDao;
 import dao.TransactionDao;
 import dao.UserDao;
-import model.AppInstance;
 import model.Sms;
+import model.SmsBulk;
 import model.User;
-import org.assertj.core.util.Lists;
 import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -23,12 +22,10 @@ import services.UserService;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 /**
  * @author red
@@ -102,11 +99,44 @@ public class RestApiController extends Controller {
             return CompletableFuture.supplyAsync(() -> internalServerError("No user found with ID " + sms.getOwnerId()));
         }
 
+        return supplyAsyncSmsProcess(sms);
+    }
+
+    public CompletionStage<Result> processSmsBulk() throws IOException {
+        SmsBulk bulk = Json.fromJson(request().body().asJson(), SmsBulk.class);
+
+        if (bulk.getList().isEmpty()) {
+            return CompletableFuture.completedStage(badRequest("Empty sms bulk"));
+        }
+
+        String userId = bulk.getUserId();
+        User user = userDao.findById(userId);
+        if (user == null) {
+            return CompletableFuture.supplyAsync(() -> internalServerError("No user found with ID " + userId));
+        }
+
+        userDao.updateInstanceLastSyncTs(
+                user,
+                bulk.getDeviceId(),
+                DateUtils.millisToZdt(bulk.getCreatedTs())
+        );
+
+        return bulk.getList().parallelStream()
+                .map(this::supplyAsyncSmsProcess)
+                .reduce((future1, future2) -> future1.thenCombineAsync(
+                        future2,
+                        (result1, result2) -> {
+                            if (result1.status() == ok().status() && result2.status() == ok().status()) {
+                                return ok();
+                            } else {
+                                return internalServerError("Some sms process failed");
+                            }
+                        }))
+                .orElse(CompletableFuture.completedFuture(badRequest("Empty sms bulk")));
+    }
+
+    private CompletableFuture<Result> supplyAsyncSmsProcess(Sms sms) {
         return CompletableFuture.supplyAsync(() -> smsDao.save(sms))
-                .thenApplyAsync(s -> {
-                    userDao.updateInstanceLastSyncTs(user, sms.getDeviceId(), DateUtils.millisToZdt(sms.getCreatedTs()));
-                    return s;
-                })
                 .thenApplyAsync(s -> transactionGenerator.generate(s, userDao.findById(sms.getOwnerId())))
                 .thenApplyAsync(transactionDao::saveAll)
                 .thenAcceptAsync(transactions -> transactions.forEach(
