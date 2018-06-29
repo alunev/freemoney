@@ -1,4 +1,4 @@
-package org.alunev.freemoney.prefs;
+package org.alunev.freemoney.utils;
 
 public class Preferences {
 

@@ -3,7 +3,7 @@ package org.alunev.freemoney.client;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import org.alunev.freemoney.prefs.Preferences;
+import org.alunev.freemoney.utils.Preferences;
 
 import java.io.IOException;
 import java.util.HashSet;

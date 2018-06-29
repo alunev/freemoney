@@ -10,10 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.common.base.Strings;
+
 import org.alunev.freemoney.R;
 import org.alunev.freemoney.device.SmsReader;
 import org.alunev.freemoney.model.Sms;
+import org.alunev.freemoney.utils.Preferences;
+import org.alunev.freemoney.utils.Utils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,6 +82,11 @@ public class SmsListFragment extends Fragment {
     }
 
     private List<Sms> loadSmsList() {
+        String userId = Utils.getUserId(getContext());
+        if (Strings.isNullOrEmpty(userId)) {
+            return Collections.emptyList();
+        }
+
         SmsReader smsReader = new SmsReader(Objects.requireNonNull(getActivity()).getApplicationContext());
 
         return smsReader.readAllSMS();

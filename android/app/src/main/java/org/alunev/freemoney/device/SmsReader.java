@@ -12,7 +12,7 @@ import com.google.android.gms.iid.InstanceID;
 import com.google.common.base.Strings;
 
 import org.alunev.freemoney.model.Sms;
-import org.alunev.freemoney.prefs.Preferences;
+import org.alunev.freemoney.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -33,8 +33,9 @@ import org.alunev.freemoney.client.RestServiceFactory;
 import org.alunev.freemoney.client.SmsSyncer;
 import org.alunev.freemoney.device.SmsReader;
 import org.alunev.freemoney.model.Sms;
-import org.alunev.freemoney.prefs.Preferences;
+import org.alunev.freemoney.utils.Preferences;
 import org.alunev.freemoney.service.SmsUploadJobService;
+import org.alunev.freemoney.utils.Utils;
 import org.alunev.freemoney.views.smslist.SmsListFragment;
 import org.alunev.freemoney.views.smslist.SmsListRecyclerAdapter;
 
@@ -87,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements SmsListFragment.
         super.onStart();
 
         signInClient.silentSignIn()
-                .addOnCompleteListener(this, task -> handleSignInResult(task));
+                .addOnCompleteListener(this, this::handleSignInResult);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
@@ -100,6 +101,7 @@ public class LoginActivity extends AppCompatActivity implements SmsListFragment.
         View runSyncButton = findViewById(R.id.run_sms_sync);
         RecyclerView smsList = (RecyclerView) findViewById(R.id.sms_list_fragment);
 
+        String userId = Utils.getUserId(getApplicationContext());
         if (account != null) {
             Log.i(TAG, "Logged in: " + account.getDisplayName());
             currentUser.setText("Logged in as: " + account.getDisplayName());
